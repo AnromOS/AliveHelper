@@ -2,6 +2,7 @@ package org.ancode.alivelib.http;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 
@@ -26,7 +27,7 @@ public class HttpUtils {
     public static final String TAG = HttpUtils.class.getSimpleName();
     public static boolean GETING_URL = false;
     public static final String GET_DATA_KEY = "get_data_key";
-    public static final int GET_DATA_WHAT = 1;
+    public static final int GET_DATA_SUCCESS = 1;
     public static final int GET_DATA_ERROR = 2;
 
     /**
@@ -87,7 +88,7 @@ public class HttpUtils {
                     sendHandler(handler, GET_DATA_ERROR, e.getLocalizedMessage());
                     return;
                 }
-                sendHandler(handler, GET_DATA_WHAT, resultUrl);
+                sendHandler(handler, GET_DATA_SUCCESS, resultUrl);
                 GETING_URL = false;
             }
         }).start();
@@ -97,27 +98,9 @@ public class HttpUtils {
     /***
      * 提交aliveStats
      *
-     * @param beginTime
-     * @param endTime
      * @return
      */
-    public static boolean uploadAliveStats(long beginTime, long endTime) {
-        /*****
-         * {
-         "app": "org.ancode.miliu",
-         "info": {
-         "device": "htc",
-         "id": "xxx",
-         "os": "android"
-         },
-         "stat": {
-         "type":"alive",
-         "tag":"MH:13146461472"
-         "data":["1245851245 3g","1245851245 wifi","1245851245 3g","1245851245 wifi"]
-         }
-         }
-         */
-
+    public static boolean uploadAliveStats() {
 
         String packageName = HelperConfig.CONTEXT.getPackageName().toString();
         JSONObject info = null;
@@ -184,7 +167,6 @@ public class HttpUtils {
         }
     }
 
-
     /**
      * 查询aliveStats
      *
@@ -204,7 +186,7 @@ public class HttpUtils {
                         sendHandler(handler, GET_DATA_ERROR, "response is null");
                         return;
                     }
-                    sendHandler(handler, GET_DATA_WHAT, data);
+                    sendHandler(handler, GET_DATA_SUCCESS, data);
                     return;
 
                 } catch (Exception e) {

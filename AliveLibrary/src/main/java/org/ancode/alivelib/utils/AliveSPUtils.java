@@ -45,7 +45,7 @@ public class AliveSPUtils extends BaseSPUtils {
     /**
      * 统计结束时间
      */
-    private static final String ALIVE_STATS_END_TIME = "alive_stats_end_time";
+//    private static final String ALIVE_STATS_END_TIME = "alive_stats_end_time";
     /**
      * 终端信息（这里的格式不是确定，不同的app报名自己定义info格式）
      */
@@ -74,22 +74,22 @@ public class AliveSPUtils extends BaseSPUtils {
         putLong(ALIVE_STATS_BEGIN_TIME, asStartTime);
     }
 
-    /**
-     * 获取统计结束时间
-     *
-     * @return
-     */
-    public long getASEndTime() {
-        return getLong(ALIVE_STATS_END_TIME, 0);
-    }
-
-
-    /**
-     * 设置统计结束时间
-     */
-    public void setASEndTime(long asEndTime) {
-        putLong(ALIVE_STATS_END_TIME, asEndTime);
-    }
+//    /**
+//     * 获取统计结束时间
+//     *
+//     * @return
+//     */
+//    public long getASEndTime() {
+//        return getLong(ALIVE_STATS_END_TIME, 0);
+//    }
+//
+//
+//    /**
+//     * 设置统计结束时间
+//     */
+//    public void setASEndTime(long asEndTime) {
+//        putLong(ALIVE_STATS_END_TIME, asEndTime);
+//    }
 
     /***
      * 获取终端信息

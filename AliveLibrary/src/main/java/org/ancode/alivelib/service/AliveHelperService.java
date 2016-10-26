@@ -4,11 +4,14 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 
 import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.config.HttpUrlConfig;
+import org.ancode.alivelib.http.HttpClient;
+import org.ancode.alivelib.listener.StringCallBack;
 import org.ancode.alivelib.utils.AliveStatsUtils;
 import org.ancode.alivelib.utils.DateTimeUtils;
 import org.ancode.alivelib.http.HttpUtils;
@@ -29,6 +32,8 @@ import java.util.TimerTask;
  * Created by andyliu on 16-10-8.
  */
 public class AliveHelperService extends Service {
+    private static final String TAG = AliveHelperService.class.getSimpleName();
+
     public static final String ACTION = "action";
 
     public static final String OPEN_ALIVE_STATS_SERVICE_ACTION = "org.ancode.alivelib.service.OPEN_ALIVE_STATS_SERVICE";
@@ -38,17 +43,22 @@ public class AliveHelperService extends Service {
     public static final String CLOSE_ALIVE_WARNING_SERVICE_ACTION = "org.ancode.alivelib.service.CLOSE_ALIVE_WARNING_SERVICE";
 
     private final int WARNING_TIME = 1000 * 60 * 30;
-    private static final String TAG = AliveHelperService.class.getSimpleName();
-    private Timer aliveStatsTimer = null, warningTimer = null;
+
+    private Timer aliveStatsTimer = null;
 
     //文件写入
     private File aliveStatsfile = null;
     private FileWriter fileWriter = null;
     private BufferedWriter writer = null;
+    private boolean isFirstStats = true;
+
+
+    //定时弹出使用指南
     //是否已经提示
     private boolean isNotify = false;
+    private Timer warningTimer = null;
 
-    private boolean isFirstStats = true;
+    private boolean uploadingAlive = false;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -89,7 +99,9 @@ public class AliveHelperService extends Service {
         super.onCreate();
     }
 
+
     private void openStatsLiveTimer() {
+        final Object mLock = new Object();
         if (aliveStatsTimer == null) {
             Log.v(TAG, "---start Stats alive---");
             aliveStatsTimer = new Timer();
@@ -168,6 +180,8 @@ public class AliveHelperService extends Service {
 
     private static final int SHOW_NOTIFICATION = 0x101;
     private static final int REOPEN_ALIVE_STATS = 0x102;
+    public static final int RESET_ALIVE_STATS = 0x103;
+    public static final int UPLOAD_ALIVE_STATS_FAILED = 0x104;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -177,6 +191,16 @@ public class AliveHelperService extends Service {
             } else if (msg.what == REOPEN_ALIVE_STATS) {
                 closeStatsLiveTimer();
                 openStatsLiveTimer();
+            } else if (msg.what == RESET_ALIVE_STATS) {
+                Log.v(TAG, "----上传数据成功----");
+                //交互成功修
+                uploadingAlive = false;
+                AliveSPUtils.getInstance().setASBeginTime(0);
+                deleteFile(HelperConfig.ALIVE_STATS_FILE_NAME);
+                clearFileWriter();
+                Log.v(TAG, "----重置数据成功----");
+            } else if (msg.what == UPLOAD_ALIVE_STATS_FAILED) {
+                uploadingAlive = false;
             }
         }
     };
@@ -203,30 +227,20 @@ public class AliveHelperService extends Service {
             }
 
             //结束时间实时赋值
-            AliveSPUtils.getInstance().setASEndTime(nowTime);
+            //AliveSPUtils.getInstance().setASEndTime(nowTime);
 
             float differTime = DateTimeUtils.getDifferHours(startTime, nowTime);
-            if (differTime >= HelperConfig.UPLOAD_ALIVE_STATS_RATE) {
-                Log.v(TAG, "距离第一次统计时间" + differTime + "小时,准备上传服务器");
-                //网络检查
-                if (NetUtils.ping(HttpUrlConfig.ALIVE_STATS_POST_HOST)) {
-                    Log.v(TAG, "网络可用开始上传服务器");
-
-                    //开始上传
-                    if (HttpUtils.uploadAliveStats(startTime, nowTime)) {
-                        Log.v(TAG, "----上传数据成功----");
-                        //交互成功修
-                        AliveSPUtils.getInstance().setASBeginTime(0);
-                        deleteFile(HelperConfig.ALIVE_STATS_FILE_NAME);
-                        clearFileWriter();
-                        Log.v(TAG, "----重置数据成功----");
-                    }
-                } else {
-                    Log.v(TAG, "网络不可用不能上传服务器");
+            if (differTime >= HelperConfig.UPLOAD_ALIVE_STATS_RATE && !uploadingAlive) {
+                Log.v(TAG, "距离第一次统计时间" + differTime + "小时,是否正在上传->," + uploadingAlive + "准备上传服务器");
+                uploadingAlive = true;
+                try {
+                    HttpClient.uploadAliveStats("uploadAliveStats", handler);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    uploadingAlive = false;
                 }
-
             } else {
-                Log.v(TAG, "距离第一次统计时间" + differTime + "小时,不上传服务器");
+                Log.v(TAG, "距离第一次统计时间" + differTime + "小时 是否正在上传->," + uploadingAlive + "不上传服务器");
             }
 
 
@@ -267,13 +281,13 @@ public class AliveHelperService extends Service {
     public void clearFileWriter() {
         try {
             writer.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "close error:" + e.getLocalizedMessage());
             e.printStackTrace();
         }
         try {
             fileWriter.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "close error:" + e.getLocalizedMessage());
             e.printStackTrace();
         }
