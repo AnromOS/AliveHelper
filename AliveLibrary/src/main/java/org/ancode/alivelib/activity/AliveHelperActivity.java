@@ -50,7 +50,12 @@ public class AliveHelperActivity extends BaseActivity {
                 if (error.equals(HttpClient.DATA_IS_NULL)) {
                     showLoading(false);
                     Log.v(TAG, "show default html");
-                    onRefresh(HttpUrlConfig.DEFAULT_WARNING_URL);
+                    if (HelperConfig.USE_ANET) {
+                        onRefresh(HttpUrlConfig.DEFAULT_ALIVE_GUIDE_V6_URL);
+                    } else {
+                        onRefresh(HttpUrlConfig.DEFAULT_ALIVE_GUIDE_V4_URL);
+                    }
+
                 } else {
                     showLoading(false);
                     showErrorView(true);

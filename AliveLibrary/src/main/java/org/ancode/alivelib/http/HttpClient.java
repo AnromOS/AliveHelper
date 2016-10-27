@@ -73,7 +73,7 @@ public class HttpClient {
 
             @Override
             protected Boolean doInBackground(Object... params) {
-                if (NetUtils.ping(HttpUrlConfig.ALIVE_STATS_POST_HOST)) {
+                if (NetUtils.ping(HttpUrlConfig.HOST_V4)) {
                     Log.v(TAG, "网络可用开始上传服务器");
                     return httpImpl.uploadAliveStats();
                 } else {

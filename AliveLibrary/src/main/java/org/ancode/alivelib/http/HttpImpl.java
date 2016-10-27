@@ -46,12 +46,12 @@ public class HttpImpl {
             public void run() {
                 String resultUrl = "";
                 try {
-                    String url = "";
+                    String url;
                     if (HelperConfig.USE_ANET) {
-                        url = HttpUrlConfig.GET_WARNING_HTML_ANET_URL;
+                        url = HttpUrlConfig.GET_ALIVE_GUIDE_V6_URL;
                         Log.v("HttpImpl", "走IPV6");
                     } else {
-                        url = HttpUrlConfig.GET_WARNING_HTML_URL;
+                        url = HttpUrlConfig.GET_ALIVE_GUIDE_V4_URL;
                         Log.v("HttpImpl", "走IPV4");
                     }
                     String data = HttpHelper.get(url, params, flag);
@@ -137,7 +137,15 @@ public class HttpImpl {
             e.printStackTrace();
             return false;
         }
-        String response = HttpHelper.postJson(HttpUrlConfig.POST_ALIVE_STATS_URL, uploadJson.toString(), "uploadStatsTime");
+        String url;
+        if (HelperConfig.USE_ANET) {
+            url = HttpUrlConfig.POST_ALIVE_STATS_V6_URL;
+            Log.v("HttpImpl", "走IPV6");
+        } else {
+            url = HttpUrlConfig.POST_ALIVE_STATS_V4_URL;
+            Log.v("HttpImpl", "走IPV4");
+        }
+        String response = HttpHelper.postJson(url, uploadJson.toString(), "uploadStatsTime");
 
         Log.v(TAG, "uploadStatsTime response= " + response);
         if (TextUtils.isEmpty(response)) {
@@ -177,8 +185,14 @@ public class HttpImpl {
             @Override
             public void run() {
                 try {
-                    String url = HttpUrlConfig.QUERY_ALIVE_STATS_URL;
-
+                    String url;
+                    if (HelperConfig.USE_ANET) {
+                        url = HttpUrlConfig.QUERY_ALIVE_STATS_V6_URL;
+                        Log.v("HttpImpl", "走IPV6");
+                    } else {
+                        url = HttpUrlConfig.QUERY_ALIVE_STATS_V4_URL;
+                        Log.v("HttpImpl", "走IPV4");
+                    }
                     String data = HttpHelper.get(url, params, flag);
                     if (TextUtils.isEmpty(data)) {
                         sendHandler(handler, GET_DATA_ERROR, "response is null");
