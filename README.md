@@ -3,7 +3,7 @@ AliveHelper防杀助手,统计应用使用率.
 
 
 ## 使用
-
+***
 ###1.依赖权限
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -20,8 +20,6 @@ AliveHelper防杀助手,统计应用使用率.
         功能类,可以在Application初始化完成之后,任意地方使用,根据实际场景进行使用
 
 ####1).开启使用率统计相关
-
-        //已过时方法调用
 
         JSONObject jsonObject = new JSONObject();
         try {
@@ -42,7 +40,6 @@ AliveHelper防杀助手,统计应用使用率.
         AliveHelper.getHelper().openAliveStats();
 
         //建议使用方法
-
         BaseStatsInfo statsInfo = new BaseStatsInfo();
         statsInfo.setDevice(Build.MODEL);
         statsInfo.setOs(Build.DISPLAY);
