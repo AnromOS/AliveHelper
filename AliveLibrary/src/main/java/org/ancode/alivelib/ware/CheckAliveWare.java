@@ -31,7 +31,6 @@ public class CheckAliveWare extends BaseWare {
     private void getData(final String flag) {
         Map<String, String> map = Utils.getProp();
         HttpClient.getUrl(map, flag, stringCallBack);
-//        HttpImpl.getUrl(map, handler, flag);
     }
 
 

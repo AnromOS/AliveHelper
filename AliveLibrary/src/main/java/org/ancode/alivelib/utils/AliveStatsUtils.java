@@ -1,6 +1,14 @@
 package org.ancode.alivelib.utils;
 
+import android.text.TextUtils;
+
+import org.ancode.alivelib.config.Constants;
 import org.ancode.alivelib.config.HelperConfig;
+import org.ancode.alivelib.config.HttpUrlConfig;
+import org.ancode.alivelib.http.HttpHelper;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -185,6 +193,10 @@ public class AliveStatsUtils {
     }
 
 
+    /**
+     * 获取保活百分比
+     * @return
+     */
     public static float getAlivePercent() {
         //获取上一天当前时间
         float percent = 0;
@@ -212,5 +224,86 @@ public class AliveStatsUtils {
         }
 
         return percent;
+    }
+
+
+    /***
+     * 提交aliveStats
+     *
+     * @return
+     */
+    public static boolean uploadAliveStats() {
+
+        String packageName = HelperConfig.CONTEXT.getPackageName().toString();
+        JSONObject info = null;
+        String tag = AliveSPUtils.getInstance().getASTag();
+        try {
+            info = new JSONObject(AliveSPUtils.getInstance().getASUploadInfo());
+        } catch (JSONException e) {
+            Log.e(TAG, "用户设置的info解析出错");
+            throw new IllegalArgumentException("Your info is error ,Please set info");
+        }
+        if (TextUtils.isEmpty(tag)) {
+            throw new IllegalArgumentException("Your aliveTag is null ,Please set aliveTag");
+        }
+
+        JSONObject uploadJson = new JSONObject();
+        JSONObject statObject = new JSONObject();
+        //统计数据
+        List<String> data = AliveStatsUtils.getAliveStatsResult();
+
+        JSONArray dataArray = new JSONArray(data);
+        try {
+            statObject.put("type", Constants.TYPE_ALIVE);
+            statObject.put("tag", tag);
+            statObject.putOpt("data", dataArray);
+        } catch (JSONException e) {
+            Log.e(TAG, "上传统计数据,参数初始化错误 'statObject'错误");
+            e.printStackTrace();
+            return false;
+        }
+        try {
+            uploadJson.put("app", packageName);
+            uploadJson.put("info", info);
+            uploadJson.putOpt("stat", statObject);
+        } catch (JSONException e) {
+            Log.e(TAG, "上传统计数据,参数初始化错误 'uploadJson'错误");
+            e.printStackTrace();
+            return false;
+        }
+        String url;
+        if (HelperConfig.USE_ANET) {
+            url = HttpUrlConfig.POST_ALIVE_STATS_V6_URL;
+            Log.v(TAG, "走IPV6");
+        } else {
+            url = HttpUrlConfig.POST_ALIVE_STATS_V4_URL;
+            Log.v(TAG, "走IPV4");
+        }
+        String response = HttpHelper.postJson(url, uploadJson.toString(), "uploadStatsTime");
+
+        Log.v(TAG, "uploadStatsTime response= " + response);
+        if (TextUtils.isEmpty(response)) {
+            Log.e(TAG, "response is null");
+            return false;
+        } else {
+            JSONObject jsonObject = null;
+            String result = null;
+            try {
+                jsonObject = new JSONObject(response);
+                result = jsonObject.get("result").toString();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (result == null) {
+                return false;
+            } else {
+                if (result.equals("ok")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
     }
 }

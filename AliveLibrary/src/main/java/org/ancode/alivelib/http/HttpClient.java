@@ -1,15 +1,20 @@
 package org.ancode.alivelib.http;
 
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
+import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.config.HttpUrlConfig;
 import org.ancode.alivelib.listener.StringCallBack;
 import org.ancode.alivelib.service.AliveHelperService;
+import org.ancode.alivelib.utils.AliveStatsUtils;
 import org.ancode.alivelib.utils.Log;
 import org.ancode.alivelib.utils.NetUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,13 +28,11 @@ public class HttpClient {
     public static final String HTTP_CALL_FLAG = "http_call_flag";
     public static final String DATA_IS_NULL = "data is null";
 
-    private static HttpImpl httpImpl = null;
+    public static boolean GETING_URL = false;
+    public static final String GET_DATA_KEY = "get_data_key";
+    public static final int GET_DATA_SUCCESS = 1;
+    public static final int GET_DATA_ERROR = 2;
 
-    static {
-        if (httpImpl == null) {
-            httpImpl = new HttpImpl();
-        }
-    }
 
     /**
      * 查询统计结果
@@ -39,7 +42,34 @@ public class HttpClient {
      * @param stringCallBack
      */
     public static void getAliveStats(final Map<String, String> params, final String flag, StringCallBack stringCallBack) {
-        httpImpl.getAliveStats(params, new StrHandler(stringCallBack), flag);
+        final StrHandler handler = new StrHandler(stringCallBack);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String url;
+                    if (HelperConfig.USE_ANET) {
+                        url = HttpUrlConfig.QUERY_ALIVE_STATS_V6_URL;
+                        Log.v(TAG, "走IPV6");
+                    } else {
+                        url = HttpUrlConfig.QUERY_ALIVE_STATS_V4_URL;
+                        Log.v(TAG, "走IPV4");
+                    }
+                    String data = HttpHelper.get(url, params, flag);
+                    if (TextUtils.isEmpty(data)) {
+                        sendHandler(handler, GET_DATA_ERROR, "response is null");
+                        return;
+                    }
+                    sendHandler(handler, GET_DATA_SUCCESS, data);
+                    return;
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    sendHandler(handler, GET_DATA_ERROR, e.getLocalizedMessage());
+                    return;
+                }
+            }
+        }).start();
     }
 
 
@@ -51,8 +81,61 @@ public class HttpClient {
      * @param stringCallBack
      */
     public static void getUrl(final Map<String, String> params, final String flag, StringCallBack stringCallBack) {
-        Map<String, String> map = new HashMap<String, String>();
-        httpImpl.getUrl(params, new StrHandler(stringCallBack), flag);
+        final StrHandler handler = new StrHandler(stringCallBack);
+        if (GETING_URL == true) {
+            return;
+        }
+        GETING_URL = true;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String resultUrl = "";
+                try {
+                    String url;
+                    if (HelperConfig.USE_ANET) {
+                        url = HttpUrlConfig.GET_ALIVE_GUIDE_V6_URL;
+                        Log.v(TAG, "走IPV6");
+                    } else {
+                        url = HttpUrlConfig.GET_ALIVE_GUIDE_V4_URL;
+                        Log.v(TAG, "走IPV4");
+                    }
+                    String data = HttpHelper.get(url, params, flag);
+                    GETING_URL = false;
+                    if (TextUtils.isEmpty(data)) {
+                        sendHandler(handler, GET_DATA_ERROR, "response is null");
+                        return;
+                    }
+                    JSONObject jsonObj = new JSONObject(data);
+                    if (jsonObj.has("result")) {
+                        if (jsonObj.get("result").toString().equals("ok")) {
+                            if (jsonObj.has("url")) {
+                                resultUrl = jsonObj.getString("url");
+                            } else {
+                                sendHandler(handler, GET_DATA_ERROR, "return url is null");
+                            }
+
+                        } else if (jsonObj.get("result").toString().equals("failed")) {
+                            sendHandler(handler, GET_DATA_ERROR, HttpClient.DATA_IS_NULL);
+                            return;
+                        } else {
+                            sendHandler(handler, GET_DATA_ERROR, "result is failed");
+                            return;
+                        }
+                    } else {
+                        sendHandler(handler, GET_DATA_ERROR, "result is failed");
+                        return;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    GETING_URL = false;
+                    sendHandler(handler, GET_DATA_ERROR, e.getLocalizedMessage());
+                    return;
+                }
+                sendHandler(handler, GET_DATA_SUCCESS, resultUrl);
+                GETING_URL = false;
+            }
+        }).start();
+
     }
 
 
@@ -73,13 +156,24 @@ public class HttpClient {
 
             @Override
             protected Boolean doInBackground(Object... params) {
-                if (NetUtils.ping(HttpUrlConfig.HOST_V4)) {
-                    Log.v(TAG, "网络可用开始上传服务器");
-                    return httpImpl.uploadAliveStats();
+                if (HelperConfig.USE_ANET) {
+                    if (NetUtils.ping6(HttpUrlConfig.HOST_V6)) {
+                        Log.v(TAG, "网络可用开始上传服务器");
+                        return AliveStatsUtils.uploadAliveStats();
+                    } else {
+                        Log.v(TAG, "网络不可用不能上传服务器");
+                        return false;
+                    }
                 } else {
-                    Log.v(TAG, "网络不可用不能上传服务器");
-                    return false;
+                    if (NetUtils.ping(HttpUrlConfig.HOST_V4)) {
+                        Log.v(TAG, "网络可用开始上传服务器");
+                        return AliveStatsUtils.uploadAliveStats();
+                    } else {
+                        Log.v(TAG, "网络不可用不能上传服务器");
+                        return false;
+                    }
                 }
+
 
             }
 
@@ -98,16 +192,11 @@ public class HttpClient {
 
     static class StrHandler extends Handler {
         protected StringCallBack callBack = null;
-        boolean b = false;
 
         public StrHandler(StringCallBack callBack) {
             this.callBack = callBack;
         }
 
-        public StrHandler setIsThread(boolean b) {
-            this.b = b;
-            return this;
-        }
 
         @Override
         public void handleMessage(Message msg) {
@@ -119,20 +208,17 @@ public class HttpClient {
                 } else {
                     Log.e(TAG, "StringCallBack is null_image");
                 }
-                if (b) {
-                    getLooper().quit();
-                }
                 return;
             }
-            String data = msg.getData().getString(httpImpl.GET_DATA_KEY);
+            String data = msg.getData().getString(GET_DATA_KEY);
             if (!TextUtils.isEmpty(data)) {
-                if (msg.what == httpImpl.GET_DATA_ERROR) {
+                if (msg.what == GET_DATA_ERROR) {
                     if (callBack != null) {
                         callBack.error(data);
                     } else {
                         Log.e(TAG, "StringCallBack is null_image");
                     }
-                } else if (msg.what == httpImpl.GET_DATA_SUCCESS) {
+                } else if (msg.what == GET_DATA_SUCCESS) {
                     if (callBack != null) {
 
                         callBack.onResponse(data);
@@ -149,11 +235,16 @@ public class HttpClient {
                 }
                 Log.e(TAG, "获取数据失败");
             }
-            if (b) {
-                getLooper().quit();
-            }
         }
     }
 
 
+    private static void sendHandler(Handler handler, int what, String data) {
+        Bundle bundle = new Bundle();
+        bundle.putString(GET_DATA_KEY, data);
+        Message message = new Message();
+        message.setData(bundle);
+        message.what = what;
+        handler.sendMessage(message);
+    }
 }
