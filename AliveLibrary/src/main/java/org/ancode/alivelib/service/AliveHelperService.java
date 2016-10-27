@@ -4,20 +4,16 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Message;
 
 import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.config.HelperConfig;
-import org.ancode.alivelib.config.HttpUrlConfig;
 import org.ancode.alivelib.http.HttpClient;
-import org.ancode.alivelib.listener.StringCallBack;
+import org.ancode.alivelib.utils.AliveSPUtils;
 import org.ancode.alivelib.utils.AliveStatsUtils;
 import org.ancode.alivelib.utils.DateTimeUtils;
-import org.ancode.alivelib.http.HttpUtils;
 import org.ancode.alivelib.utils.Log;
 import org.ancode.alivelib.utils.NetUtils;
-import org.ancode.alivelib.utils.AliveSPUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;

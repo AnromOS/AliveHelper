@@ -1,10 +1,7 @@
 package org.ancode.alivelib.http;
 
-import android.content.AsyncQueryHandler;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 
@@ -26,6 +23,14 @@ public class HttpClient {
     public static final String HTTP_CALL_FLAG = "http_call_flag";
     public static final String DATA_IS_NULL = "data is null";
 
+    private static HttpImpl httpImpl = null;
+
+    static {
+        if (httpImpl == null) {
+            httpImpl = new HttpImpl();
+        }
+    }
+
     /**
      * 查询统计结果
      *
@@ -34,7 +39,7 @@ public class HttpClient {
      * @param stringCallBack
      */
     public static void getAliveStats(final Map<String, String> params, final String flag, StringCallBack stringCallBack) {
-        HttpUtils.getAliveStats(params, new StrHandler(stringCallBack), flag);
+        httpImpl.getAliveStats(params, new StrHandler(stringCallBack), flag);
     }
 
 
@@ -47,7 +52,7 @@ public class HttpClient {
      */
     public static void getUrl(final Map<String, String> params, final String flag, StringCallBack stringCallBack) {
         Map<String, String> map = new HashMap<String, String>();
-        HttpUtils.getUrl(params, new StrHandler(stringCallBack), flag);
+        httpImpl.getUrl(params, new StrHandler(stringCallBack), flag);
     }
 
 
@@ -70,7 +75,7 @@ public class HttpClient {
             protected Boolean doInBackground(Object... params) {
                 if (NetUtils.ping(HttpUrlConfig.ALIVE_STATS_POST_HOST)) {
                     Log.v(TAG, "网络可用开始上传服务器");
-                    return HttpUtils.uploadAliveStats();
+                    return httpImpl.uploadAliveStats();
                 } else {
                     Log.v(TAG, "网络不可用不能上传服务器");
                     return false;
@@ -119,15 +124,15 @@ public class HttpClient {
                 }
                 return;
             }
-            String data = msg.getData().getString(HttpUtils.GET_DATA_KEY);
+            String data = msg.getData().getString(httpImpl.GET_DATA_KEY);
             if (!TextUtils.isEmpty(data)) {
-                if (msg.what == HttpUtils.GET_DATA_ERROR) {
+                if (msg.what == httpImpl.GET_DATA_ERROR) {
                     if (callBack != null) {
                         callBack.error(data);
                     } else {
                         Log.e(TAG, "StringCallBack is null_image");
                     }
-                } else if (msg.what == HttpUtils.GET_DATA_SUCCESS) {
+                } else if (msg.what == httpImpl.GET_DATA_SUCCESS) {
                     if (callBack != null) {
 
                         callBack.onResponse(data);

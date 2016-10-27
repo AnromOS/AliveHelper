@@ -19,6 +19,7 @@ import org.ancode.alivelib.listener.StringCallBack;
 import org.ancode.alivelib.utils.AliveSPUtils;
 import org.ancode.alivelib.utils.DateTimeUtils;
 import org.ancode.alivelib.utils.Log;
+import org.ancode.alivelib.utils.Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,7 +56,6 @@ public class AliveStatsActivity extends BaseActivity {
         params.put("tag", AliveSPUtils.getInstance().getASTag());
         params.put("begin", beginTime);
         params.put("end", endTime);
-
         HttpClient.getAliveStats(params, HttpClient.HTTP_CALL_FLAG, new StringCallBack() {
             @Override
             public void onResponse(String response) {

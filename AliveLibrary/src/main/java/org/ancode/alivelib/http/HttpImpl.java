@@ -2,7 +2,6 @@ package org.ancode.alivelib.http;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 
@@ -16,19 +15,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by andyliu on 16-9-1.
  */
-public class HttpUtils {
-    public static final String TAG = HttpUtils.class.getSimpleName();
-    public static boolean GETING_URL = false;
-    public static final String GET_DATA_KEY = "get_data_key";
-    public static final int GET_DATA_SUCCESS = 1;
-    public static final int GET_DATA_ERROR = 2;
+public class HttpImpl {
+    public final String TAG = HttpImpl.class.getSimpleName();
+    public boolean GETING_URL = false;
+    public final String GET_DATA_KEY = "get_data_key";
+    public final int GET_DATA_SUCCESS = 1;
+    public final int GET_DATA_ERROR = 2;
 
     /**
      * 获取警告 html页面
@@ -37,7 +35,7 @@ public class HttpUtils {
      * @param handler
      * @param flag
      */
-    public static void getUrl(final Map<String, String> params, final Handler handler, final String flag) {
+    public void getUrl(final Map<String, String> params, final Handler handler, final String flag) {
 
         if (GETING_URL == true) {
             return;
@@ -51,10 +49,10 @@ public class HttpUtils {
                     String url = "";
                     if (HelperConfig.USE_ANET) {
                         url = HttpUrlConfig.GET_WARNING_HTML_ANET_URL;
-                        Log.v("HttpUtils", "走IPV6");
+                        Log.v("HttpImpl", "走IPV6");
                     } else {
                         url = HttpUrlConfig.GET_WARNING_HTML_URL;
-                        Log.v("HttpUtils", "走IPV4");
+                        Log.v("HttpImpl", "走IPV4");
                     }
                     String data = HttpHelper.get(url, params, flag);
                     GETING_URL = false;
@@ -100,7 +98,7 @@ public class HttpUtils {
      *
      * @return
      */
-    public static boolean uploadAliveStats() {
+    public boolean uploadAliveStats() {
 
         String packageName = HelperConfig.CONTEXT.getPackageName().toString();
         JSONObject info = null;
@@ -174,7 +172,7 @@ public class HttpUtils {
      * @param handler
      * @param flag
      */
-    public static void getAliveStats(final Map<String, String> params, final Handler handler, final String flag) {
+    public void getAliveStats(final Map<String, String> params, final Handler handler, final String flag) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -199,7 +197,7 @@ public class HttpUtils {
     }
 
 
-    private static void sendHandler(Handler handler, int what, String data) {
+    private void sendHandler(Handler handler, int what, String data) {
         Bundle bundle = new Bundle();
         bundle.putString(GET_DATA_KEY, data);
         Message message = new Message();

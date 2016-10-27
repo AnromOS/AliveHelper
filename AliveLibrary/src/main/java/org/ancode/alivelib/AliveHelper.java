@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import org.ancode.alivelib.activity.AliveHelperActivity;
 import org.ancode.alivelib.activity.AliveStatsActivity;
 import org.ancode.alivelib.bean.BaseStatsInfo;
 import org.ancode.alivelib.listener.StringCallBack;
@@ -213,7 +214,7 @@ public class AliveHelper {
      * 显示防杀指南
      */
     public void showAliveUseGuide() {
-        new ActivityAliveWare().check();
+        HelperConfig.CONTEXT.startActivity(IntentUtils.getNormalActivity(AliveHelperActivity.class, HelperConfig.THEME_COLOR_ID, true));
     }
 
     /***
