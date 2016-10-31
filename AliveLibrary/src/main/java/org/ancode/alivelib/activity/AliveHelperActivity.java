@@ -38,7 +38,7 @@ public class AliveHelperActivity extends BaseActivity {
 
     @Override
     public void loadData() {
-        AliveHelper.getHelper().check(new StringCallBack() {
+        HttpClient.getAliveGuideUrl(new StringCallBack() {
             @Override
             public void onResponse(String response) {
                 showLoading(false);

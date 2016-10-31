@@ -23,9 +23,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = MainActivity.class.getSimpleName();
     Button showActivityBtn;
     Button onlygetdataBtn;
-    Button showdialogBtn;
-    Button sendbroadcastBtn;
-    Button showwebBtn;
     Button notificationGoActivity;
     TextView textview;
     Button showAliveStats;
@@ -91,12 +88,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         showActivityBtn.setOnClickListener(this);
         onlygetdataBtn = (Button) findViewById(R.id.onlygetdata);
         onlygetdataBtn.setOnClickListener(this);
-        showdialogBtn = (Button) findViewById(R.id.showdialog);
-        showdialogBtn.setOnClickListener(this);
-        sendbroadcastBtn = (Button) findViewById(R.id.sendbroadcast);
-        sendbroadcastBtn.setOnClickListener(this);
-        showwebBtn = (Button) findViewById(R.id.showweb);
-        showwebBtn.setOnClickListener(this);
         notificationGoActivity = (Button) findViewById(R.id.go_activity_notification);
         notificationGoActivity.setOnClickListener(this);
         notificationGoActivity = (Button) findViewById(R.id.go_activity_notification);
@@ -130,24 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.go_activity_notification:
                 AliveHelper.getHelper()
-                        .notification(2000);
-
-                break;
-            case R.id.showdialog:
-                AliveHelper.getHelper()
-                        .showDialog();
-                break;
-            case R.id.showweb:
-                AliveHelper.getHelper()
-                        .showWeb();
-                break;
-            case R.id.sendbroadcast:
-
-                //指定action方法1
-                AliveHelper.getHelper()
-                        .sendBroadCast(BROADCAST_ACTION);
-                //指定action方法2
-//              AliveHelper.getHelper().sendBroadCast();
+                        .aliveNotify(2000);
 
                 break;
 

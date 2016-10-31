@@ -40,32 +40,6 @@
                 android:layout_height="wrap_content"
                 android:text="直接获取数据" />
 
-            <Button
-                android:id="@+id/showdialog"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="直接显示Dialog"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/sendbroadcast"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="直接发送广播"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/showweb"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="直接打开网页"
-                android:visibility="gone" />
-
-            <!--<Button-->
-            <!--android:id="@+id/go_web_notification"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="弹出打开网页的Notify" />-->
 
             <Button
                 android:id="@+id/go_activity_notification"

@@ -13,6 +13,7 @@ import org.ancode.alivelib.service.AliveHelperService;
 import org.ancode.alivelib.utils.AliveStatsUtils;
 import org.ancode.alivelib.utils.Log;
 import org.ancode.alivelib.utils.NetUtils;
+import org.ancode.alivelib.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -76,12 +77,11 @@ public class HttpClient {
     /***
      * 获取防杀指南链接
      *
-     * @param params
-     * @param flag
      * @param stringCallBack
      */
-    public static void getUrl(final Map<String, String> params, final String flag, StringCallBack stringCallBack) {
+    public static void getAliveGuideUrl ( StringCallBack stringCallBack) {
         final StrHandler handler = new StrHandler(stringCallBack);
+        final Map<String, String> params = Utils.getProp();
         if (GETING_URL == true) {
             return;
         }
@@ -99,7 +99,7 @@ public class HttpClient {
                         url = HttpUrlConfig.GET_ALIVE_GUIDE_V4_URL;
                         Log.v(TAG, "走IPV4");
                     }
-                    String data = HttpHelper.get(url, params, flag);
+                    String data = HttpHelper.get(url, params, "http_call_flag");
                     GETING_URL = false;
                     if (TextUtils.isEmpty(data)) {
                         sendHandler(handler, GET_DATA_ERROR, "response is null");

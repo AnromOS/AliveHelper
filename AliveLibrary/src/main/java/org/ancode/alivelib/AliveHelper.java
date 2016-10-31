@@ -7,23 +7,20 @@ import android.text.TextUtils;
 import org.ancode.alivelib.activity.AliveHelperActivity;
 import org.ancode.alivelib.activity.AliveStatsActivity;
 import org.ancode.alivelib.bean.BaseStatsInfo;
+import org.ancode.alivelib.config.HelperConfig;
+import org.ancode.alivelib.http.HttpClient;
 import org.ancode.alivelib.listener.StringCallBack;
+import org.ancode.alivelib.notification.AliveNotification;
+import org.ancode.alivelib.service.AliveHelperService;
 import org.ancode.alivelib.utils.AliveSPUtils;
 import org.ancode.alivelib.utils.IntentUtils;
 import org.ancode.alivelib.utils.Log;
-import org.ancode.alivelib.ware.ActivityAliveWare;
-import org.ancode.alivelib.ware.BroadCastAliveWare;
-import org.ancode.alivelib.ware.CheckAliveWare;
-import org.ancode.alivelib.ware.DialogAliveWare;
-import org.ancode.alivelib.ware.WebViewWare;
-import org.ancode.alivelib.config.HelperConfig;
-import org.ancode.alivelib.notification.AliveNotification;
-import org.ancode.alivelib.service.AliveHelperService;
+import org.ancode.alivelib.utils.NotifyUtils;
 
 /**
  * Created by andyliu on 16-8-25.
  */
-public class AliveHelper {
+public class AliveHelper extends  BaseAliveHelper{
 
 
     private static AliveHelper helper = null;
@@ -124,7 +121,12 @@ public class AliveHelper {
      */
     @Deprecated
     public void openAliveStats(String info, String tag) {
-        setAliveStatsInfo(info);
+        if (TextUtils.isEmpty(info)) {
+            throw new IllegalArgumentException("info is null,you should set a json string");
+        }
+
+        AliveSPUtils.getInstance().setASUploadInfo(info);
+        Log.v("AliveHelper", "接收到info信息 info = " + info);
         setAliveTag(tag);
         openAliveStats();
     }
@@ -135,63 +137,14 @@ public class AliveHelper {
      * @param baseStatsInfo
      */
     public void openAliveStats(BaseStatsInfo baseStatsInfo) {
-        setAliveStatsInfo(baseStatsInfo.getStatsInfo().toString());
-        setAliveTag(baseStatsInfo.getTag());
-        openAliveStats();
-    }
-
-    public void openAliveStats() {
-        Intent intent = new Intent(HelperConfig.CONTEXT, AliveHelperService.class);
-        intent.putExtra(AliveHelperService.ACTION, AliveHelperService.OPEN_ALIVE_STATS_SERVICE_ACTION);
-        HelperConfig.CONTEXT.startService(intent);
-    }
-
-    /***
-     * 设置aliveStatsInfo
-     * <p>
-     * 参数说明
-     * <p>
-     * 内容格式不固定,但必须是json字符串
-     * <p>
-     * 举例
-     * <p>
-     * { "device":"htc", "os":"系统版本号","id":"13018211911"}
-     * </p>
-     *
-     * @param info
-     * @return
-     */
-    public AliveHelper setAliveStatsInfo(String info) {
-        if (TextUtils.isEmpty(info)) {
+        if (TextUtils.isEmpty(baseStatsInfo.getStatsInfo().toString())) {
             throw new IllegalArgumentException("info is null,you should set a json string");
         }
 
-        AliveSPUtils.getInstance().setASUploadInfo(info);
-        Log.v("AliveHelper", "接收到info信息 info = " + info);
-        return this;
-    }
-
-    /**
-     * 设置TAG
-     * <p>
-     * 参数说明
-     * <p>
-     * tag like this:
-     * "MX:104601"
-     * "MH:13011021102"
-     * </p>
-     *
-     * @param tag
-     * @return
-     */
-    public AliveHelper setAliveTag(String tag) {
-        if (TextUtils.isEmpty(tag)) {
-            throw new IllegalArgumentException("tag is null");
-        }
-
-        AliveSPUtils.getInstance().setASTag(tag);
-        Log.v("AliveHelper", "接收到tag信息 tag = " + tag);
-        return this;
+        AliveSPUtils.getInstance().setASUploadInfo(baseStatsInfo.getStatsInfo().toString());
+        Log.v("AliveHelper", "接收到info信息 info = " + baseStatsInfo.getStatsInfo().toString());
+        setAliveTag(baseStatsInfo.getTag());
+        openAliveStats();
     }
 
     /***
@@ -205,9 +158,7 @@ public class AliveHelper {
 
 
     public void check(StringCallBack cb) {
-        CheckAliveWare checkAliveWare = new CheckAliveWare();
-        checkAliveWare.setCheckCallBack(cb);
-        checkAliveWare.check();
+        HttpClient.getAliveGuideUrl(cb);
     }
 
     /****
@@ -281,8 +232,8 @@ public class AliveHelper {
      *
      * @param afterTime 延迟时间显示时间
      */
-    public void notification(long afterTime) {
-        new ActivityAliveWare().showNotification(afterTime);
+    public void aliveNotify(long afterTime) {
+        new NotifyUtils().showAliveGuideNotify(afterTime);
     }
 
 
@@ -293,28 +244,5 @@ public class AliveHelper {
         new AliveNotification().cancelAliveHelper();
     }
 
-
-    public void showWeb() {
-        new WebViewWare().check();
-    }
-
-    public void showDialog() {
-        new DialogAliveWare().check();
-    }
-
-    /**
-     * 使用默认Action发送广播
-     * ACTION=HelperConfig.BROADCAST_ACTION
-     */
-    public void sendBroadCast() {
-        new BroadCastAliveWare().check();
-    }
-
-    /**
-     * 自定义Action发送广播
-     */
-    public void sendBroadCast(String action) {
-        new BroadCastAliveWare().setBroadCastAction(action).check();
-    }
 
 }

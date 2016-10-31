@@ -19,14 +19,6 @@ public class HelperConfig {
     public static final String APPLY_STATUS_COLOR = "apply_status_color";
     public static int THEME_COLOR_ID = -1;
 
-    /**
-     * notification跳转dialog 广播 action
-     */
-    public static final String SHOW_DIALOG_NOTIFICATION_ACTION = "org.ancde.alivelib.SHOW_DIALOG_NOTIFICATION_ACTION";
-    /***
-     * 默认发送广播 action
-     */
-    public static final String BROADCAST_ACTION = "org.ancde.alivelib.DATA_BROADCAT_ACTION";
     /***
      * 接收广播发来的dataKey
      */
