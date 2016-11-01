@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
+
 import org.ancode.alivelib.R;
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.utils.Log;
 import org.ancode.alivelib.utils.UiHelper;
+import org.ancode.alivelib.utils.Utils;
 
 /**
  * Created by andyliu on 16-8-24.
@@ -26,6 +28,7 @@ public abstract class BaseActivity extends Activity {
     private int themeColor = -1;
     private boolean applyStatusColor;
     protected String appName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,12 +41,8 @@ public abstract class BaseActivity extends Activity {
     }
 
     protected void initBaseData() {
-        if (themeColor == -1)
-            themeColor = getIntent().getIntExtra(HelperConfig.THEME_COLOR_KEY, -1);
-
-        if (TextUtils.isEmpty(appName))
-            appName = getIntent().getStringExtra(HelperConfig.APP_NAME_KEY);
-
+        themeColor = HelperConfig.THEME_COLOR_ID;
+        appName = Utils.getAppName();
         applyStatusColor = getIntent().getBooleanExtra(HelperConfig.APPLY_STATUS_COLOR, true);
     }
 

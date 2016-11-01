@@ -7,11 +7,14 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.util.TypedValue;
 
 
 import org.ancode.alivelib.R;
 import org.ancode.alivelib.config.HelperConfig;
+import org.ancode.alivelib.listener.DelayCallBack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,8 +61,35 @@ public class Utils {
     }
 
 
+    /***
+     * 延迟操作
+     *
+     * @param afterTimer
+     * @param delayCallBack
+     */
+    public static void delayCall(final long afterTimer, final DelayCallBack delayCallBack) {
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (msg.what == 0) {
+                    delayCallBack.delayCall();
+                }
+            }
+        };
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(afterTimer);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                handler.sendEmptyMessage(0);
+            }
+        }).start();
 
-
+    }
 
 
 }

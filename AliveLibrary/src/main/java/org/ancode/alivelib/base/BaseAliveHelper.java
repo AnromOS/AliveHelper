@@ -1,21 +1,12 @@
-package org.ancode.alivelib;
+package org.ancode.alivelib.base;
 
-import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
-import org.ancode.alivelib.activity.AliveHelperActivity;
-import org.ancode.alivelib.activity.AliveStatsActivity;
-import org.ancode.alivelib.bean.BaseStatsInfo;
 import org.ancode.alivelib.config.HelperConfig;
-import org.ancode.alivelib.http.HttpClient;
-import org.ancode.alivelib.listener.StringCallBack;
-import org.ancode.alivelib.notification.AliveNotification;
 import org.ancode.alivelib.service.AliveHelperService;
 import org.ancode.alivelib.utils.AliveSPUtils;
-import org.ancode.alivelib.utils.IntentUtils;
 import org.ancode.alivelib.utils.Log;
-import org.ancode.alivelib.utils.NotifyUtils;
 
 /**
  * Created by andyliu on 16-8-25.
@@ -23,6 +14,25 @@ import org.ancode.alivelib.utils.NotifyUtils;
 public abstract class BaseAliveHelper {
 
 
+    /***
+     * {
+     "app": "org.ancode.priv",
+     "info": {
+     "device": "Nexus 5",
+     "os": "MMB29X",
+     "phone": "18231176137"
+     },
+     "stat": {
+     "data": [
+     "1476409850149 wifi",
+     "1476411231473 3g",
+     "1476413935467 close"
+     ],
+     "tag": "MH:18231176137",
+     "type": "alive"
+     }
+     }
+     */
     /***
      * 开启保活统计服务
      */
@@ -46,16 +56,29 @@ public abstract class BaseAliveHelper {
      * @param tag
      * @return
      */
-    protected BaseAliveHelper setAliveTag(String tag) {
+    protected void setAliveTag(String tag) {
         if (TextUtils.isEmpty(tag)) {
             throw new IllegalArgumentException("tag is null");
         }
 
         AliveSPUtils.getInstance().setASTag(tag);
         Log.v("AliveHelper", "接收到tag信息 tag = " + tag);
-        return this;
     }
 
+
+    /***
+     * 设置
+     *
+     * @param info
+     */
+    protected void setAliveInfo(String info) {
+        if (TextUtils.isEmpty(info)) {
+            throw new IllegalArgumentException("info is null,you should set a json string");
+        }
+
+        AliveSPUtils.getInstance().setASUploadInfo(info);
+        Log.v("AliveHelper", "接收到info信息 info = " + info);
+    }
 
 
 }

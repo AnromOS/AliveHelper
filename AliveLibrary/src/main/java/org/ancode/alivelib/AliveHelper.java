@@ -2,25 +2,23 @@ package org.ancode.alivelib;
 
 import android.content.Context;
 import android.content.Intent;
-import android.text.TextUtils;
 
-import org.ancode.alivelib.activity.AliveHelperActivity;
+import org.ancode.alivelib.activity.AliveGuideActivity;
 import org.ancode.alivelib.activity.AliveStatsActivity;
+import org.ancode.alivelib.base.BaseAliveHelper;
 import org.ancode.alivelib.bean.BaseStatsInfo;
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.http.HttpClient;
 import org.ancode.alivelib.listener.StringCallBack;
 import org.ancode.alivelib.notification.AliveNotification;
 import org.ancode.alivelib.service.AliveHelperService;
-import org.ancode.alivelib.utils.AliveSPUtils;
 import org.ancode.alivelib.utils.IntentUtils;
-import org.ancode.alivelib.utils.Log;
 import org.ancode.alivelib.utils.NotifyUtils;
 
 /**
  * Created by andyliu on 16-8-25.
  */
-public class AliveHelper extends  BaseAliveHelper{
+public class AliveHelper extends BaseAliveHelper {
 
 
     private static AliveHelper helper = null;
@@ -121,12 +119,7 @@ public class AliveHelper extends  BaseAliveHelper{
      */
     @Deprecated
     public void openAliveStats(String info, String tag) {
-        if (TextUtils.isEmpty(info)) {
-            throw new IllegalArgumentException("info is null,you should set a json string");
-        }
-
-        AliveSPUtils.getInstance().setASUploadInfo(info);
-        Log.v("AliveHelper", "接收到info信息 info = " + info);
+        setAliveInfo(info);
         setAliveTag(tag);
         openAliveStats();
     }
@@ -137,12 +130,7 @@ public class AliveHelper extends  BaseAliveHelper{
      * @param baseStatsInfo
      */
     public void openAliveStats(BaseStatsInfo baseStatsInfo) {
-        if (TextUtils.isEmpty(baseStatsInfo.getStatsInfo().toString())) {
-            throw new IllegalArgumentException("info is null,you should set a json string");
-        }
-
-        AliveSPUtils.getInstance().setASUploadInfo(baseStatsInfo.getStatsInfo().toString());
-        Log.v("AliveHelper", "接收到info信息 info = " + baseStatsInfo.getStatsInfo().toString());
+        setAliveInfo(baseStatsInfo.getStatsInfo().toString());
         setAliveTag(baseStatsInfo.getTag());
         openAliveStats();
     }
@@ -165,14 +153,14 @@ public class AliveHelper extends  BaseAliveHelper{
      * 显示防杀指南
      */
     public void showAliveUseGuide() {
-        HelperConfig.CONTEXT.startActivity(IntentUtils.getNormalActivity(AliveHelperActivity.class, HelperConfig.THEME_COLOR_ID, true));
+        HelperConfig.CONTEXT.startActivity(IntentUtils.getNormalActivity(AliveGuideActivity.class,true));
     }
 
     /***
      * 显示保活统计
      */
     public void showAliveStats() {
-        HelperConfig.CONTEXT.startActivity(IntentUtils.getNormalActivity(AliveStatsActivity.class, HelperConfig.THEME_COLOR_ID, true));
+        HelperConfig.CONTEXT.startActivity(IntentUtils.getNormalActivity(AliveStatsActivity.class,  true));
     }
 
 

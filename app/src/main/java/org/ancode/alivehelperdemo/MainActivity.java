@@ -28,15 +28,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button showAliveStats;
     //about broadcast
     public static final String BROADCAST_ACTION = "org.ancode.test.ACTION";
-    private TestReceiver testReceiver;
-    private IntentFilter intentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        registerBroadCast();
 
         //initPermission();
     }
@@ -68,19 +65,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterBroadCast();
     }
 
-    private void registerBroadCast() {
-        intentFilter = new IntentFilter();
-        intentFilter.addAction(BROADCAST_ACTION);
-        testReceiver = new TestReceiver();
-        registerReceiver(testReceiver, intentFilter);
-    }
-
-    private void unregisterBroadCast() {
-        unregisterReceiver(testReceiver);
-    }
 
     private void initView() {
         textview = (TextView) findViewById(R.id.textview);
@@ -92,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         notificationGoActivity.setOnClickListener(this);
         notificationGoActivity = (Button) findViewById(R.id.go_activity_notification);
         notificationGoActivity.setOnClickListener(this);
-        showAliveStats =(Button)findViewById(R.id.go_alive_stats_activity);
+        showAliveStats = (Button) findViewById(R.id.go_alive_stats_activity);
         showAliveStats.setOnClickListener(this);
     }
 
@@ -131,18 +117,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
     }
-
-
-    class TestReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(BROADCAST_ACTION)) {
-                String data = intent.getStringExtra(HelperConfig.DATA_KEY);
-                textview.setText("Broadcast function url = " + data);
-            }
-        }
-    }
-
 
 }

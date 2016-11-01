@@ -3,7 +3,6 @@ package org.ancode.alivelib.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.URLUtil;
@@ -12,7 +11,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.R;
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.config.HttpUrlConfig;
@@ -23,8 +21,8 @@ import org.ancode.alivelib.utils.Log;
 /**
  * Created by andyliu on 16-8-24.
  */
-public class AliveHelperActivity extends BaseActivity {
-    private static final String TAG = AliveHelperActivity.class.getSimpleName();
+public class AliveGuideActivity extends BaseActivity {
+    private static final String TAG = AliveGuideActivity.class.getSimpleName();
     private WebView webView;
     ProgressBar progressBar = null;
 
@@ -32,7 +30,7 @@ public class AliveHelperActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v(TAG, "AliveHelperActivity onCreate");
+        Log.v(TAG, "AliveGuideActivity onCreate");
 
     }
 

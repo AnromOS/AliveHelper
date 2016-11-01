@@ -19,13 +19,6 @@ public class HelperConfig {
     public static final String APPLY_STATUS_COLOR = "apply_status_color";
     public static int THEME_COLOR_ID = -1;
 
-    /***
-     * 接收广播发来的dataKey
-     */
-    public static final String DATA_KEY = "data_key";
-
-    public static final String THEME_COLOR_KEY = "theme_color_key";
-    public static final String APP_NAME_KEY = "app_name_key";
 
     //统计数据相关配置
     /***

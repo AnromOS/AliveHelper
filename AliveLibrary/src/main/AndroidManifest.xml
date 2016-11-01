@@ -7,7 +7,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".activity.AliveHelperActivity"
+            android:name=".activity.AliveGuideActivity"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
