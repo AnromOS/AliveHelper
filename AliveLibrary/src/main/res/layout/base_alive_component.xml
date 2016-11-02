@@ -17,9 +17,9 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="3dp"
-            android:padding="10dp"
-            android:src="@android:drawable/ic_menu_close_clear_cancel" />
+            android:layout_marginLeft="2dp"
+            android:padding="9dp"
+            android:src="@drawable/base_close_img" />
 
         <TextView
             android:id="@+id/title"
