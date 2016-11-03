@@ -216,11 +216,11 @@ public class AliveHelper extends BaseAliveHelper {
 
 
     /**
-     * 显示notification
+     * 显示保活指南的通知
      *
      * @param afterTime 延迟时间显示时间
      */
-    public void aliveNotify(long afterTime) {
+    public void notifyAliveUseGuide(long afterTime) {
         new NotifyUtils().showAliveGuideNotify(afterTime);
     }
 
