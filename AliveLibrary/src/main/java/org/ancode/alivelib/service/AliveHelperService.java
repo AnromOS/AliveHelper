@@ -183,7 +183,7 @@ public class AliveHelperService extends Service {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == SHOW_NOTIFICATION) {
-                AliveHelper.getHelper().aliveNotify(0);
+                AliveHelper.getHelper().notifyAliveUseGuide(0);
             } else if (msg.what == REOPEN_ALIVE_STATS) {
                 closeStatsLiveTimer();
                 openStatsLiveTimer();

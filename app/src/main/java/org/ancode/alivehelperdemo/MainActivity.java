@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.go_activity_notification:
                 AliveHelper.getHelper()
-                        .aliveNotify(2000);
+                        .notifyAliveUseGuide(2000);
 
                 break;
 
