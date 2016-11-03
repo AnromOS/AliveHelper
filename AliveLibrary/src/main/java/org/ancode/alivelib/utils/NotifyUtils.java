@@ -1,13 +1,11 @@
 package org.ancode.alivelib.utils;
 
 import android.graphics.Bitmap;
-import android.os.Handler;
-import android.os.Message;
 
 import org.ancode.alivelib.R;
 import org.ancode.alivelib.activity.AliveGuideActivity;
 import org.ancode.alivelib.config.HelperConfig;
-import org.ancode.alivelib.listener.DelayCallBack;
+import org.ancode.alivelib.callback.DelayCallBack;
 import org.ancode.alivelib.notification.AliveNotification;
 
 /**

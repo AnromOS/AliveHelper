@@ -6,7 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 
 import org.ancode.alivelib.config.HelperConfig;
-import org.ancode.alivelib.utils.Log;
+import org.ancode.alivelib.utils.AliveLog;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -50,7 +50,7 @@ public class AliveHelperCrash implements UncaughtExceptionHandler {
 
     @Override
     public void uncaughtException(Thread arg0, Throwable arg1) {
-        Log.e("aliveCrash", "对不起，AliveHelper挂掉了= =!");
+        AliveLog.e("aliveCrash", "对不起，AliveHelper挂掉了= =!");
         try {
             // 1.获取当前程序的版本号. 版本的id
             String info = getVersionInfo();
@@ -60,12 +60,12 @@ public class AliveHelperCrash implements UncaughtExceptionHandler {
             String errorinfo = getErrorInfo(arg1);
 
             String date = dataFormat.format(new Date());
-            Log.e("aliveCrash", "==> ERROR-BEGIN <================================================================");
+            AliveLog.e("aliveCrash", "==> ERROR-BEGIN <================================================================");
             String errorText = "版本信息:\n" + info + "\n时间:\n" + date + "\n手机信息:\n" + mobileInfo
                     + "\n错误信息:\n" + errorinfo;
 
-            Log.e("aliveCrash", errorText);
-            Log.e("aliveCrash", "==> ERROR-END   <================================================================");
+            AliveLog.e("aliveCrash", errorText);
+            AliveLog.e("aliveCrash", "==> ERROR-END   <================================================================");
             if (crash != null) {
                 try {
                     File file = new File(context.getFilesDir(), HelperConfig.ALIVE_HELPER_CRASH_FILE_NAME);
@@ -75,7 +75,7 @@ public class AliveHelperCrash implements UncaughtExceptionHandler {
                         try {
                             file.createNewFile();
                         } catch (IOException e) {
-                            Log.e("aliveCrash", "create file error:" + e.getLocalizedMessage());
+                            AliveLog.e("aliveCrash", "create file error:" + e.getLocalizedMessage());
                             e.printStackTrace();
                         }
                     }

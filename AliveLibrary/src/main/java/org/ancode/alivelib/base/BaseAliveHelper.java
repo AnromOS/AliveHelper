@@ -5,8 +5,8 @@ import android.text.TextUtils;
 
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.service.AliveHelperService;
+import org.ancode.alivelib.utils.AliveLog;
 import org.ancode.alivelib.utils.AliveSPUtils;
-import org.ancode.alivelib.utils.Log;
 
 /**
  * Created by andyliu on 16-8-25.
@@ -62,7 +62,7 @@ public abstract class BaseAliveHelper {
         }
 
         AliveSPUtils.getInstance().setASTag(tag);
-        Log.v("AliveHelper", "接收到tag信息 tag = " + tag);
+        AliveLog.v("AliveHelper", "接收到tag信息 tag = " + tag);
     }
 
 
@@ -77,7 +77,7 @@ public abstract class BaseAliveHelper {
         }
 
         AliveSPUtils.getInstance().setASUploadInfo(info);
-        Log.v("AliveHelper", "接收到info信息 info = " + info);
+        AliveLog.v("AliveHelper", "接收到info信息 info = " + info);
     }
 
 

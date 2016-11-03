@@ -3,13 +3,12 @@ package org.ancode.alivelib.activity;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import org.ancode.alivelib.R;
 import org.ancode.alivelib.config.HelperConfig;
-import org.ancode.alivelib.utils.Log;
+import org.ancode.alivelib.utils.AliveLog;
 import org.ancode.alivelib.utils.UiHelper;
 import org.ancode.alivelib.utils.Utils;
 
@@ -37,7 +36,7 @@ public abstract class BaseActivity extends Activity {
         initBaseView();
         initView();
         loadData();
-        Log.v(TAG, "BaseActivity onCreate");
+        AliveLog.v(TAG, "BaseActivity onCreate");
     }
 
     protected void initBaseData() {

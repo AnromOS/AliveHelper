@@ -2,7 +2,7 @@ package org.ancode.alivelib.http;
 
 import android.text.TextUtils;
 
-import org.ancode.alivelib.utils.Log;
+import org.ancode.alivelib.utils.AliveLog;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -81,9 +81,9 @@ public class HttpHelper {
             // 根据ResponseCode判断连接是否成功
             int responseCode = httpURLConnection.getResponseCode();
             if (responseCode != 200) {
-                Log.e(TAG, "错误 response=" + responseCode);
+                AliveLog.e(TAG, "错误 response=" + responseCode);
             } else {
-                Log.e(TAG, "请求成功!");
+                AliveLog.e(TAG, "请求成功!");
             }
             // 定义BufferedReader输入流来读取URL的ResponseData
             bufferedReader = new BufferedReader(new InputStreamReader(
@@ -96,9 +96,9 @@ public class HttpHelper {
         } catch (Exception e) {
             String error = e.getLocalizedMessage();
             if (error.contains("Permission denied")) {
-                Log.e(TAG, "发送post请求错误!\n请配置'android.permission.INTERNET'权限");
+                AliveLog.e(TAG, "发送post请求错误!\n请配置'android.permission.INTERNET'权限");
             } else {
-                Log.e(TAG, "发送post请求错误!\n" + error);
+                AliveLog.e(TAG, "发送post请求错误!\n" + error);
             }
 
         } finally {
@@ -111,12 +111,12 @@ public class HttpHelper {
                     bufferedReader.close();
                 }
             } catch (IOException ex) {
-                Log.e(TAG, "关闭http请求失败\n" + ex.getLocalizedMessage());
+                AliveLog.e(TAG, "关闭http请求失败\n" + ex.getLocalizedMessage());
             }
 
 
         }
-        Log.v(TAG, "返回数据=" + responseResult.toString());
+        AliveLog.v(TAG, "返回数据=" + responseResult.toString());
 //        urlpostConnections.remove(flag);
         return responseResult.toString();
     }
@@ -160,7 +160,7 @@ public class HttpHelper {
             // 获取URLConnection对象对应的输出流
             out = new DataOutputStream(
                     httpURLConnection.getOutputStream());
-            Log.v(TAG, "上传的数据为\n" + params);
+            AliveLog.v(TAG, "上传的数据为\n" + params);
             DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
             writer = new BufferedWriter(new OutputStreamWriter(out, CHARSET));
             writer.write(params);
@@ -169,9 +169,9 @@ public class HttpHelper {
             // 根据ResponseCode判断连接是否成功
             int responseCode = httpURLConnection.getResponseCode();
             if (responseCode != 200) {
-                Log.e(TAG, "错误 response=" + responseCode);
+                AliveLog.e(TAG, "错误 response=" + responseCode);
             } else {
-                Log.v(TAG, "请求成功!");
+                AliveLog.v(TAG, "请求成功!");
             }
             // 定义BufferedReader输入流来读取URL的ResponseData
             bufferedReader = new BufferedReader(new InputStreamReader(
@@ -185,9 +185,9 @@ public class HttpHelper {
             String error = e.getLocalizedMessage();
             if (!TextUtils.isEmpty(error)) {
                 if (error.contains("Permission denied")) {
-                    Log.e(TAG, "发送postJson请求错误!\n请配置'android.permission.INTERNET'权限");
+                    AliveLog.e(TAG, "发送postJson请求错误!\n请配置'android.permission.INTERNET'权限");
                 } else {
-                    Log.e(TAG, "发送postJson请求错误!\n" + error);
+                    AliveLog.e(TAG, "发送postJson请求错误!\n" + error);
                 }
             }
 
@@ -206,12 +206,12 @@ public class HttpHelper {
                 }
 
             } catch (IOException ex) {
-                Log.e(TAG, "关闭http请求失败\n" + ex.getLocalizedMessage());
+                AliveLog.e(TAG, "关闭http请求失败\n" + ex.getLocalizedMessage());
             }
 
 
         }
-        Log.v(TAG, "返回数据=" + responseResult.toString());
+        AliveLog.v(TAG, "返回数据=" + responseResult.toString());
 //        urlpostConnections.remove(flag);
         return responseResult.toString();
     }
@@ -266,7 +266,7 @@ public class HttpHelper {
                 params.deleteCharAt(params.length() - 1);
             }
             URL url = new URL(urlStr + "?" + params.toString());
-            Log.v(TAG, "get url=" + url);
+            AliveLog.v(TAG, "get url=" + url);
             connection = (HttpURLConnection) url.openConnection();
             // 设置请求方法，默认是GET
             connection.setRequestMethod("GET");
@@ -292,10 +292,10 @@ public class HttpHelper {
                         e.printStackTrace();
                     }
                 }
-                Log.v(TAG, "result =" + result);
-                Log.v(TAG, "请求成功!");
+                AliveLog.v(TAG, "result =" + result);
+                AliveLog.v(TAG, "请求成功!");
             } else {
-                Log.e(TAG, "错误 response=" + connection.getResponseCode());
+                AliveLog.e(TAG, "错误 response=" + connection.getResponseCode());
             }
 
 
@@ -330,7 +330,7 @@ public class HttpHelper {
 //                    entry.getValue().disconnect();
 //                }
 //        } catch (Exception e) {
-//            Log.e(TAG, "urlConnection disConnect error\n" + e.getLocalizedMessage());
+//            AliveLog.e(TAG, "urlConnection disConnect error\n" + e.getLocalizedMessage());
 //        }
 
     }

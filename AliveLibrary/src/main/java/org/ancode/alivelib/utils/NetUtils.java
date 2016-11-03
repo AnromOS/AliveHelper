@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import org.ancode.alivelib.config.HelperConfig;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,7 +56,7 @@ public class NetUtils {
             while ((content = in.readLine()) != null) {
                 stringBuffer.append(content);
             }
-            Log.d("------ping-----", "result content : " + stringBuffer.toString());
+            AliveLog.d("------ping-----", "result content : " + stringBuffer.toString());
             // ping的状态
             int status = p.waitFor();
             if (status == 0) {
@@ -72,7 +70,7 @@ public class NetUtils {
         } catch (InterruptedException e) {
             result = "InterruptedException";
         } finally {
-            Log.d("----result---", "result = " + result);
+            AliveLog.d("----result---", "result = " + result);
         }
         return false;
 
@@ -94,7 +92,7 @@ public class NetUtils {
             while ((content = in.readLine()) != null) {
                 stringBuffer.append(content);
             }
-            Log.d("------ping-----", "result content : " + stringBuffer.toString());
+            AliveLog.d("------ping-----", "result content : " + stringBuffer.toString());
             // ping的状态
             int status = p.waitFor();
             if (status == 0) {
@@ -108,7 +106,7 @@ public class NetUtils {
         } catch (InterruptedException e) {
             result = "InterruptedException";
         } finally {
-            Log.d("----result---", "result = " + result);
+            AliveLog.d("----result---", "result = " + result);
         }
         return false;
 

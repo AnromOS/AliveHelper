@@ -6,18 +6,21 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
+import org.ancode.alivelib.config.Constants;
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.config.HttpUrlConfig;
-import org.ancode.alivelib.listener.StringCallBack;
+import org.ancode.alivelib.callback.StringCallBack;
 import org.ancode.alivelib.service.AliveHelperService;
+import org.ancode.alivelib.utils.AliveLog;
+import org.ancode.alivelib.utils.AliveSPUtils;
 import org.ancode.alivelib.utils.AliveStatsUtils;
-import org.ancode.alivelib.utils.Log;
 import org.ancode.alivelib.utils.NetUtils;
 import org.ancode.alivelib.utils.Utils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,10 +54,10 @@ public class HttpClient {
                     String url;
                     if (HelperConfig.USE_ANET) {
                         url = HttpUrlConfig.QUERY_ALIVE_STATS_V6_URL;
-                        Log.v(TAG, "走IPV6");
+                        AliveLog.v(TAG, "走IPV6");
                     } else {
                         url = HttpUrlConfig.QUERY_ALIVE_STATS_V4_URL;
-                        Log.v(TAG, "走IPV4");
+                        AliveLog.v(TAG, "走IPV4");
                     }
                     String data = HttpHelper.get(url, params, flag);
                     if (TextUtils.isEmpty(data)) {
@@ -94,10 +97,10 @@ public class HttpClient {
                     String url;
                     if (HelperConfig.USE_ANET) {
                         url = HttpUrlConfig.GET_ALIVE_GUIDE_V6_URL;
-                        Log.v(TAG, "走IPV6");
+                        AliveLog.v(TAG, "走IPV6");
                     } else {
                         url = HttpUrlConfig.GET_ALIVE_GUIDE_V4_URL;
-                        Log.v(TAG, "走IPV4");
+                        AliveLog.v(TAG, "走IPV4");
                     }
                     String data = HttpHelper.get(url, params, "http_call_flag");
                     GETING_URL = false;
@@ -158,18 +161,18 @@ public class HttpClient {
             protected Boolean doInBackground(Object... params) {
                 if (HelperConfig.USE_ANET) {
                     if (NetUtils.ping6(HttpUrlConfig.HOST_V6)) {
-                        Log.v(TAG, "网络可用开始上传服务器");
-                        return AliveStatsUtils.uploadAliveStats();
+                        AliveLog.v(TAG, "网络可用开始上传服务器");
+                        return uploadAliveStats();
                     } else {
-                        Log.v(TAG, "网络不可用不能上传服务器");
+                        AliveLog.v(TAG, "网络不可用不能上传服务器");
                         return false;
                     }
                 } else {
                     if (NetUtils.ping(HttpUrlConfig.HOST_V4)) {
-                        Log.v(TAG, "网络可用开始上传服务器");
-                        return AliveStatsUtils.uploadAliveStats();
+                        AliveLog.v(TAG, "网络可用开始上传服务器");
+                        return uploadAliveStats();
                     } else {
-                        Log.v(TAG, "网络不可用不能上传服务器");
+                        AliveLog.v(TAG, "网络不可用不能上传服务器");
                         return false;
                     }
                 }
@@ -190,6 +193,87 @@ public class HttpClient {
 
     }
 
+
+    /***
+     * 提交aliveStats
+     *
+     * @return
+     */
+    private static boolean uploadAliveStats() {
+
+        String packageName = HelperConfig.CONTEXT.getPackageName().toString();
+        JSONObject info = null;
+        String tag = AliveSPUtils.getInstance().getASTag();
+        try {
+            info = new JSONObject(AliveSPUtils.getInstance().getASUploadInfo());
+        } catch (JSONException e) {
+            AliveLog.e(TAG, "用户设置的info解析出错");
+            throw new IllegalArgumentException("Your info is error ,Please set info");
+        }
+        if (TextUtils.isEmpty(tag)) {
+            throw new IllegalArgumentException("Your aliveTag is null ,Please set aliveTag");
+        }
+
+        JSONObject uploadJson = new JSONObject();
+        JSONObject statObject = new JSONObject();
+        //统计数据
+        List<String> data = AliveStatsUtils.getAliveStatsResult();
+
+        JSONArray dataArray = new JSONArray(data);
+        try {
+            statObject.put("type", Constants.TYPE_ALIVE);
+            statObject.put("tag", tag);
+            statObject.putOpt("data", dataArray);
+        } catch (JSONException e) {
+            AliveLog.e(TAG, "上传统计数据,参数初始化错误 'statObject'错误");
+            e.printStackTrace();
+            return false;
+        }
+        try {
+            uploadJson.put("app", packageName);
+            uploadJson.put("info", info);
+            uploadJson.putOpt("stat", statObject);
+        } catch (JSONException e) {
+            AliveLog.e(TAG, "上传统计数据,参数初始化错误 'uploadJson'错误");
+            e.printStackTrace();
+            return false;
+        }
+        String url;
+        if (HelperConfig.USE_ANET) {
+            url = HttpUrlConfig.POST_ALIVE_STATS_V6_URL;
+            AliveLog.v(TAG, "走IPV6");
+        } else {
+            url = HttpUrlConfig.POST_ALIVE_STATS_V4_URL;
+            AliveLog.v(TAG, "走IPV4");
+        }
+        String response = HttpHelper.postJson(url, uploadJson.toString(), "uploadStatsTime");
+
+        AliveLog.v(TAG, "uploadStatsTime response= " + response);
+        if (TextUtils.isEmpty(response)) {
+            AliveLog.e(TAG, "response is null");
+            return false;
+        } else {
+            JSONObject jsonObject = null;
+            String result = null;
+            try {
+                jsonObject = new JSONObject(response);
+                result = jsonObject.get("result").toString();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (result == null) {
+                return false;
+            } else {
+                if (result.equals("ok")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+
     static class StrHandler extends Handler {
         protected StringCallBack callBack = null;
 
@@ -206,7 +290,7 @@ public class HttpClient {
 
                     callBack.error("this connect is cancel");
                 } else {
-                    Log.e(TAG, "StringCallBack is null_image");
+                    AliveLog.e(TAG, "StringCallBack is null_image");
                 }
                 return;
             }
@@ -216,14 +300,14 @@ public class HttpClient {
                     if (callBack != null) {
                         callBack.error(data);
                     } else {
-                        Log.e(TAG, "StringCallBack is null_image");
+                        AliveLog.e(TAG, "StringCallBack is null_image");
                     }
                 } else if (msg.what == GET_DATA_SUCCESS) {
                     if (callBack != null) {
 
                         callBack.onResponse(data);
                     } else {
-                        Log.e(TAG, "StringCallBack is null_image");
+                        AliveLog.e(TAG, "StringCallBack is null_image");
                     }
 
                 }
@@ -231,9 +315,9 @@ public class HttpClient {
                 if (callBack != null) {
                     callBack.error(DATA_IS_NULL);
                 } else {
-                    Log.e(TAG, "StringCallBack is null_image");
+                    AliveLog.e(TAG, "StringCallBack is null_image");
                 }
-                Log.e(TAG, "获取数据失败");
+                AliveLog.e(TAG, "获取数据失败");
             }
         }
     }

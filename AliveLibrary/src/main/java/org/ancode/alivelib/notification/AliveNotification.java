@@ -23,13 +23,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.LevelListDrawable;
 import android.os.Build;
 import android.support.v7.app.NotificationCompat;
 
-import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.config.HelperConfig;
-import org.ancode.alivelib.utils.Log;
+import org.ancode.alivelib.utils.AliveLog;
 
 public class AliveNotification {
     private static final String TAG = AliveNotification.class.getSimpleName();
@@ -74,9 +72,9 @@ public class AliveNotification {
             //放置在正在运行栏目中
             notification.flags = Notification.FLAG_AUTO_CANCEL;
             manager.notify(NOTIFY_FLAG, notification);
-            Log.v(TAG, "notification is show");
+            AliveLog.v(TAG, "notification is show");
         } catch (Exception e) {
-            Log.e(TAG, "notification is error\n" + e.getLocalizedMessage());
+            AliveLog.e(TAG, "notification is error\n" + e.getLocalizedMessage());
         }
 
 

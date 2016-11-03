@@ -15,19 +15,15 @@ import org.ancode.alivelib.R;
 import org.ancode.alivelib.config.Constants;
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.http.HttpClient;
-import org.ancode.alivelib.listener.StringCallBack;
+import org.ancode.alivelib.callback.StringCallBack;
 import org.ancode.alivelib.utils.AliveSPUtils;
 import org.ancode.alivelib.utils.DateTimeUtils;
-import org.ancode.alivelib.utils.Log;
-import org.ancode.alivelib.utils.Utils;
-import org.json.JSONArray;
+import org.ancode.alivelib.utils.AliveLog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,7 +37,7 @@ public class AliveStatsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v(TAG, "AliveStatsActivity onCreate");
+        AliveLog.v(TAG, "AliveStatsActivity onCreate");
     }
 
     @Override
@@ -131,7 +127,7 @@ public class AliveStatsActivity extends BaseActivity {
                 if (URLUtil.isNetworkUrl(url)) {
                     return false;
                 }
-                Log.v("WebViewDialog", "start Web url is = " + url);
+                AliveLog.v("WebViewDialog", "start Web url is = " + url);
                 try {
                     Intent intent = new Intent();
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

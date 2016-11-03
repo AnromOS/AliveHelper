@@ -3,7 +3,7 @@ package org.ancode.alivelib.utils;
 
 import org.ancode.alivelib.config.HelperConfig;
 
-public class Log {
+public class AliveLog {
     public static final String LOG_TAG = "AliveLibrary:";
 
 

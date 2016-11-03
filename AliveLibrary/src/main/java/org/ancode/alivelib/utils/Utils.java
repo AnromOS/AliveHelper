@@ -1,20 +1,13 @@
 package org.ancode.alivelib.utils;
 
 import android.content.pm.PackageManager;
-import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
-import android.util.TypedValue;
 
 
-import org.ancode.alivelib.R;
 import org.ancode.alivelib.config.HelperConfig;
-import org.ancode.alivelib.listener.DelayCallBack;
+import org.ancode.alivelib.callback.DelayCallBack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +33,7 @@ public class Utils {
         map.put("version", String.valueOf(Build.DISPLAY));
         //编译版本号
 //        map.put("buildVersion", String.valueOf(Build.VERSION.SDK_INT));
-        Log.v(TAG, "model=" + map.get("model").toString() + ",version=" + map.get("version"));
+        AliveLog.v(TAG, "model=" + map.get("model").toString() + ",version=" + map.get("version"));
         return map;
     }
 

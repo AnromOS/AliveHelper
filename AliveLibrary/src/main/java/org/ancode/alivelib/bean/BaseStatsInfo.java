@@ -1,8 +1,6 @@
 package org.ancode.alivelib.bean;
 
-import android.os.Build;
-
-import org.ancode.alivelib.utils.Log;
+import org.ancode.alivelib.utils.AliveLog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -79,7 +77,7 @@ public class BaseStatsInfo {
             //如果是加密电话
             jsonObject.put(idName, id);
         } catch (JSONException e) {
-            Log.v("BaseStatsInfo", "获取数据失败");
+            AliveLog.v("BaseStatsInfo", "获取数据失败");
             e.printStackTrace();
         }
 

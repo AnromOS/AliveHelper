@@ -1,10 +1,7 @@
 package org.ancode.alivehelperdemo;
 
 import android.annotation.TargetApi;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
@@ -15,9 +12,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.ancode.alivelib.AliveHelper;
-import org.ancode.alivelib.config.HelperConfig;
-import org.ancode.alivelib.listener.StringCallBack;
-import org.ancode.alivelib.utils.Log;
+import org.ancode.alivelib.callback.StringCallBack;
+import org.ancode.alivelib.utils.AliveLog;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -54,10 +50,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 10) {
             if (Settings.canDrawOverlays(this)) {
-                Log.v(TAG, "SYSTEM_ALERT_WINDOW 授权成功...");
+                AliveLog.v(TAG, "SYSTEM_ALERT_WINDOW 授权成功...");
                 initPermission();
             } else {
-                Log.v(TAG, "SYSTEM_ALERT_WINDOW 授权失败...");
+                AliveLog.v(TAG, "SYSTEM_ALERT_WINDOW 授权失败...");
             }
         }
     }

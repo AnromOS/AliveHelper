@@ -47,4 +47,10 @@ public class HttpUrlConfig {
      */
     public static final String QUERY_ALIVE_STATS_V6_URL = "http://" + HOST_V6 + "/stats/query";
 
+
+    /***
+     *与服务器对时接口
+     */
+
+
 }

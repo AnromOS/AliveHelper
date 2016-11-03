@@ -9,10 +9,10 @@ import android.os.Message;
 import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.http.HttpClient;
+import org.ancode.alivelib.utils.AliveLog;
 import org.ancode.alivelib.utils.AliveSPUtils;
 import org.ancode.alivelib.utils.AliveStatsUtils;
 import org.ancode.alivelib.utils.DateTimeUtils;
-import org.ancode.alivelib.utils.Log;
 import org.ancode.alivelib.utils.NetUtils;
 
 import java.io.BufferedWriter;
@@ -99,7 +99,7 @@ public class AliveHelperService extends Service {
     private void openStatsLiveTimer() {
         final Object mLock = new Object();
         if (aliveStatsTimer == null) {
-            Log.v(TAG, "---start Stats alive---");
+            AliveLog.v(TAG, "---start Stats alive---");
             aliveStatsTimer = new Timer();
             aliveStatsTimer.schedule(new TimerTask() {
                 @Override
@@ -121,21 +121,21 @@ public class AliveHelperService extends Service {
             aliveStatsTimer.purge();
             aliveStatsTimer.cancel();
             aliveStatsTimer = null;
-            Log.v(TAG, "---close Stats alive---");
+            AliveLog.v(TAG, "---close Stats alive---");
         }
     }
 
     private void openWarningTimer() {
 
         if (warningTimer == null) {
-            Log.v(TAG, "---open notification timer---");
+            AliveLog.v(TAG, "---open notification timer---");
             warningTimer = new Timer();
             warningTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     try {
                         if (isNotify) {
-                            Log.v(TAG, "allready notificaton,do return");
+                            AliveLog.v(TAG, "allready notificaton,do return");
                             return;
                         }
                         while (isFirstStats) {
@@ -153,9 +153,9 @@ public class AliveHelperService extends Service {
                             }
                         } else {
                             isNotify = true;
-                            Log.e(TAG, "no Stats yesterday, no warning!");
+                            AliveLog.e(TAG, "no Stats yesterday, no warning!");
                         }
-                        Log.v(TAG, "alive percent=" + percent + ",warning point=" + HelperConfig.WARNING_POINT);
+                        AliveLog.v(TAG, "alive percent=" + percent + ",warning point=" + HelperConfig.WARNING_POINT);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -169,7 +169,7 @@ public class AliveHelperService extends Service {
             warningTimer.purge();
             warningTimer.cancel();
             warningTimer = null;
-            Log.v(TAG, "---close notification alert---");
+            AliveLog.v(TAG, "---close notification alert---");
         }
 
     }
@@ -188,13 +188,13 @@ public class AliveHelperService extends Service {
                 closeStatsLiveTimer();
                 openStatsLiveTimer();
             } else if (msg.what == RESET_ALIVE_STATS) {
-                Log.v(TAG, "----上传数据成功----");
+                AliveLog.v(TAG, "----上传数据成功----");
                 //交互成功修
                 uploadingAlive = false;
                 AliveSPUtils.getInstance().setASBeginTime(0);
                 deleteFile(HelperConfig.ALIVE_STATS_FILE_NAME);
                 clearFileWriter();
-                Log.v(TAG, "----重置数据成功----");
+                AliveLog.v(TAG, "----重置数据成功----");
             } else if (msg.what == UPLOAD_ALIVE_STATS_FAILED) {
                 uploadingAlive = false;
             }
@@ -212,7 +212,7 @@ public class AliveHelperService extends Service {
             //写入文件
             writer.write(nowTime + " " + netStatus + "\r\n");
             writer.flush();
-            Log.v(TAG, "insert time =" + DateTimeUtils.timeFormat(nowTime, null));
+            AliveLog.v(TAG, "insert time =" + DateTimeUtils.timeFormat(nowTime, null));
 
             //TODO[计算统计范围,超过一小时,将数据上传至服务器]
             //开始时间为0时重新赋值
@@ -227,7 +227,7 @@ public class AliveHelperService extends Service {
 
             float differTime = DateTimeUtils.getDifferHours(startTime, nowTime);
             if (differTime >= HelperConfig.UPLOAD_ALIVE_STATS_RATE && !uploadingAlive) {
-                Log.v(TAG, "距离第一次统计时间" + differTime + "小时,是否正在上传->," + uploadingAlive + "准备上传服务器");
+                AliveLog.v(TAG, "距离第一次统计时间" + differTime + "小时,是否正在上传->," + uploadingAlive + "准备上传服务器");
                 uploadingAlive = true;
                 try {
                     HttpClient.uploadAliveStats("uploadAliveStats", handler);
@@ -236,15 +236,15 @@ public class AliveHelperService extends Service {
                     uploadingAlive = false;
                 }
             } else {
-                Log.v(TAG, "距离第一次统计时间" + differTime + "小时 是否正在上传->," + uploadingAlive + "不上传服务器");
+                AliveLog.v(TAG, "距离第一次统计时间" + differTime + "小时 是否正在上传->," + uploadingAlive + "不上传服务器");
             }
 
 
         } catch (FileNotFoundException e) {
-            Log.e(TAG, "write error:" + e.getLocalizedMessage());
+            AliveLog.e(TAG, "write error:" + e.getLocalizedMessage());
             e.printStackTrace();
         } catch (IOException e) {
-            Log.e(TAG, "write error:" + e.getLocalizedMessage());
+            AliveLog.e(TAG, "write error:" + e.getLocalizedMessage());
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
@@ -260,7 +260,7 @@ public class AliveHelperService extends Service {
                 try {
                     aliveStatsfile.createNewFile();
                 } catch (IOException e) {
-                    Log.e(TAG, "create file error:" + e.getLocalizedMessage());
+                    AliveLog.e(TAG, "create file error:" + e.getLocalizedMessage());
                     e.printStackTrace();
                 }
             }
@@ -278,13 +278,13 @@ public class AliveHelperService extends Service {
         try {
             writer.close();
         } catch (Exception e) {
-            Log.e(TAG, "close error:" + e.getLocalizedMessage());
+            AliveLog.e(TAG, "close error:" + e.getLocalizedMessage());
             e.printStackTrace();
         }
         try {
             fileWriter.close();
         } catch (Exception e) {
-            Log.e(TAG, "close error:" + e.getLocalizedMessage());
+            AliveLog.e(TAG, "close error:" + e.getLocalizedMessage());
             e.printStackTrace();
         }
         aliveStatsfile = null;
@@ -295,7 +295,7 @@ public class AliveHelperService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.v(TAG, "AliveHelperService onDestroy");
+        AliveLog.v(TAG, "AliveHelperService onDestroy");
         closeStatsLiveTimer();
         closeWarningTimer();
         clearFileWriter();

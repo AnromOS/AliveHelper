@@ -9,7 +9,7 @@ import org.ancode.alivelib.base.BaseAliveHelper;
 import org.ancode.alivelib.bean.BaseStatsInfo;
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.http.HttpClient;
-import org.ancode.alivelib.listener.StringCallBack;
+import org.ancode.alivelib.callback.StringCallBack;
 import org.ancode.alivelib.notification.AliveNotification;
 import org.ancode.alivelib.service.AliveHelperService;
 import org.ancode.alivelib.utils.IntentUtils;

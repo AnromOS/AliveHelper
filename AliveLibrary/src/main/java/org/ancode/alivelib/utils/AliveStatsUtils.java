@@ -62,7 +62,7 @@ public class AliveStatsUtils {
             long result = end - start;
             return result;
         } catch (ParseException e) {
-            Log.e(TAG, "getTimeDiffer error" + e.getLocalizedMessage());
+            AliveLog.e(TAG, "getTimeDiffer error" + e.getLocalizedMessage());
             e.printStackTrace();
             return -1;
         }
@@ -144,7 +144,7 @@ public class AliveStatsUtils {
             //时间段结束时间
             long endTime = -1;
             Long[] timeArray = null;
-//            Log.v(TAG, "read start");
+//            AliveLog.v(TAG, "read start");
             while ((nowLineStr = bufferedReader.readLine()) != null) {
                 nowLine = Long.valueOf(nowLineStr.split(" ")[0]);
                 if (beforeLine == -1) {
@@ -152,7 +152,7 @@ public class AliveStatsUtils {
                     startTime = nowLine;
                     endTime = nowLine;
                 }
-//                Log.v(TAG,"read time="+nowLine);
+//                AliveLog.v(TAG,"read time="+nowLine);
                 if (beforeLine == nowLine) {
                     continue;
                 } else {
@@ -176,7 +176,7 @@ public class AliveStatsUtils {
                 timeArray[1] = endTime;
                 result.add(timeArray);
             }
-//            Log.v(TAG, "read end");
+//            AliveLog.v(TAG, "read end");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -212,12 +212,12 @@ public class AliveStatsUtils {
                     startTime = result.get(i)[0];
                     endTime = result.get(i)[1];
                     aliveTime = aliveTime + getTimeDiffer(startTime, endTime);
-                    Log.v(TAG, "start/end" + i + " = " + result.get(i)[0] + "/" + result.get(i)[1]);
+                    AliveLog.v(TAG, "start/end" + i + " = " + result.get(i)[0] + "/" + result.get(i)[1]);
                 }
                 percent = ((float) aliveTime) / ((float) allTime);
             } else {
                 percent = 1;
-                Log.v(TAG, "start/end = " + result.get(0)[0] + "/" + result.get(0)[1]);
+                AliveLog.v(TAG, "start/end = " + result.get(0)[0] + "/" + result.get(0)[1]);
             }
         } else {
             return -1;
@@ -226,84 +226,4 @@ public class AliveStatsUtils {
         return percent;
     }
 
-
-    /***
-     * 提交aliveStats
-     *
-     * @return
-     */
-    public static boolean uploadAliveStats() {
-
-        String packageName = HelperConfig.CONTEXT.getPackageName().toString();
-        JSONObject info = null;
-        String tag = AliveSPUtils.getInstance().getASTag();
-        try {
-            info = new JSONObject(AliveSPUtils.getInstance().getASUploadInfo());
-        } catch (JSONException e) {
-            Log.e(TAG, "用户设置的info解析出错");
-            throw new IllegalArgumentException("Your info is error ,Please set info");
-        }
-        if (TextUtils.isEmpty(tag)) {
-            throw new IllegalArgumentException("Your aliveTag is null ,Please set aliveTag");
-        }
-
-        JSONObject uploadJson = new JSONObject();
-        JSONObject statObject = new JSONObject();
-        //统计数据
-        List<String> data = AliveStatsUtils.getAliveStatsResult();
-
-        JSONArray dataArray = new JSONArray(data);
-        try {
-            statObject.put("type", Constants.TYPE_ALIVE);
-            statObject.put("tag", tag);
-            statObject.putOpt("data", dataArray);
-        } catch (JSONException e) {
-            Log.e(TAG, "上传统计数据,参数初始化错误 'statObject'错误");
-            e.printStackTrace();
-            return false;
-        }
-        try {
-            uploadJson.put("app", packageName);
-            uploadJson.put("info", info);
-            uploadJson.putOpt("stat", statObject);
-        } catch (JSONException e) {
-            Log.e(TAG, "上传统计数据,参数初始化错误 'uploadJson'错误");
-            e.printStackTrace();
-            return false;
-        }
-        String url;
-        if (HelperConfig.USE_ANET) {
-            url = HttpUrlConfig.POST_ALIVE_STATS_V6_URL;
-            Log.v(TAG, "走IPV6");
-        } else {
-            url = HttpUrlConfig.POST_ALIVE_STATS_V4_URL;
-            Log.v(TAG, "走IPV4");
-        }
-        String response = HttpHelper.postJson(url, uploadJson.toString(), "uploadStatsTime");
-
-        Log.v(TAG, "uploadStatsTime response= " + response);
-        if (TextUtils.isEmpty(response)) {
-            Log.e(TAG, "response is null");
-            return false;
-        } else {
-            JSONObject jsonObject = null;
-            String result = null;
-            try {
-                jsonObject = new JSONObject(response);
-                result = jsonObject.get("result").toString();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (result == null) {
-                return false;
-            } else {
-                if (result.equals("ok")) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        }
-    }
 }

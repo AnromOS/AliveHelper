@@ -15,8 +15,8 @@ import org.ancode.alivelib.R;
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.config.HttpUrlConfig;
 import org.ancode.alivelib.http.HttpClient;
-import org.ancode.alivelib.listener.StringCallBack;
-import org.ancode.alivelib.utils.Log;
+import org.ancode.alivelib.callback.StringCallBack;
+import org.ancode.alivelib.utils.AliveLog;
 
 /**
  * Created by andyliu on 16-8-24.
@@ -30,7 +30,7 @@ public class AliveGuideActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v(TAG, "AliveGuideActivity onCreate");
+        AliveLog.v(TAG, "AliveGuideActivity onCreate");
 
     }
 
@@ -47,7 +47,7 @@ public class AliveGuideActivity extends BaseActivity {
             public void error(String error) {
                 if (error.equals(HttpClient.DATA_IS_NULL)) {
                     showLoading(false);
-                    Log.v(TAG, "show default html");
+                    AliveLog.v(TAG, "show default html");
                     if (HelperConfig.USE_ANET) {
                         onRefresh(HttpUrlConfig.DEFAULT_ALIVE_GUIDE_V6_URL);
                     } else {
@@ -57,7 +57,7 @@ public class AliveGuideActivity extends BaseActivity {
                 } else {
                     showLoading(false);
                     showErrorView(true);
-                    Log.e(TAG, "获取数据失败:\n" + error);
+                    AliveLog.e(TAG, "获取数据失败:\n" + error);
                 }
 
             }
@@ -109,7 +109,7 @@ public class AliveGuideActivity extends BaseActivity {
                 if (URLUtil.isNetworkUrl(url)) {
                     return false;
                 }
-                Log.v("WebViewDialog", "start Web url is = " + url);
+                AliveLog.v("WebViewDialog", "start Web url is = " + url);
                 try {
                     Intent intent = new Intent();
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
