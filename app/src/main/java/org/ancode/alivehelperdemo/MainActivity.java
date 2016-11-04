@@ -22,8 +22,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button notificationGoActivity;
     TextView textview;
     Button showAliveStats;
-    //about broadcast
-    public static final String BROADCAST_ACTION = "org.ancode.test.ACTION";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
