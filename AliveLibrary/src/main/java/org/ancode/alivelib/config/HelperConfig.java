@@ -50,8 +50,4 @@ public class HelperConfig {
     public static final int UPLOAD_ALIVE_STATS_RATE = 1;
 
 
-    /***
-     * crash文件名
-     */
-    public static final String ALIVE_HELPER_CRASH_FILE_NAME = "alive_helper_crash";
 }

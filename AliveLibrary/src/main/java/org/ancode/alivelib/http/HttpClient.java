@@ -274,6 +274,51 @@ public class HttpClient {
         }
     }
 
+
+    public static void postCrash(final Map<String,String> params, StringCallBack stringCallBack){
+        final StrHandler handler = new StrHandler(stringCallBack);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String url;
+                    if (HelperConfig.USE_ANET) {
+                        url = HttpUrlConfig.URL_POST_CRASH_V4_URL;
+                        AliveLog.v(TAG, "走IPV6");
+                    } else {
+                        url = HttpUrlConfig.URL_POST_CRASH_V4_URL;
+                        AliveLog.v(TAG, "走IPV4");
+                    }
+                    String data = HttpHelper.post(url, params, "http_call_flag");
+                    if (TextUtils.isEmpty(data)) {
+                        sendHandler(handler, GET_DATA_ERROR, "response is null");
+                        return;
+                    }
+                    JSONObject jsonObj = new JSONObject(data);
+                    if (jsonObj.has("result")) {
+                        if (jsonObj.get("result").toString().equals("ok")) {
+                            sendHandler(handler, GET_DATA_SUCCESS,jsonObj.get("result").toString());
+
+                        } else if (jsonObj.get("result").toString().equals("failed")) {
+                            sendHandler(handler, GET_DATA_ERROR, HttpClient.DATA_IS_NULL);
+                            return;
+                        } else {
+                            sendHandler(handler, GET_DATA_ERROR, "result is failed");
+                            return;
+                        }
+                    } else {
+                        sendHandler(handler, GET_DATA_ERROR, "result is failed");
+                        return;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    sendHandler(handler, GET_DATA_ERROR, e.getLocalizedMessage());
+                    return;
+                }
+            }
+        }).start();
+
+    }
     static class StrHandler extends Handler {
         protected StringCallBack callBack = null;
 

@@ -74,6 +74,11 @@ public class AliveHelper extends BaseAliveHelper {
         return helper;
     }
 
+    /***
+     * 设置主题颜色
+     * @param themeColorId
+     * @return
+     */
     public static AliveHelper setThemeColor(int themeColorId) {
         HelperConfig.THEME_COLOR_ID = themeColorId;
         return helper;
@@ -144,8 +149,11 @@ public class AliveHelper extends BaseAliveHelper {
         HelperConfig.CONTEXT.startService(intent);
     }
 
-
-    public void check(StringCallBack cb) {
+    /***
+     * 直接获取使用指南的url
+     * @param cb
+     */
+    public void getUseGuideUrl(StringCallBack cb) {
         HttpClient.getAliveGuideUrl(cb);
     }
 

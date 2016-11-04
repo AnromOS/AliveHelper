@@ -31,6 +31,10 @@ public class HttpUrlConfig {
      */
     public static final String QUERY_ALIVE_STATS_V4_URL = "http://" + HOST_V4 + "/stats/query";
     /***
+     *上传crash接口IPV4
+     */
+    public static final String URL_POST_CRASH_V4_URL = "xxxxxx";
+    /***
      * 获取防杀指南IPV6
      */
     public static final String GET_ALIVE_GUIDE_V6_URL = "http://" + HOST_V6 + "/app/alivehelper/help/query";
@@ -46,11 +50,6 @@ public class HttpUrlConfig {
      * 获取保活统计IPV6
      */
     public static final String QUERY_ALIVE_STATS_V6_URL = "http://" + HOST_V6 + "/stats/query";
-
-
-    /***
-     *与服务器对时接口
-     */
 
 
 }

@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.onlygetdata:
                 AliveHelper.getHelper()
-                        .check(new StringCallBack() {
+                        .getUseGuideUrl(new StringCallBack() {
                             @Override
                             public void onResponse(String response) {
                                 textview.setText("StringCallBack function url==" + response);
