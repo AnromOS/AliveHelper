@@ -52,4 +52,4 @@ AliveHelper防杀助手,统计应用使用率.
 ####2).展示防杀指南相关接口
         //**********初始化完成后可以用在任何地方******//
         AliveHelper.getHelper().notifyAliveUseGuide(int aftertime);//通知栏提示,点击跳转防杀指南
-        AliveHelper.getHelper().showAliveUseGuide();//直接打开使用指南
+        AliveHelper.getHelper().showAliveUseGuide();//直接打开防杀指南
