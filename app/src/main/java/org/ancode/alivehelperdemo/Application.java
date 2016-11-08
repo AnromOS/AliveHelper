@@ -36,28 +36,13 @@ public class Application extends android.app.Application {
 
         //*****开启使用率统计相关******//
 
-//        JSONObject jsonObject = new JSONObject();
-//        try {
-//            jsonObject.put("device", Build.MODEL);
-//            jsonObject.put("os", Build.DISPLAY);
-//            //如果是加密电话
-//            jsonObject.put("phone", "13018211911");
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        String tag = "MH:13018211911";
 
-        //新方法
-        BaseStatsInfo statsInfo = new BaseStatsInfo();
-        statsInfo.setDevice(Build.MODEL);
-        statsInfo.setOs(Build.DISPLAY);
-        statsInfo.setIdName("phone");
-        statsInfo.setId("13018211911");
-        statsInfo.setTag("MH:13018211911");
-
-
+        //使用当前应用的某个用户的唯一标示,例如 应用拼音简称:账号 (必填项)
+        String tag = "MH:13018211911";
+        BaseStatsInfo statsInfo = new BaseStatsInfo(tag);
+        statsInfo.setIdName("phone");//id名称 (非必填项)
+        statsInfo.setId("13018211911");//id值(非必填项)
         //开启统计
-//        AliveHelper.getHelper().openAliveStats(jsonObject.toString(), tag);
         AliveHelper.getHelper().openAliveStats(statsInfo);
         //或者使用
 //        AliveHelper.getHelper().setAliveStatsInfo(statsInfo.getStatsInfo().toString());

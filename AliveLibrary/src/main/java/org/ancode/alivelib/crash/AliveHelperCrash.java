@@ -115,12 +115,15 @@ public class AliveHelperCrash implements UncaughtExceptionHandler {
                         } else {
                             AliveLog.v("MyCrashHandler", "提交失败 ");
                         }
+                        Process.killProcess(Process.myPid());
+//                        System.exit(0);
                     }
 
                     @Override
                     public void error(String error) {
                         AliveLog.v("MyCrashHandler", "提交失败 " + error);
                         Process.killProcess(Process.myPid());
+//                        System.exit(0);
                     }
                 });
             } catch (Exception e) {

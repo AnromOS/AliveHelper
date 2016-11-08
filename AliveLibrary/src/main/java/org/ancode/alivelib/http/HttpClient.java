@@ -14,6 +14,7 @@ import org.ancode.alivelib.service.AliveHelperService;
 import org.ancode.alivelib.utils.AliveLog;
 import org.ancode.alivelib.utils.AliveSPUtils;
 import org.ancode.alivelib.utils.AliveStatsUtils;
+import org.ancode.alivelib.utils.AliveStatus;
 import org.ancode.alivelib.utils.NetUtils;
 import org.ancode.alivelib.utils.Utils;
 import org.json.JSONArray;
@@ -184,9 +185,9 @@ public class HttpClient {
             protected void onPostExecute(Boolean b) {
                 super.onPostExecute(b);
                 if (b) {
-                    handler.sendEmptyMessage(AliveHelperService.RESET_ALIVE_STATS);
+                    handler.sendEmptyMessage(AliveStatus.RESET_ALIVE_STATS);
                 } else {
-                    handler.sendEmptyMessage(AliveHelperService.UPLOAD_ALIVE_STATS_FAILED);
+                    handler.sendEmptyMessage(AliveStatus.UPLOAD_ALIVE_STATS_FAILED);
                 }
             }
         }.execute();
@@ -200,8 +201,6 @@ public class HttpClient {
      * @return
      */
     private static boolean uploadAliveStats() {
-
-        String packageName = HelperConfig.CONTEXT.getPackageName().toString();
         JSONObject info = null;
         String tag = AliveSPUtils.getInstance().getASTag();
         try {
@@ -222,7 +221,6 @@ public class HttpClient {
         JSONArray dataArray = new JSONArray(data);
         try {
             statObject.put("type", Constants.TYPE_ALIVE);
-            statObject.put("tag", tag);
             statObject.putOpt("data", dataArray);
         } catch (JSONException e) {
             AliveLog.e(TAG, "上传统计数据,参数初始化错误 'statObject'错误");
@@ -230,7 +228,7 @@ public class HttpClient {
             return false;
         }
         try {
-            uploadJson.put("app", packageName);
+            uploadJson.put("tag", tag);
             uploadJson.put("info", info);
             uploadJson.putOpt("stat", statObject);
         } catch (JSONException e) {

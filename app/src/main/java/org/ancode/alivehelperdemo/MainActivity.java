@@ -14,6 +14,7 @@ import android.widget.TextView;
 import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.callback.StringCallBack;
 import org.ancode.alivelib.utils.AliveLog;
+import org.ancode.alivelib.utils.AliveStatus;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onDestroy() {
+        AliveHelper.getHelper().closeAliveStats();
         super.onDestroy();
     }
 

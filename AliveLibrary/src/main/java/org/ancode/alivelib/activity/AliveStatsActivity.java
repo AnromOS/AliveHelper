@@ -47,7 +47,6 @@ public class AliveStatsActivity extends BaseActivity {
         Date date = new Date();
         String beginTime = String.valueOf(DateTimeUtils.getBeforeDate(date, 1).getTime());
         String endTime = String.valueOf(date.getTime());
-        params.put("app", packageName);
         params.put("type", Constants.TYPE_ALIVE);
         params.put("tag", AliveSPUtils.getInstance().getASTag());
         params.put("begin", beginTime);

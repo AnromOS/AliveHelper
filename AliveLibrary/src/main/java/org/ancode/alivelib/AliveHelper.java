@@ -2,6 +2,7 @@ package org.ancode.alivelib;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import org.ancode.alivelib.activity.AliveGuideActivity;
 import org.ancode.alivelib.activity.AliveStatsActivity;
@@ -116,25 +117,14 @@ public class AliveHelper extends BaseAliveHelper {
         }
     }
 
-    /****
-     * 开启保活统计服务
-     *
-     * @param info
-     * @param tag
-     */
-    @Deprecated
-    public void openAliveStats(String info, String tag) {
-        setAliveInfo(info);
-        setAliveTag(tag);
-        openAliveStats();
-    }
-
     /***
      * 开启保活统计服务
      *
      * @param baseStatsInfo
      */
     public void openAliveStats(BaseStatsInfo baseStatsInfo) {
+        baseStatsInfo.setDevice(Build.MODEL); //设备名称
+        baseStatsInfo.setOs(Build.DISPLAY);//系统版本号(显示版本号)
         setAliveInfo(baseStatsInfo.getStatsInfo().toString());
         setAliveTag(baseStatsInfo.getTag());
         openAliveStats();

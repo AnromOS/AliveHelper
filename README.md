@@ -21,35 +21,19 @@ AliveHelper防杀助手,统计应用使用率.
 
 ####1).开启使用率统计相关
 
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("device", Build.MODEL);
-            jsonObject.put("os", Build.DISPLAY);
-            //如果是加密电话
-            jsonObject.put("phone", "13018211911");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String tag = "MH:13018211911";
-
-        @Deprecated
-        AliveHelper.getHelper().openAliveStats(jsonObject.toString(),tag);
-
-        //建议使用方法
-        BaseStatsInfo statsInfo = new BaseStatsInfo();
-        statsInfo.setDevice(Build.MODEL);
-        statsInfo.setOs(Build.DISPLAY);
-        statsInfo.setIdName("phone");
-        statsInfo.setId("13018211911");
-        statsInfo.setTag("MH:13018211911");
+        String tag = "MH:13018211911";//使用当前应用的某个用户的唯一标示,例如 应用拼音简称:账号 (必填项)
+        BaseStatsInfo statsInfo = new BaseStatsInfo(tag);
+        statsInfo.setIdName("phone");//id名称 (非必填项)
+        statsInfo.setId("13018211911");//id值(非必填项)
+        //开启统计
         AliveHelper.getHelper().openAliveStats(statsInfo);
 
         //关闭统计
+        AliveHelper.getHelper().closeAliveStats();
 
-        //AliveHelper.getHelper().closeAliveStats();
-
-        - 注意:openAliveStats(jsonObject.toString())与setAliveStatsInfo(String info),info格式为json,json内参数内容不固定,需讨论.
 ####2).展示防杀指南相关接口
         //**********初始化完成后可以用在任何地方******//
         AliveHelper.getHelper().notifyAliveUseGuide(int aftertime);//通知栏提示,点击跳转防杀指南
         AliveHelper.getHelper().showAliveUseGuide();//直接打开防杀指南
+####3).查看保活统计
+        AliveHelper.getHelper().showAliveStats();//直接打开保活统计界面

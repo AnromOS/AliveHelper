@@ -1,5 +1,7 @@
 package org.ancode.alivelib.bean;
 
+import android.support.annotation.NonNull;
+
 import org.ancode.alivelib.utils.AliveLog;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +30,9 @@ public class BaseStatsInfo {
     //stat
     String tag = null;
 
+    public BaseStatsInfo(@NonNull String tag) {
+        this.tag = tag;
+    }
 
     public String getDevice() {
         return device;
@@ -74,8 +79,11 @@ public class BaseStatsInfo {
         try {
             jsonObject.put("device", device);
             jsonObject.put("os", os);
-            //如果是加密电话
-            jsonObject.put(idName, id);
+            try {
+                jsonObject.put(idName, id);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } catch (JSONException e) {
             AliveLog.v("BaseStatsInfo", "获取数据失败");
             e.printStackTrace();
