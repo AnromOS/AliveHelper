@@ -97,6 +97,12 @@ public class AliveGuideActivity extends BaseAliveActivity {
                 }
             }
         });
+        webView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return true;
+            }
+        });
     }
 
 

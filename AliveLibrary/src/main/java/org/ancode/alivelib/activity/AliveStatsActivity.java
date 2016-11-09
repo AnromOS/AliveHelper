@@ -101,6 +101,12 @@ public class AliveStatsActivity extends BaseAliveActivity {
                 }
             }
         });
+        webView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return true;
+            }
+        });
     }
 
     @Override

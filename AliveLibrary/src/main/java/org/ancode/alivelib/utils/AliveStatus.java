@@ -22,38 +22,39 @@ import java.util.TimerTask;
  */
 public class AliveStatus {
     private static final String TAG = AliveStatus.class.getSimpleName();
-    private Timer aliveStatsTimer = null;
+    public Timer aliveStatsTimer = null;
     private boolean uploadingAlive = false;
     //文件写入
     private File aliveStatsfile = null;
     private FileWriter fileWriter = null;
     private BufferedWriter writer = null;
     private Context context = null;
+    private AliveStatsTask aliveStatsTask = null;
+    //记录上次统计的日期时间
+    public long lastStatsTime = -1;
 
     public AliveStatus(Context context) {
         this.context = context;
     }
 
     public void openStatsLiveTimer() {
+        if (aliveStatsTimer != null) {
+            closeStatsLiveTimer();
+        }
         if (aliveStatsTimer == null) {
             AliveLog.v(TAG, "---start Stats alive---");
             aliveStatsTimer = new Timer();
-            aliveStatsTimer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    try {
-                        aliveStats();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        handler.sendEmptyMessage(REOPEN_ALIVE_STATS);
-                    }
-                }
-            }, 2000, HelperConfig.ALIVE_STATS_RATE);
+            aliveStatsTask = new AliveStatsTask();
+            aliveStatsTimer.schedule(aliveStatsTask, 2000, HelperConfig.ALIVE_STATS_RATE);
         }
     }
 
     public void closeStatsLiveTimer() {
+        if (aliveStatsTask != null) {
+            aliveStatsTask.cancel();
+        }
         if (aliveStatsTimer != null) {
+
             aliveStatsTimer.purge();
             aliveStatsTimer.cancel();
             aliveStatsTimer = null;
@@ -61,10 +62,11 @@ public class AliveStatus {
         }
     }
 
-    public void clearAliveStatus(){
-       closeStatsLiveTimer();
+    public void clearAliveStatus() {
+        closeStatsLiveTimer();
         clearFileWriter();
     }
+
     private void aliveStats() {
         long nowTime = new Date().getTime();
         try {
@@ -75,6 +77,7 @@ public class AliveStatus {
             //写入文件
             writer.write(nowTime + " " + netStatus + "\r\n");
             writer.flush();
+            lastStatsTime = nowTime;
             AliveLog.v(TAG, "insert time =" + AliveDateUtils.timeFormat(nowTime, null));
 
             //TODO[计算统计范围,超过一小时,将数据上传至服务器]
@@ -179,4 +182,18 @@ public class AliveStatus {
             }
         }
     };
+
+
+    class AliveStatsTask extends TimerTask {
+
+        @Override
+        public void run() {
+            try {
+                aliveStats();
+            } catch (Exception e) {
+                e.printStackTrace();
+                handler.sendEmptyMessage(REOPEN_ALIVE_STATS);
+            }
+        }
+    }
 }
