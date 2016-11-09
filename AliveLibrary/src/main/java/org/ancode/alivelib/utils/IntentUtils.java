@@ -1,9 +1,7 @@
 package org.ancode.alivelib.utils;
 
 import android.content.Intent;
-import android.net.Uri;
 
-import org.ancode.alivelib.activity.AliveGuideActivity;
 import org.ancode.alivelib.config.HelperConfig;
 
 /**

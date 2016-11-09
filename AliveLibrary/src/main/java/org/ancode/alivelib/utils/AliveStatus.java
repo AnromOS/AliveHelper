@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
-import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.http.HttpClient;
 
@@ -76,7 +75,7 @@ public class AliveStatus {
             //写入文件
             writer.write(nowTime + " " + netStatus + "\r\n");
             writer.flush();
-            AliveLog.v(TAG, "insert time =" + DateTimeUtils.timeFormat(nowTime, null));
+            AliveLog.v(TAG, "insert time =" + AliveDateUtils.timeFormat(nowTime, null));
 
             //TODO[计算统计范围,超过一小时,将数据上传至服务器]
             //开始时间为0时重新赋值
@@ -89,7 +88,7 @@ public class AliveStatus {
             //结束时间实时赋值
             //AliveSPUtils.getInstance().setASEndTime(nowTime);
 
-            float differTime = DateTimeUtils.getDifferHours(startTime, nowTime);
+            float differTime = AliveDateUtils.getDifferHours(startTime, nowTime);
             if (differTime >= HelperConfig.UPLOAD_ALIVE_STATS_RATE && !uploadingAlive) {
                 AliveLog.v(TAG, "距离第一次统计时间" + differTime + "小时,是否正在上传->," + uploadingAlive + "准备上传服务器");
                 uploadingAlive = true;

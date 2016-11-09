@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 
 import org.ancode.alivelib.config.Constants;
 import org.ancode.alivelib.config.HelperConfig;
@@ -21,6 +22,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +43,7 @@ public class HttpClient {
 
 
     /**
-     * 查询统计结果
+     * 查询统计结果(伪请求)
      *
      * @param params
      * @param flag
@@ -60,7 +63,22 @@ public class HttpClient {
                         url = HttpUrlConfig.QUERY_ALIVE_STATS_V4_URL;
                         AliveLog.v(TAG, "走IPV4");
                     }
-                    String data = HttpHelper.get(url, params, flag);
+//                    String data = HttpHelper.get(url, params, flag);
+                    StringBuffer sb = new StringBuffer();
+
+                    // 组织请求参数
+                    Iterator it = params.entrySet().iterator();
+                    while (it.hasNext()) {
+                        Map.Entry element = (Map.Entry) it.next();
+                        sb.append(element.getKey());
+                        sb.append("=");
+                        sb.append(URLEncoder.encode((String) element.getValue(), HttpHelper.CHARSET).replace("+", "%20"));
+                        sb.append("&");
+                    }
+                    if (sb.length() > 0) {
+                        sb.deleteCharAt(sb.length() - 1);
+                    }
+                    String data = url + "?" + sb.toString();
                     if (TextUtils.isEmpty(data)) {
                         sendHandler(handler, GET_DATA_ERROR, "response is null");
                         return;
@@ -83,7 +101,7 @@ public class HttpClient {
      *
      * @param stringCallBack
      */
-    public static void getAliveGuideUrl ( StringCallBack stringCallBack) {
+    public static void getAliveGuideUrl(StringCallBack stringCallBack) {
         final StrHandler handler = new StrHandler(stringCallBack);
         final Map<String, String> params = Utils.getProp();
         if (GETING_URL == true) {
@@ -222,6 +240,7 @@ public class HttpClient {
         try {
             statObject.put("type", Constants.TYPE_ALIVE);
             statObject.putOpt("data", dataArray);
+//            statObject.put("tag",tag);
         } catch (JSONException e) {
             AliveLog.e(TAG, "上传统计数据,参数初始化错误 'statObject'错误");
             e.printStackTrace();
@@ -244,6 +263,7 @@ public class HttpClient {
             url = HttpUrlConfig.POST_ALIVE_STATS_V4_URL;
             AliveLog.v(TAG, "走IPV4");
         }
+        Log.v(TAG, "上传保活数据\n" + uploadJson.toString());
         String response = HttpHelper.postJson(url, uploadJson.toString(), "uploadStatsTime");
 
         AliveLog.v(TAG, "uploadStatsTime response= " + response);
@@ -273,7 +293,7 @@ public class HttpClient {
     }
 
 
-    public static void postCrash(final Map<String,String> params, StringCallBack stringCallBack){
+    public static void postCrash(final Map<String, String> params, StringCallBack stringCallBack) {
         final StrHandler handler = new StrHandler(stringCallBack);
         new Thread(new Runnable() {
             @Override
@@ -295,7 +315,7 @@ public class HttpClient {
                     JSONObject jsonObj = new JSONObject(data);
                     if (jsonObj.has("result")) {
                         if (jsonObj.get("result").toString().equals("ok")) {
-                            sendHandler(handler, GET_DATA_SUCCESS,jsonObj.get("result").toString());
+                            sendHandler(handler, GET_DATA_SUCCESS, jsonObj.get("result").toString());
 
                         } else if (jsonObj.get("result").toString().equals("failed")) {
                             sendHandler(handler, GET_DATA_ERROR, HttpClient.DATA_IS_NULL);
@@ -317,6 +337,7 @@ public class HttpClient {
         }).start();
 
     }
+
     static class StrHandler extends Handler {
         protected StringCallBack callBack = null;
 

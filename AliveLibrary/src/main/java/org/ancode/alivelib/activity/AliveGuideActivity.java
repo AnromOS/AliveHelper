@@ -21,7 +21,7 @@ import org.ancode.alivelib.utils.AliveLog;
 /**
  * Created by andyliu on 16-8-24.
  */
-public class AliveGuideActivity extends BaseActivity {
+public class AliveGuideActivity extends BaseAliveActivity {
     private static final String TAG = AliveGuideActivity.class.getSimpleName();
     private WebView webView;
     ProgressBar progressBar = null;
@@ -129,9 +129,34 @@ public class AliveGuideActivity extends BaseActivity {
     }
 
     @Override
+    protected void reload() {
+        if (webView != null) {
+//            webView.clearCache(true);
+//            webView.reload();
+            loadData();
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        webView.getSettings().setJavaScriptEnabled(false);
+        webView.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (webView != null) {
+            webView.removeAllViews();
             webView.destroy();
             webView = null;
         }

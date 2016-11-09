@@ -4,6 +4,7 @@
     <string name="alive_activity_title">%1$s使用指南</string>
     <string name="alive_stats_title">%1$s保活统计</string>
     <string name="alive_notify_text">为了更好的体验%1$s,防止应用被系统或其它应用杀死。</string>
+    <string name="alive_stats_notify_text">为您展示%1$s的保活统计数据。</string>
     <string name="alive_cancel">取消</string>
     <string name="alive_ok">确定</string>
     <string name="alive_close">关闭</string>

@@ -34,6 +34,8 @@ public class AliveHelper extends BaseAliveHelper {
         if (helper == null) {
             HelperConfig.CONTEXT = context;
             helper = new AliveHelper();
+        } else {
+
         }
 //        initCrash(context);
         return helper;
@@ -77,6 +79,7 @@ public class AliveHelper extends BaseAliveHelper {
 
     /***
      * 设置主题颜色
+     *
      * @param themeColorId
      * @return
      */
@@ -110,8 +113,13 @@ public class AliveHelper extends BaseAliveHelper {
 
     public static void release() {
         if (helper != null) {
+            helper.closeAliveStats();
+            helper.closeAliveWarning();
+            helper.cancelNotification();
             helper = null;
+            android.os.Process.killProcess(android.os.Process.myPid());
         }
+
         if (HelperConfig.CONTEXT != null) {
             HelperConfig.CONTEXT = null;
         }
@@ -141,6 +149,7 @@ public class AliveHelper extends BaseAliveHelper {
 
     /***
      * 直接获取使用指南的url
+     *
      * @param cb
      */
     public void getUseGuideUrl(StringCallBack cb) {
@@ -151,14 +160,14 @@ public class AliveHelper extends BaseAliveHelper {
      * 显示防杀指南
      */
     public void showAliveUseGuide() {
-        HelperConfig.CONTEXT.startActivity(IntentUtils.getNormalActivity(AliveGuideActivity.class,true));
+        HelperConfig.CONTEXT.startActivity(IntentUtils.getNormalActivity(AliveGuideActivity.class, true));
     }
 
     /***
      * 显示保活统计
      */
     public void showAliveStats() {
-        HelperConfig.CONTEXT.startActivity(IntentUtils.getNormalActivity(AliveStatsActivity.class,  true));
+        HelperConfig.CONTEXT.startActivity(IntentUtils.getNormalActivity(AliveStatsActivity.class, true));
     }
 
 
@@ -223,11 +232,21 @@ public class AliveHelper extends BaseAliveHelper {
     }
 
 
+    /**
+     * 显示保活统计的通知
+     *
+     * @param afterTime 延迟时间显示时间
+     */
+    public void notifyAliveStats(long afterTime) {
+        new NotifyUtils().showAliveStatsNotify(afterTime);
+    }
+
+
     /***
      * 取消方杀助手的提示
      */
     public void cancelNotification() {
-        new AliveNotification().cancelAliveHelper();
+        new AliveNotification().cancelAll();
     }
 
 

@@ -9,7 +9,7 @@ import java.util.GregorianCalendar;
 /**
  * Created by andyliu on 16-10-9.
  */
-public class DateTimeUtils {
+public class AliveDateUtils {
 
     public static final String DEFAULT_FORMAT = "yyyy-MM-dd hh:mm:ss";
 
@@ -94,5 +94,44 @@ public class DateTimeUtils {
         long differ = endTime - startTime;
         float result = ((float) differ) / 1000 / 60 / 60;
         return result;
+    }
+
+
+    /**
+     * 返回昨天的0点0分
+     *
+     * @return
+     */
+    public static long getLastDayStartTime(Date nowDate) {
+        long dateTime = 1;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(nowDate);
+
+        // 当前年
+        int year = cal.get(Calendar.YEAR);
+        // 当前月
+        int month = (cal.get(Calendar.MONTH))/* + 1*/;
+        // 当前月的第几天：即当前日
+        int day_of_month = cal.get(Calendar.DAY_OF_MONTH);
+        Calendar gregorianCalendar = new GregorianCalendar(year, month, day_of_month - 1, 0, 0, 0);
+        return gregorianCalendar.getTime().getTime();
+    }
+
+    /**
+     * 返回今天 0点0分
+     *
+     * @return
+     */
+    public static long getToDayStartTime() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        // 当前年
+        int year = cal.get(Calendar.YEAR);
+        // 当前月
+        int month = (cal.get(Calendar.MONTH))/* + 1*/;
+        // 当前月的第几天：即当前日
+        int day_of_month = cal.get(Calendar.DAY_OF_MONTH);
+        Calendar gregorianCalendar = new GregorianCalendar(year, month, day_of_month, 0, 0, 0);
+        return gregorianCalendar.getTime().getTime();
     }
 }

@@ -18,11 +18,13 @@ import org.ancode.alivelib.utils.AliveStatus;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
-    Button showActivityBtn;
+    Button aliveHelperActivity;
     Button onlygetdataBtn;
-    Button notificationGoActivity;
+    Button aliveHelperNotify;
     TextView textview;
-    Button showAliveStats;
+    Button aliveStatsActivity;
+    Button aliveStatsNotify;
+    Button close;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,22 +62,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         AliveHelper.getHelper().closeAliveStats();
+        //完全退出应用需要调用
+        AliveHelper.release();
         super.onDestroy();
     }
 
 
     private void initView() {
         textview = (TextView) findViewById(R.id.textview);
-        showActivityBtn = (Button) findViewById(R.id.showactivity);
-        showActivityBtn.setOnClickListener(this);
+        aliveHelperActivity = (Button) findViewById(R.id.alive_helper_acitivity);
+        aliveHelperActivity.setOnClickListener(this);
         onlygetdataBtn = (Button) findViewById(R.id.onlygetdata);
         onlygetdataBtn.setOnClickListener(this);
-        notificationGoActivity = (Button) findViewById(R.id.go_activity_notification);
-        notificationGoActivity.setOnClickListener(this);
-        notificationGoActivity = (Button) findViewById(R.id.go_activity_notification);
-        notificationGoActivity.setOnClickListener(this);
-        showAliveStats = (Button) findViewById(R.id.go_alive_stats_activity);
-        showAliveStats.setOnClickListener(this);
+
+        aliveHelperNotify = (Button) findViewById(R.id.alive_helper_notify);
+        aliveHelperNotify.setOnClickListener(this);
+
+        aliveStatsNotify = (Button) findViewById(R.id.alive_stats_notify);
+        aliveStatsNotify.setOnClickListener(this);
+
+        aliveStatsActivity = (Button) findViewById(R.id.alive_stats_activity);
+        aliveStatsActivity.setOnClickListener(this);
+
+
+        close = (Button) findViewById(R.id.close);
+        close.setOnClickListener(this);
     }
 
     @Override
@@ -96,19 +107,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         });
 
                 break;
-            case R.id.showactivity:
+            case R.id.alive_helper_acitivity:
                 AliveHelper.getHelper()
                         .showAliveUseGuide();
                 break;
 
-            case R.id.go_activity_notification:
+            case R.id.alive_helper_notify:
                 AliveHelper.getHelper()
                         .notifyAliveUseGuide(2000);
 
                 break;
 
-            case R.id.go_alive_stats_activity:
+            case R.id.alive_stats_activity:
                 AliveHelper.getHelper().showAliveStats();
+                break;
+            case R.id.alive_stats_notify:
+                AliveHelper.getHelper().notifyAliveStats(2000);
+                break;
+            case R.id.close:
+
+                finish();
                 break;
 
         }

@@ -29,28 +29,43 @@
                 android:textColor="#000000" />
 
             <Button
-                android:id="@+id/showactivity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="直接显示默认acitivity" />
-
-            <Button
                 android:id="@+id/onlygetdata"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="直接获取数据" />
 
+            <Button
+                android:id="@+id/alive_helper_acitivity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="直接显示默认acitivity" />
+
 
             <Button
-                android:id="@+id/go_activity_notification"
+                android:id="@+id/alive_helper_notify"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="弹出打开Activity的Notify" />
+                android:text="防杀指南通知" />
+
             <Button
-                android:id="@+id/go_alive_stats_activity"
+                android:id="@+id/alive_stats_activity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="查看保活统计" />
+                android:text="直接显示保活统计" />
+
+
+            <Button
+                android:id="@+id/alive_stats_notify"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="保活统计通知" />
+
+            <Button
+                android:id="@+id/close"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="关闭" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="20dp" />

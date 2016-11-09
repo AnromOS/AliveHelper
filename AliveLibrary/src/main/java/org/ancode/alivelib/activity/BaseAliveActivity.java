@@ -15,12 +15,13 @@ import org.ancode.alivelib.utils.Utils;
 /**
  * Created by andyliu on 16-8-24.
  */
-public abstract class BaseActivity extends Activity {
-    private static final String TAG = BaseActivity.class.getSimpleName();
+public abstract class BaseAliveActivity extends Activity {
+    private static final String TAG = BaseAliveActivity.class.getSimpleName();
     private View empty_view;
     private View error_view;
     private View loading_view;
     private View closeBtn;
+    private View reloadBtn;
     private View topView;
     private TextView titleView;
     protected String data = "";
@@ -36,7 +37,7 @@ public abstract class BaseActivity extends Activity {
         initBaseView();
         initView();
         loadData();
-        AliveLog.v(TAG, "BaseActivity onCreate");
+        AliveLog.v(TAG, "BaseAliveActivity onCreate");
     }
 
     protected void initBaseData() {
@@ -59,6 +60,8 @@ public abstract class BaseActivity extends Activity {
 
     protected abstract void onRefresh(String data);
 
+    protected abstract void reload();
+
     protected void setTitle(String title) {
         titleView.setText(title);
     }
@@ -77,6 +80,7 @@ public abstract class BaseActivity extends Activity {
         topView = findViewById(R.id.top);
         titleView = (TextView) findViewById(R.id.title);
         closeBtn = findViewById(R.id.close);
+        reloadBtn = findViewById(R.id.reload);
 
         setTimeColor();
 
@@ -84,6 +88,12 @@ public abstract class BaseActivity extends Activity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+        reloadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reload();
             }
         });
         empty_view.findViewById(R.id.empty_btnReload).setOnClickListener(new View.OnClickListener() {

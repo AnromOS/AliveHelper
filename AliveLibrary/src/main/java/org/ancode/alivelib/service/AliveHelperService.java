@@ -8,20 +8,10 @@ import android.os.Message;
 
 import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.config.HelperConfig;
-import org.ancode.alivelib.http.HttpClient;
 import org.ancode.alivelib.utils.AliveLog;
-import org.ancode.alivelib.utils.AliveSPUtils;
 import org.ancode.alivelib.utils.AliveStatsUtils;
 import org.ancode.alivelib.utils.AliveStatus;
-import org.ancode.alivelib.utils.DateTimeUtils;
-import org.ancode.alivelib.utils.NetUtils;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 

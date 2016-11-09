@@ -35,10 +35,11 @@ public class AliveNotification {
     private String textStr;
     private String tickerTextStr;
     private int mLargeIcon = -1, mSmallIcon = -1;
-
+    private int notifyFlag = ALIVE_HELPER_NOTIFY_FLAG;
     private Bitmap bLargeIcon;
     private NotificationManager manager;
-    private static final int NOTIFY_FLAG = 0x1101;
+    public static final int ALIVE_HELPER_NOTIFY_FLAG = 0x1101;
+    public static final int ALIVE_STATS_NOTIFY_FLAG = 0x1102;
     private PendingIntent pendingIntent = null;
 
     public AliveNotification() {
@@ -71,7 +72,7 @@ public class AliveNotification {
                     contentTitle, contentText, tickerText, System.currentTimeMillis(), true, false, true, pendingIntent);
             //放置在正在运行栏目中
             notification.flags = Notification.FLAG_AUTO_CANCEL;
-            manager.notify(NOTIFY_FLAG, notification);
+            manager.notify(notifyFlag, notification);
             AliveLog.v(TAG, "notification is show");
         } catch (Exception e) {
             AliveLog.e(TAG, "notification is error\n" + e.getLocalizedMessage());
@@ -86,10 +87,6 @@ public class AliveNotification {
 
     }
 
-    public void cancelAliveHelper() {
-        if (manager != null)
-            manager.cancel(NOTIFY_FLAG);
-    }
 
     private Notification createBuilder(Bitmap largeIcon, int smallIcon, CharSequence contentTitle, CharSequence contentText, CharSequence ticker,
                                        long when, boolean onGoing, boolean autoCancel, boolean onlyAlertOnce, PendingIntent pendingIntent) {
@@ -184,5 +181,13 @@ public class AliveNotification {
         return this;
     }
 
+    public int getNotifyFlag() {
+        return notifyFlag;
+    }
+
+    public AliveNotification setNotifyFlag(int notifyFlag) {
+        this.notifyFlag = notifyFlag;
+        return this;
+    }
 
 }

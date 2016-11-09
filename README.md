@@ -21,7 +21,7 @@ AliveHelper防杀助手,统计应用使用率.
 
 ####1).开启使用率统计相关
 
-        String tag = "MH:13018211911";//使用当前应用的某个用户的唯一标示,例如 应用拼音简称:账号 (必填项)
+        String tag = "MH:13018211911";//使用当前应用的某个用户的唯一标示,格式例如 应用拼音简称:账号 (必填项)
         BaseStatsInfo statsInfo = new BaseStatsInfo(tag);
         statsInfo.setIdName("phone");//id名称 (非必填项)
         statsInfo.setId("13018211911");//id值(非必填项)
@@ -36,4 +36,5 @@ AliveHelper防杀助手,统计应用使用率.
         AliveHelper.getHelper().notifyAliveUseGuide(int aftertime);//通知栏提示,点击跳转防杀指南
         AliveHelper.getHelper().showAliveUseGuide();//直接打开防杀指南
 ####3).查看保活统计
+        AliveHelper.getHelper().notifyAliveStats(int aftertime);//通知栏提示,点击跳转保活统计
         AliveHelper.getHelper().showAliveStats();//直接打开保活统计界面

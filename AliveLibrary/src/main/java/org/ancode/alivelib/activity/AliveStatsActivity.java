@@ -3,6 +3,8 @@ package org.ancode.alivelib.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.URLUtil;
@@ -13,14 +15,11 @@ import android.widget.ProgressBar;
 
 import org.ancode.alivelib.R;
 import org.ancode.alivelib.config.Constants;
-import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.http.HttpClient;
 import org.ancode.alivelib.callback.StringCallBack;
 import org.ancode.alivelib.utils.AliveSPUtils;
-import org.ancode.alivelib.utils.DateTimeUtils;
+import org.ancode.alivelib.utils.AliveDateUtils;
 import org.ancode.alivelib.utils.AliveLog;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -29,7 +28,7 @@ import java.util.Map;
 /**
  * Created by andyliu on 16-8-24.
  */
-public class AliveStatsActivity extends BaseActivity {
+public class AliveStatsActivity extends BaseAliveActivity {
     private static final String TAG = AliveStatsActivity.class.getSimpleName();
     private WebView webView;
     ProgressBar progressBar = null;
@@ -43,34 +42,23 @@ public class AliveStatsActivity extends BaseActivity {
     @Override
     public void loadData() {
         Map<String, String> params = new HashMap<String, String>();
-        String packageName = HelperConfig.CONTEXT.getPackageName().toString();
         Date date = new Date();
-        String beginTime = String.valueOf(DateTimeUtils.getBeforeDate(date, 1).getTime());
-        String endTime = String.valueOf(date.getTime());
+        String beginTime = String.valueOf(AliveDateUtils.getLastDayStartTime(date));
+        String endTime = String.valueOf(AliveDateUtils.getToDayStartTime());
         params.put("type", Constants.TYPE_ALIVE);
         params.put("tag", AliveSPUtils.getInstance().getASTag());
         params.put("begin", beginTime);
         params.put("end", endTime);
+        Log.v(TAG, "aliveStats params=" + params.toString());
         HttpClient.getAliveStats(params, HttpClient.HTTP_CALL_FLAG, new StringCallBack() {
             @Override
             public void onResponse(String response) {
-                JSONObject jsonObj = null;
-                try {
-                    jsonObj = new JSONObject(response);
-                    if (jsonObj.has("result")) {
-                        String result = jsonObj.get("result").toString();
-                        if (result.equals("ok")) {
-                            onRefresh(result);
-                        } else if (result.equals("failed")) {
-                            showLoading(false);
-                            showErrorView(true);
-                        }
-                    } else {
-                        showLoading(false);
-                        showErrorView(true);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (TextUtils.isEmpty(response)) {
+                    showLoading(false);
+                    showErrorView(true);
+                } else {
+                    showLoading(false);
+                    onRefresh(response);
                 }
 
             }
@@ -100,7 +88,6 @@ public class AliveStatsActivity extends BaseActivity {
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setAllowFileAccess(true);
         webView.getSettings().setDomStorageEnabled(true);//允许DCOM
-
         final ProgressBar finalProgressBar = progressBar;
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -116,10 +103,25 @@ public class AliveStatsActivity extends BaseActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        webView.getSettings().setJavaScriptEnabled(false);
+        webView.onPause();
+    }
 
     @Override
     protected void onRefresh(String data) {
-        webView.loadUrl(data);
+        String dataUrl = data + "&t=" + new Date().getTime();
+        webView.loadUrl(dataUrl);
+        Log.v(TAG, "请求到的保活统计界面为\n" + dataUrl);
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -146,9 +148,21 @@ public class AliveStatsActivity extends BaseActivity {
     }
 
     @Override
+    protected void reload() {
+        if (webView != null) {
+//            webView.clearCache(true);
+            loadData();
+//            webView.reload();
+        }
+
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (webView != null) {
+//            webView.loadUrl("about:blank");
+            webView.removeAllViews();
             webView.destroy();
             webView = null;
         }

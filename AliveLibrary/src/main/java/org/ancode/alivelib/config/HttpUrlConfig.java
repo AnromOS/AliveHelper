@@ -29,7 +29,7 @@ public class HttpUrlConfig {
     /****
      * 获取保活统计IPV4
      */
-    public static final String QUERY_ALIVE_STATS_V4_URL = "http://" + HOST_V4 + "/stats/query";
+    public static final String QUERY_ALIVE_STATS_V4_URL = "http://" + HOST_V4 + "/app/template/index.html";
     /***
      *上传crash接口IPV4
      */
@@ -49,7 +49,7 @@ public class HttpUrlConfig {
     /****
      * 获取保活统计IPV6
      */
-    public static final String QUERY_ALIVE_STATS_V6_URL = "http://" + HOST_V6 + "/stats/query";
+    public static final String QUERY_ALIVE_STATS_V6_URL = "http://" + HOST_V6 + "/app/template/index.html";
 
 
 }

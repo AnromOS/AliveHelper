@@ -160,7 +160,7 @@ public class HttpHelper {
             // 获取URLConnection对象对应的输出流
             out = new DataOutputStream(
                     httpURLConnection.getOutputStream());
-            AliveLog.v(TAG, "上传的数据为\n" + params);
+//            AliveLog.v(TAG, "上传的数据为\n" + params);
             DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
             writer = new BufferedWriter(new OutputStreamWriter(out, CHARSET));
             writer.write(params);
