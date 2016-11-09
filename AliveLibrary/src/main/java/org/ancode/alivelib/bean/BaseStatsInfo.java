@@ -1,6 +1,7 @@
 package org.ancode.alivelib.bean;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import org.ancode.alivelib.utils.AliveLog;
 import org.json.JSONException;
@@ -80,7 +81,10 @@ public class BaseStatsInfo {
             jsonObject.put("device", device);
             jsonObject.put("os", os);
             try {
-                jsonObject.put(idName, id);
+                if (!TextUtils.isEmpty(idName) && !TextUtils.isEmpty(id)) {
+                    jsonObject.put(idName, id);
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
