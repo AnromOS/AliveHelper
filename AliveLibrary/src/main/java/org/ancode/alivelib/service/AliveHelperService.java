@@ -35,7 +35,7 @@ public class AliveHelperService extends Service {
     public static final String CLOSE_ALIVE_WARNING_SERVICE_ACTION = "org.ancode.alivelib.service.CLOSE_ALIVE_WARNING_SERVICE";
 
     private final int WARNING_TIME = 1000 * 60 * 30;
-    private DateChangeReceiver dateChangeReceiver = null;
+//    private DateChangeReceiver dateChangeReceiver = null;
 
 
     //定时弹出使用指南
@@ -72,11 +72,11 @@ public class AliveHelperService extends Service {
                     openWarningTimer();
                     break;
                 case CLOSE_ALIVE_STATS_SERVICE_ACTION:
-                    try {
-                        unregisterReceiver(dateChangeReceiver);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        unregisterReceiver(dateChangeReceiver);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
                     aliveStatus.closeStatsLiveTimer();
                     break;
                 case CLOSE_ALIVE_WARNING_SERVICE_ACTION:
@@ -91,7 +91,7 @@ public class AliveHelperService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        registerDateChangeReceiver();
+//        registerDateChangeReceiver();
     }
 
 
@@ -154,41 +154,41 @@ public class AliveHelperService extends Service {
         AliveLog.v(TAG, "AliveHelperService onDestroy");
         aliveStatus.clearAliveStatus();
         closeWarningTimer();
-        try {
-            unregisterReceiver(dateChangeReceiver);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            unregisterReceiver(dateChangeReceiver);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
-    private void registerDateChangeReceiver() {
-        if (dateChangeReceiver == null) {
-            dateChangeReceiver = new DateChangeReceiver();
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction(Intent.ACTION_TIME_TICK);
-            registerReceiver(dateChangeReceiver, intentFilter);
-        }
-
-    }
-
-    /***
-     *
-     */
-    class DateChangeReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent != null) {
-                if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
-                    if (aliveStatus != null && aliveStatus.aliveStatsTimer != null) {
-                        long nowDate = new Date().getTime();
-                        if (aliveStatus.lastStatsTime >= nowDate) {
-                            aliveStatus.openStatsLiveTimer();
-                            Log.v(TAG, "日期发生变化重新启动保活统计");
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    private void registerDateChangeReceiver() {
+//        if (dateChangeReceiver == null) {
+//            dateChangeReceiver = new DateChangeReceiver();
+//            IntentFilter intentFilter = new IntentFilter();
+//            intentFilter.addAction(Intent.ACTION_TIME_TICK);
+//            registerReceiver(dateChangeReceiver, intentFilter);
+//        }
+//
+//    }
+//
+//    /***
+//     *
+//     */
+//    class DateChangeReceiver extends BroadcastReceiver {
+//
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            if (intent != null) {
+//                if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
+//                    if (aliveStatus != null && aliveStatus.aliveStatsTimer != null) {
+//                        long nowDate = new Date().getTime();
+//                        if (aliveStatus.lastStatsTime >= nowDate) {
+//                            aliveStatus.openStatsLiveTimer();
+//                            Log.v(TAG, "日期发生变化重新启动保活统计");
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 }

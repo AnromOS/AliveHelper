@@ -30,8 +30,6 @@ public class AliveStatus {
     private BufferedWriter writer = null;
     private Context context = null;
     private AliveStatsTask aliveStatsTask = null;
-    //记录上次统计的日期时间
-    public long lastStatsTime = -1;
 
     public AliveStatus(Context context) {
         this.context = context;
@@ -77,7 +75,6 @@ public class AliveStatus {
             //写入文件
             writer.write(nowTime + " " + netStatus + "\r\n");
             writer.flush();
-            lastStatsTime = nowTime;
             AliveLog.v(TAG, "insert time =" + AliveDateUtils.timeFormat(nowTime, null));
 
             //TODO[计算统计范围,超过一小时,将数据上传至服务器]
