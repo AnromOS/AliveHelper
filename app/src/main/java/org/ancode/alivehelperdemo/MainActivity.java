@@ -63,7 +63,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
         AliveHelper.getHelper().closeAliveStats();
         //完全退出应用需要调用
-        AliveHelper.release();
+        AliveHelper.killAliveHelper();
+        android.os.Process.killProcess(android.os.Process.myPid());
         super.onDestroy();
     }
 

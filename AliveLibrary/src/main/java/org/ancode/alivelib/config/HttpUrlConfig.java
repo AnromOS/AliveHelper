@@ -34,6 +34,11 @@ public class HttpUrlConfig {
      *上传crash接口IPV4
      */
     public static final String URL_POST_CRASH_V4_URL = "xxxxxx";
+
+    /***
+     * 是否显示notify
+     */
+    public static final String IS_ENABLE_SHOW_NOTIFY_V4_URL =  "http://" + HOST_V4 + "/app/template/alive_enable.html";
     /***
      * 获取防杀指南IPV6
      */

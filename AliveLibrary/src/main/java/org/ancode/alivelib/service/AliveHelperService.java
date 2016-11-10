@@ -13,6 +13,7 @@ import android.util.Log;
 import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.utils.AliveLog;
+import org.ancode.alivelib.utils.AliveSPUtils;
 import org.ancode.alivelib.utils.AliveStatsUtils;
 import org.ancode.alivelib.utils.AliveStatus;
 
@@ -33,6 +34,9 @@ public class AliveHelperService extends Service {
 
     public static final String CLOSE_ALIVE_STATS_SERVICE_ACTION = "org.ancode.alivelib.service.CLOSE_ALIVE_STATS_SERVICE_ACTION";
     public static final String CLOSE_ALIVE_WARNING_SERVICE_ACTION = "org.ancode.alivelib.service.CLOSE_ALIVE_WARNING_SERVICE";
+
+
+    public static final String KILL_ALIVE_HELPER_SERVICE = "org.ancode.alivelib.service.KILL_ALIVE_HELPER_SERVICE";
 
     private final int WARNING_TIME = 1000 * 60 * 30;
 //    private DateChangeReceiver dateChangeReceiver = null;
@@ -81,6 +85,9 @@ public class AliveHelperService extends Service {
                     break;
                 case CLOSE_ALIVE_WARNING_SERVICE_ACTION:
                     closeWarningTimer();
+                    break;
+                case KILL_ALIVE_HELPER_SERVICE:
+                    stopSelf();
                     break;
             }
         }
@@ -154,6 +161,9 @@ public class AliveHelperService extends Service {
         AliveLog.v(TAG, "AliveHelperService onDestroy");
         aliveStatus.clearAliveStatus();
         closeWarningTimer();
+
+
+
 //        try {
 //            unregisterReceiver(dateChangeReceiver);
 //        } catch (Exception e) {

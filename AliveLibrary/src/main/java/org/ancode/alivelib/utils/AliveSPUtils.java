@@ -57,6 +57,11 @@ public class AliveSPUtils extends BaseSPUtils {
 
 
     /**
+     * 是否是外部版
+     */
+    private static final String IS_RELEASE = "is_release";
+
+    /**
      * 获取统计开始时间
      *
      * @return
@@ -126,5 +131,13 @@ public class AliveSPUtils extends BaseSPUtils {
      */
     public void setASTag(String tag) {
         putString(ALIVE_STATS_TAG, tag);
+    }
+
+    public void setIsRelease(boolean b){
+        putBoolean(IS_RELEASE,b);
+    }
+
+    public boolean getIsRelease(){
+        return getBoolean(IS_RELEASE,true);
     }
 }

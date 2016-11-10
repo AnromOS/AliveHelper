@@ -15,6 +15,7 @@ public class AliveDateUtils {
 
     /**
      * 格式化指定日期
+     *
      * @param date
      * @param format
      * @return
@@ -34,6 +35,7 @@ public class AliveDateUtils {
 
     /**
      * 格式化指定日期
+     *
      * @param date
      * @param format
      * @return
@@ -93,6 +95,27 @@ public class AliveDateUtils {
     public static float getDifferHours(long startTime, long endTime) {
         long differ = endTime - startTime;
         float result = ((float) differ) / 1000 / 60 / 60;
+
+        return result;
+    }
+
+    /**
+     * 获取时差
+     *
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public static int getDifferDayOnly(long startTime, long endTime) {
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(new Date(startTime));
+        int startDay = startCalendar.get(Calendar.DAY_OF_MONTH);
+
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(new Date(endTime));
+        int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
+        int result = endDay - startDay;
+        AliveLog.v("AliveStatus", "startDay=" + startDay + ",endDay=" + endDay + ",比较开始时间与结束时间相差天数=" + result);
         return result;
     }
 

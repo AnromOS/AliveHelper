@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Ancode Library</string>
     <string name="alive_activity_title">%1$s Use guide</string>
-    <string name="alive_stats_title">%1$s Stats alive</string>
+    <string name="alive_stats_title">%1$s Online transcripts</string>
     <string name="alive_notify_text">In order to better experience the%1$s,to prevent the application of the system or other applications to kill.</string>
-    <string name="alive_stats_notify_text">To show you the %1$s live statistics.</string>
+    <string name="alive_stats_notify_text">To show you the %1$s Online transcripts.</string>
     <string name="alive_cancel">cancel</string>
     <string name="alive_ok">ok</string>
     <string name="alive_close">close</string>

@@ -70,12 +70,6 @@ public class AliveStatus {
         try {
             checkFileWriter();
 
-            //TODO[统计Wifi/3G状态]
-            String netStatus = NetUtils.getNetStatus(HelperConfig.CONTEXT);
-            //写入文件
-            writer.write(nowTime + " " + netStatus + "\r\n");
-            writer.flush();
-            AliveLog.v(TAG, "insert time =" + AliveDateUtils.timeFormat(nowTime, null));
 
             //TODO[计算统计范围,超过一小时,将数据上传至服务器]
             //开始时间为0时重新赋值
@@ -85,12 +79,11 @@ public class AliveStatus {
                 startTime = nowTime;
             }
 
-            //结束时间实时赋值
-            //AliveSPUtils.getInstance().setASEndTime(nowTime);
 
-            float differTime = AliveDateUtils.getDifferHours(startTime, nowTime);
-            if (differTime >= HelperConfig.UPLOAD_ALIVE_STATS_RATE && !uploadingAlive) {
-                AliveLog.v(TAG, "距离第一次统计时间" + differTime + "小时,是否正在上传->," + uploadingAlive + "准备上传服务器");
+            //TODO[如果发现当前统计数据跨天,则提交]
+            if (AliveDateUtils.getDifferDayOnly(startTime, nowTime) >= 1) {
+                AliveLog.v(TAG, "已经跨天了,准备上传服务器");
+                AliveLog.v(TAG, "本地不在打点了");
                 uploadingAlive = true;
                 try {
                     HttpClient.uploadAliveStats("uploadAliveStats", handler);
@@ -99,9 +92,27 @@ public class AliveStatus {
                     uploadingAlive = false;
                 }
             } else {
-                AliveLog.v(TAG, "距离第一次统计时间" + differTime + "小时 是否正在上传->," + uploadingAlive + "不上传服务器");
-            }
+                float differTime = AliveDateUtils.getDifferHours(startTime, nowTime);
+                //TODO[统计Wifi/3G状态]
+                String netStatus = NetUtils.getNetStatus(HelperConfig.CONTEXT);
+                //写入文件
+                writer.write(nowTime + " " + netStatus + "\r\n");
+                writer.flush();
+                AliveLog.v(TAG, "insert time =" + AliveDateUtils.timeFormat(nowTime, null));
 
+                if (differTime >= HelperConfig.UPLOAD_ALIVE_STATS_RATE && !uploadingAlive) {
+                    AliveLog.v(TAG, "距离第一次统计时间" + differTime + "小时,是否正在上传->," + uploadingAlive + "准备上传服务器");
+                    uploadingAlive = true;
+                    try {
+                        HttpClient.uploadAliveStats("uploadAliveStats", handler);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        uploadingAlive = false;
+                    }
+                } else {
+                    AliveLog.v(TAG, "距离第一次统计时间" + differTime + "小时 是否正在上传->," + uploadingAlive + "不上传服务器");
+                }
+            }
 
         } catch (FileNotFoundException e) {
             AliveLog.e(TAG, "write error:" + e.getLocalizedMessage());
@@ -164,14 +175,14 @@ public class AliveStatus {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == REOPEN_ALIVE_STATS) {
-                closeStatsLiveTimer();
+                clearAliveStatus();
                 openStatsLiveTimer();
             } else if (msg.what == RESET_ALIVE_STATS) {
                 AliveLog.v(TAG, "----上传数据成功----");
                 //交互成功修
                 uploadingAlive = false;
-                AliveSPUtils.getInstance().setASBeginTime(0);
                 context.deleteFile(HelperConfig.ALIVE_STATS_FILE_NAME);
+                AliveSPUtils.getInstance().setASBeginTime(0);
                 clearFileWriter();
                 AliveLog.v(TAG, "----重置数据成功----");
             } else if (msg.what == UPLOAD_ALIVE_STATS_FAILED) {

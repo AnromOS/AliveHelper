@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -338,6 +339,40 @@ public class HttpClient {
 
     }
 
+    /**
+     * 是否显示notification
+     * @param stringCallBack
+     */
+    public static void isEnableShowNotify(StringCallBack stringCallBack) {
+        final StrHandler handler = new StrHandler(stringCallBack);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String url;
+                    if (HelperConfig.USE_ANET) {
+                        url = HttpUrlConfig.IS_ENABLE_SHOW_NOTIFY_V4_URL;
+                        AliveLog.v(TAG, "走IPV6");
+                    } else {
+                        url = HttpUrlConfig.IS_ENABLE_SHOW_NOTIFY_V4_URL;
+                        AliveLog.v(TAG, "走IPV4");
+                    }
+                    Map<String, String> params = new HashMap<String, String>();
+                    String data = HttpHelper.get(url, params, "isEnableShowNotify");
+                    if (TextUtils.isEmpty(data)) {
+                        sendHandler(handler, GET_DATA_ERROR, "response is null");
+                        return;
+                    }
+                    sendHandler(handler, GET_DATA_SUCCESS, data);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    sendHandler(handler, GET_DATA_ERROR, e.getLocalizedMessage());
+                    return;
+                }
+            }
+        }).start();
+    }
+
     static class StrHandler extends Handler {
         protected StringCallBack callBack = null;
 
@@ -395,4 +430,6 @@ public class HttpClient {
         message.what = what;
         handler.sendMessage(message);
     }
+
+
 }

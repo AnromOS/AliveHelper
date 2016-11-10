@@ -3,6 +3,7 @@ package org.ancode.alivelib;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 
 import org.ancode.alivelib.activity.AliveGuideActivity;
 import org.ancode.alivelib.activity.AliveStatsActivity;
@@ -13,6 +14,8 @@ import org.ancode.alivelib.http.HttpClient;
 import org.ancode.alivelib.callback.StringCallBack;
 import org.ancode.alivelib.notification.AliveNotification;
 import org.ancode.alivelib.service.AliveHelperService;
+import org.ancode.alivelib.utils.AliveLog;
+import org.ancode.alivelib.utils.AliveSPUtils;
 import org.ancode.alivelib.utils.IntentUtils;
 import org.ancode.alivelib.utils.NotifyUtils;
 
@@ -23,6 +26,7 @@ public class AliveHelper extends BaseAliveHelper {
 
 
     private static AliveHelper helper = null;
+    private static final String TAG = AliveHelper.class.getSimpleName();
 
     /****
      * 初始化library
@@ -65,6 +69,17 @@ public class AliveHelper extends BaseAliveHelper {
         return helper;
     }
 
+    /**
+     * 是否是外部版本 默认是外部版本
+     *
+     * @param b
+     * @return
+     */
+    public static AliveHelper isRelease(boolean b) {
+        AliveSPUtils.getInstance().setIsRelease(b);
+        AliveLog.v("AliveHelper", "接收到isRelease信息 isRelease = " + b);
+        return helper;
+    }
 
     /**
      * log开关
@@ -111,18 +126,20 @@ public class AliveHelper extends BaseAliveHelper {
         }
     }
 
-    public static void release() {
+    public static void killAliveHelper() {
         if (helper != null) {
             helper.closeAliveStats();
             helper.closeAliveWarning();
             helper.cancelNotification();
             helper = null;
-            android.os.Process.killProcess(android.os.Process.myPid());
         }
 
         if (HelperConfig.CONTEXT != null) {
+            AliveSPUtils.getInstance().setIsRelease(true);
             HelperConfig.CONTEXT = null;
         }
+
+//        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     /***
@@ -237,10 +254,41 @@ public class AliveHelper extends BaseAliveHelper {
      *
      * @param afterTime 延迟时间显示时间
      */
-    public void notifyAliveStats(long afterTime) {
-        new NotifyUtils().showAliveStatsNotify(afterTime);
+    public void notifyAliveStats(final long afterTime) {
+        if (AliveSPUtils.getInstance().getIsRelease()) {
+
+            Log.v(TAG, "发现当前设置为外部版,请求服务器是否显示notification");
+            isEnableShowNotify(new StringCallBack() {
+                @Override
+                public void onResponse(String response) {
+                    if ("0".equals(response)) {
+                        new NotifyUtils().showAliveStatsNotify(afterTime);
+                        Log.v(TAG, "isEnableShowNotify 服务器返回" + response + "显示notification");
+                    } else {
+                        Log.v(TAG, "isEnableShowNotify 服务器返回" + response + "不显示notification");
+                    }
+                }
+
+                @Override
+                public void error(String error) {
+                    Log.e(TAG, "请求是否显示notification接口失败 error = " + error);
+                }
+            });
+        } else {
+            new NotifyUtils().showAliveStatsNotify(afterTime);
+            Log.v(TAG, "发现当前设置为内部版,直接显示notification");
+        }
+
     }
 
+    /***
+     * 是否显示notification
+     *
+     * @param stringCallBack
+     */
+    public void isEnableShowNotify(StringCallBack stringCallBack) {
+        HttpClient.isEnableShowNotify(stringCallBack);
+    }
 
     /***
      * 取消方杀助手的提示

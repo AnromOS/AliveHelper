@@ -32,6 +32,8 @@ public class AliveStatsActivity extends BaseAliveActivity {
     private static final String TAG = AliveStatsActivity.class.getSimpleName();
     private WebView webView;
     ProgressBar progressBar = null;
+    String beginTime = null;
+    String endTime = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,17 +41,20 @@ public class AliveStatsActivity extends BaseAliveActivity {
         AliveLog.v(TAG, "AliveStatsActivity onCreate");
     }
 
+
     @Override
     public void loadData() {
         Map<String, String> params = new HashMap<String, String>();
         Date date = new Date();
-        String beginTime = String.valueOf(AliveDateUtils.getLastDayStartTime(date));
-        String endTime = String.valueOf(AliveDateUtils.getToDayStartTime());
+        beginTime = String.valueOf(AliveDateUtils.getLastDayStartTime(date));
+        endTime = String.valueOf(AliveDateUtils.getToDayStartTime());
         params.put("type", Constants.TYPE_ALIVE);
         params.put("tag", AliveSPUtils.getInstance().getASTag());
         params.put("begin", beginTime);
         params.put("end", endTime);
-        Log.v(TAG, "aliveStats params=" + params.toString());
+        String beginTimeStr = AliveDateUtils.timeFormat(new Date(AliveDateUtils.getLastDayStartTime(date)), AliveDateUtils.DEFAULT_FORMAT);
+        String endTimeStr = AliveDateUtils.timeFormat(new Date(AliveDateUtils.getToDayStartTime()), AliveDateUtils.DEFAULT_FORMAT);
+        Log.v(TAG, "aliveStats begin=" + beginTimeStr + " ,end=" + endTimeStr + ",params=" + params.toString());
         HttpClient.getAliveStats(params, HttpClient.HTTP_CALL_FLAG, new StringCallBack() {
             @Override
             public void onResponse(String response) {
@@ -114,6 +119,14 @@ public class AliveStatsActivity extends BaseAliveActivity {
         super.onResume();
         webView.getSettings().setJavaScriptEnabled(true);
         webView.onResume();
+        String beginTimeR = String.valueOf(AliveDateUtils.getLastDayStartTime(new Date()));
+        String endTimeR = String.valueOf(AliveDateUtils.getToDayStartTime());
+        if (beginTime != null && endTime != null) {
+            if (!beginTimeR.equals(beginTime) && !endTimeR.equals(endTime)) {
+                reload();
+            }
+        }
+
     }
 
     @Override

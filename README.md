@@ -15,6 +15,8 @@ AliveHelper防杀助手,统计应用使用率.
         AliveHelper.setDebug(true);//是否打印防杀助手log
         AliveHelper.setThemeColor(R.color.alive_dialog_btn_border_color);//手动设置展示界面的主色调
         AliveHelper.useAnet(false); //是否使用原网环境
+        AliveHelper.isRelease(false);//是否是外部版(默认是 外部版);
+        AliveHelper.killAliveHelper();//释放AliveHelper
 ###3.方法使用
 
         功能类,可以在Application初始化完成之后,任意地方使用,根据实际场景进行使用
