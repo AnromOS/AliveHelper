@@ -180,21 +180,21 @@ public class HttpClient {
             @Override
             protected Boolean doInBackground(Object... params) {
                 if (HelperConfig.USE_ANET) {
-                    if (NetUtils.ping6(HttpUrlConfig.HOST_V6)) {
-                        AliveLog.v(TAG, "网络可用开始上传服务器");
-                        return uploadAliveStats();
-                    } else {
-                        AliveLog.v(TAG, "网络不可用不能上传服务器");
-                        return false;
-                    }
+//                    if (NetUtils.ping6(HttpUrlConfig.HOST_V6)) {
+//                        AliveLog.v(TAG, "网络可用开始上传服务器");
+                    return uploadAliveStats();
+//                    } else {
+//                        AliveLog.v(TAG, "网络不可用不能上传服务器");
+//                        return false;
+//                    }
                 } else {
-                    if (NetUtils.ping(HttpUrlConfig.HOST_V4)) {
-                        AliveLog.v(TAG, "网络可用开始上传服务器");
-                        return uploadAliveStats();
-                    } else {
-                        AliveLog.v(TAG, "网络不可用不能上传服务器");
-                        return false;
-                    }
+//                    if (NetUtils.ping(HttpUrlConfig.HOST_V4)) {
+//                        AliveLog.v(TAG, "网络可用开始上传服务器");
+                    return uploadAliveStats();
+//                    } else {
+//                        AliveLog.v(TAG, "网络不可用不能上传服务器");
+//                        return false;
+//                    }
                 }
 
 
@@ -341,6 +341,7 @@ public class HttpClient {
 
     /**
      * 是否显示notification
+     *
      * @param stringCallBack
      */
     public static void isEnableShowNotify(StringCallBack stringCallBack) {

@@ -31,7 +31,7 @@ public class BaseStatsInfo {
     //stat
     String tag = null;
 
-    public BaseStatsInfo(@NonNull String tag) {
+    public BaseStatsInfo(String tag) {
         this.tag = tag;
     }
 

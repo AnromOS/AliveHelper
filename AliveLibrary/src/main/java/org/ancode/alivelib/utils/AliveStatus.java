@@ -186,6 +186,7 @@ public class AliveStatus {
                 clearFileWriter();
                 AliveLog.v(TAG, "----重置数据成功----");
             } else if (msg.what == UPLOAD_ALIVE_STATS_FAILED) {
+                AliveLog.v(TAG, "----上传数据失败----");
                 uploadingAlive = false;
             }
         }

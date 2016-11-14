@@ -27,7 +27,87 @@ public class HttpHelper {
     //    public static Map<String, HttpURLConnection> urlgetConnections = null;
 //    public static Map<String, HttpURLConnection> urlpostConnections = null;
     public static final String CHARSET = "UTF-8";
+    public static final int CONNECT_TIMEOUT = 15 * 1000;
+    public static final int READ_TIMEOUT = 15 * 1000;
 
+
+
+    /**
+     * 向指定URL发送GET方法的请求
+     */
+    public static String get(String urlStr, Map<String, String> map, String flag) {
+        HttpURLConnection connection = null;
+        BufferedReader bufferedReader = null;
+        String result = "";
+        StringBuffer params = new StringBuffer();
+        try {
+
+            // 组织请求参数
+            Iterator it = map.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry element = (Map.Entry) it.next();
+                params.append(element.getKey());
+                params.append("=");
+                params.append(URLEncoder.encode((String) element.getValue(), CHARSET).replace("+", "%20"));
+                params.append("&");
+            }
+            if (params.length() > 0) {
+                params.deleteCharAt(params.length() - 1);
+            }
+            URL url = new URL(urlStr + "?" + params.toString());
+            AliveLog.v(TAG, "get url=" + url);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setConnectTimeout(CONNECT_TIMEOUT);
+            connection.setReadTimeout(READ_TIMEOUT);
+            // 设置请求方法，默认是GET
+            connection.setRequestMethod("GET");
+            // 设置字符集
+            connection.setRequestProperty("Charset", CHARSET);
+            // 设置文件类型
+            connection.setRequestProperty("Content-Type", "text/xml; charset=" + CHARSET);
+            // 设置请求参数，可通过Servlet的getHeader()获取
+            if (connection.getResponseCode() == 200) {
+                InputStream is = connection.getInputStream();
+                // 定义BufferedReader输入流来读取URL的响应
+                bufferedReader = new BufferedReader(
+                        new InputStreamReader(is));
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    result += line;
+                }
+
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                AliveLog.v(TAG, "result =" + result);
+                AliveLog.v(TAG, "请求成功!");
+            } else {
+                AliveLog.e(TAG, "错误 response=" + connection.getResponseCode());
+            }
+
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                connection.disconnect();
+            }
+
+        }
+        return result;
+    }
     /**
      * post
      *
@@ -61,6 +141,8 @@ public class HttpHelper {
             // 设置通用的请求属性
             httpURLConnection.setRequestProperty("accept", "*/*");
             httpURLConnection.setRequestProperty("connection", "Keep-Alive");
+            httpURLConnection.setConnectTimeout(CONNECT_TIMEOUT);
+            httpURLConnection.setReadTimeout(READ_TIMEOUT);
             httpURLConnection.setRequestProperty("Accept-Charset", CHARSET);
             httpURLConnection.setRequestProperty("Content-Length", String
                     .valueOf(params.length()));
@@ -144,19 +226,14 @@ public class HttpHelper {
             // 设置通用的请求属性
             httpURLConnection.setDoOutput(true);
             httpURLConnection.setDoInput(true);
-            httpURLConnection.setConnectTimeout(1500);
-            httpURLConnection.setReadTimeout(1500);
+            httpURLConnection.setConnectTimeout(CONNECT_TIMEOUT);
+            httpURLConnection.setReadTimeout(READ_TIMEOUT);
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setUseCaches(false);
             httpURLConnection.setInstanceFollowRedirects(true);
             httpURLConnection.setRequestProperty("Content-Type", "application/json");
             httpURLConnection.setRequestProperty("Accept-Charset", CHARSET);
-//            httpURLConnection.setRequestProperty("Content-Length", String.valueOf(params.getBytes().length));
             httpURLConnection.connect();
-//            if (urlpostConnections == null) {
-//                urlpostConnections = new HashMap<String, HttpURLConnection>();
-//            }
-//            urlpostConnections.put(flag, httpURLConnection);
             // 获取URLConnection对象对应的输出流
             out = new DataOutputStream(
                     httpURLConnection.getOutputStream());
@@ -238,82 +315,6 @@ public class HttpHelper {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        return result;
-    }
-
-
-    /**
-     * 向指定URL发送GET方法的请求
-     */
-    public static String get(String urlStr, Map<String, String> map, String flag) {
-        HttpURLConnection connection = null;
-        BufferedReader bufferedReader = null;
-        String result = "";
-        StringBuffer params = new StringBuffer();
-        try {
-
-            // 组织请求参数
-            Iterator it = map.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry element = (Map.Entry) it.next();
-                params.append(element.getKey());
-                params.append("=");
-                params.append(URLEncoder.encode((String) element.getValue(), CHARSET).replace("+", "%20"));
-                params.append("&");
-            }
-            if (params.length() > 0) {
-                params.deleteCharAt(params.length() - 1);
-            }
-            URL url = new URL(urlStr + "?" + params.toString());
-            AliveLog.v(TAG, "get url=" + url);
-            connection = (HttpURLConnection) url.openConnection();
-            // 设置请求方法，默认是GET
-            connection.setRequestMethod("GET");
-            // 设置字符集
-            connection.setRequestProperty("Charset", CHARSET);
-            // 设置文件类型
-            connection.setRequestProperty("Content-Type", "text/xml; charset=" + CHARSET);
-            // 设置请求参数，可通过Servlet的getHeader()获取
-            if (connection.getResponseCode() == 200) {
-                InputStream is = connection.getInputStream();
-                // 定义BufferedReader输入流来读取URL的响应
-                bufferedReader = new BufferedReader(
-                        new InputStreamReader(is));
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    result += line;
-                }
-
-                if (is != null) {
-                    try {
-                        is.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                AliveLog.v(TAG, "result =" + result);
-                AliveLog.v(TAG, "请求成功!");
-            } else {
-                AliveLog.e(TAG, "错误 response=" + connection.getResponseCode());
-            }
-
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally {
-            if (bufferedReader != null) {
-                try {
-                    bufferedReader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                connection.disconnect();
-            }
-
         }
         return result;
     }

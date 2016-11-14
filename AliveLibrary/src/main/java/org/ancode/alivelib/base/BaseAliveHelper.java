@@ -54,7 +54,6 @@ public abstract class BaseAliveHelper {
      * </p>
      *
      * @param tag
-     * @return
      */
     protected void setAliveTag(String tag) {
         if (TextUtils.isEmpty(tag)) {
