@@ -61,6 +61,12 @@ public class AliveSPUtils extends BaseSPUtils {
      */
     private static final String IS_RELEASE = "is_release";
 
+
+    /**
+     * 下一次显示保活统计的时间
+     */
+    private static final String NEXT_SHOW_AS_NOTIFY_TIME = "NEXT_SHOW_NOTIFY_TIME";
+
     /**
      * 获取统计开始时间
      *
@@ -72,8 +78,6 @@ public class AliveSPUtils extends BaseSPUtils {
 
     /**
      * 设置统计开始时间
-     *
-     *
      */
     public void setASBeginTime(long asStartTime) {
         putLong(ALIVE_STATS_BEGIN_TIME, asStartTime);
@@ -133,11 +137,20 @@ public class AliveSPUtils extends BaseSPUtils {
         putString(ALIVE_STATS_TAG, tag);
     }
 
-    public void setIsRelease(boolean b){
-        putBoolean(IS_RELEASE,b);
+    public void setIsRelease(boolean b) {
+        putBoolean(IS_RELEASE, b);
     }
 
-    public boolean getIsRelease(){
-        return getBoolean(IS_RELEASE,true);
+    public boolean getIsRelease() {
+        return getBoolean(IS_RELEASE, true);
+    }
+
+
+    public void setNextShowAsNotifyTime(long time) {
+        putLong(NEXT_SHOW_AS_NOTIFY_TIME, time);
+    }
+
+    public long getNextShowAsNotifyTime() {
+        return getLong(NEXT_SHOW_AS_NOTIFY_TIME, 0);
     }
 }

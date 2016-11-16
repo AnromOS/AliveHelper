@@ -14,6 +14,7 @@ public class AliveDateUtils {
     public static final String DEFAULT_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     public static final String DEFAULT_DAY_FORMAT = "yyyy-MM-dd";
+
     /**
      * 格式化指定日期
      *
@@ -118,6 +119,48 @@ public class AliveDateUtils {
         int result = endDay - startDay;
         AliveLog.v("AliveStatus", "startDay=" + startDay + ",endDay=" + endDay + ",比较开始时间与结束时间相差天数=" + result);
         return result;
+    }
+
+
+    /**
+     * 获取指定日期的9点
+     *
+     * @param nowTime
+     * @return
+     */
+    public static long getTody9Point(long nowTime) {
+        Calendar nowCalendar = Calendar.getInstance();
+        nowCalendar.setTime(new Date(nowTime));
+        // 当前年
+        int year = nowCalendar.get(Calendar.YEAR);
+        // 当前月
+        int month = (nowCalendar.get(Calendar.MONTH));
+        // 当前月的第几天：即当前日
+        int day_of_month = nowCalendar.get(Calendar.DAY_OF_MONTH);
+        Calendar compareCalendar = new GregorianCalendar(year, month, day_of_month, 9, 0, 0);
+        return compareCalendar.getTimeInMillis();
+    }
+
+    /**
+     * 获取下一天当前时间
+     *
+     * @param time
+     * @return
+     */
+    public static long getNextDayThisTime(long time) {
+        Calendar timeCalendar = Calendar.getInstance();
+        timeCalendar.setTime(new Date(time));
+        // 当前年
+        int year = timeCalendar.get(Calendar.YEAR);
+        // 当前月
+        int month = (timeCalendar.get(Calendar.MONTH));
+        // 当前月的第几天：即当前日
+        int day_of_month = timeCalendar.get(Calendar.DAY_OF_MONTH);
+        int hours = timeCalendar.get(Calendar.HOUR_OF_DAY);
+        int minute = timeCalendar.get(Calendar.MINUTE);
+        int second = timeCalendar.get(Calendar.SECOND);
+        Calendar compareCalendar = new GregorianCalendar(year, month, day_of_month + 1, hours, minute, second);
+        return compareCalendar.getTimeInMillis();
     }
 
 

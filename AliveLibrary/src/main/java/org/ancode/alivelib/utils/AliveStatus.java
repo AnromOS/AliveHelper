@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.http.HttpClient;
 
@@ -108,9 +109,33 @@ public class AliveStatus {
                 AliveLog.v(TAG, "距离第一次统计时间" + differTime + "小时 是否正在上传->," + uploadingAlive + "不上传服务器");
             }
 
+            sendNotifyAliveStats(nowTime);
         } catch (Exception e) {
             AliveLog.e(TAG, "write error:" + e.getLocalizedMessage());
             e.printStackTrace();
+        }
+    }
+
+    /***
+     * 定时显示 在线成绩单(每天9点)
+     *
+     * @param nowTime
+     */
+    private void sendNotifyAliveStats(long nowTime) {
+        long nextShowAsNotifyTime = AliveSPUtils.getInstance().getNextShowAsNotifyTime();
+        if (nextShowAsNotifyTime == 0) {
+            //设置明天9点
+            long today9Point = AliveDateUtils.getTody9Point(nowTime);
+            long nextDate = AliveDateUtils.getNextDayThisTime(today9Point);
+            AliveSPUtils.getInstance().setNextShowAsNotifyTime(nextDate);
+            AliveLog.v(TAG, "第一次提示用户查看保活统计");
+            handler.sendEmptyMessage(SHOW_ALIVE_STATS_NOTIFY);
+        } else if (nowTime >= nextShowAsNotifyTime) {
+            AliveLog.v(TAG, "到点了提示用户查看保活统计");
+            //设置明天9点
+            long nextDate = AliveDateUtils.getNextDayThisTime(nextShowAsNotifyTime);
+            AliveSPUtils.getInstance().setNextShowAsNotifyTime(nextDate);
+            handler.sendEmptyMessage(SHOW_ALIVE_STATS_NOTIFY);
         }
     }
 
@@ -159,6 +184,7 @@ public class AliveStatus {
     private static final int REOPEN_ALIVE_STATS = 0x102;
     public static final int RESET_ALIVE_STATS = 0x103;
     public static final int UPLOAD_ALIVE_STATS_FAILED = 0x104;
+    public static final int SHOW_ALIVE_STATS_NOTIFY = 0x105;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -177,6 +203,8 @@ public class AliveStatus {
             } else if (msg.what == UPLOAD_ALIVE_STATS_FAILED) {
                 AliveLog.v(TAG, "----上传数据失败----");
                 uploadingAlive = false;
+            } else if (msg.what == SHOW_ALIVE_STATS_NOTIFY) {
+                AliveHelper.getHelper().notifyAliveStats(2000);
             }
         }
     };

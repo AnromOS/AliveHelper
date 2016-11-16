@@ -1,5 +1,7 @@
 package org.ancode.alivelib.service;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,12 +14,15 @@ import android.util.Log;
 
 import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.config.HelperConfig;
+import org.ancode.alivelib.receiver.AlermTimerReceiver;
 import org.ancode.alivelib.utils.AliveLog;
 import org.ancode.alivelib.utils.AliveSPUtils;
 import org.ancode.alivelib.utils.AliveStatsUtils;
 import org.ancode.alivelib.utils.AliveStatus;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,8 +44,6 @@ public class AliveHelperService extends Service {
     public static final String KILL_ALIVE_HELPER_SERVICE = "org.ancode.alivelib.service.KILL_ALIVE_HELPER_SERVICE";
 
     private final int WARNING_TIME = 1000 * 60 * 30;
-//    private DateChangeReceiver dateChangeReceiver = null;
-
 
     //定时弹出使用指南
     //是否已经提示
@@ -60,6 +63,7 @@ public class AliveHelperService extends Service {
 
         if (aliveStatus == null) {
             aliveStatus = new AliveStatus(this);
+
         }
         String action = null;
         try {
@@ -76,11 +80,6 @@ public class AliveHelperService extends Service {
                     openWarningTimer();
                     break;
                 case CLOSE_ALIVE_STATS_SERVICE_ACTION:
-//                    try {
-//                        unregisterReceiver(dateChangeReceiver);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
                     aliveStatus.closeStatsLiveTimer();
                     break;
                 case CLOSE_ALIVE_WARNING_SERVICE_ACTION:
@@ -98,9 +97,7 @@ public class AliveHelperService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-//        registerDateChangeReceiver();
     }
-
 
     private void openWarningTimer() {
 
@@ -162,42 +159,5 @@ public class AliveHelperService extends Service {
         aliveStatus.clearAliveStatus();
         closeWarningTimer();
 
-
-//        try {
-//            unregisterReceiver(dateChangeReceiver);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
-
-//    private void registerDateChangeReceiver() {
-//        if (dateChangeReceiver == null) {
-//            dateChangeReceiver = new DateChangeReceiver();
-//            IntentFilter intentFilter = new IntentFilter();
-//            intentFilter.addAction(Intent.ACTION_TIME_TICK);
-//            registerReceiver(dateChangeReceiver, intentFilter);
-//        }
-//
-//    }
-//
-//    /***
-//     *
-//     */
-//    class DateChangeReceiver extends BroadcastReceiver {
-//
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            if (intent != null) {
-//                if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
-//                    if (aliveStatus != null && aliveStatus.aliveStatsTimer != null) {
-//                        long nowDate = new Date().getTime();
-//                        if (aliveStatus.lastStatsTime >= nowDate) {
-//                            aliveStatus.openStatsLiveTimer();
-//                            Log.v(TAG, "日期发生变化重新启动保活统计");
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
 }

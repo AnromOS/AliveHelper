@@ -35,7 +35,7 @@ public class Application extends android.app.Application {
         AliveHelper.setDebug(true);//是否打印防杀助手log
 //        AliveHelper.setThemeColor(R.color.alive_dialog_btn_border_color);//手动设置展示界面的主色调
 //        AliveHelper.useAnet(false); //是否使用原网环境
-        AliveHelper.isRelease(true);
+        AliveHelper.isRelease(false);
         //*****开启使用率统计相关******//
 
 

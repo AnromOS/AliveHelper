@@ -21,6 +21,11 @@
         <!--<action android:name="org.ancde.alivelib.SHOW_DIALOG_NOTIFICATION_ACTION" />-->
         <!--</intent-filter>-->
         <!--</receiver>-->
+        <receiver android:name=".receiver.AlermTimerReceiver">
+            <intent-filter>
+                <action android:name="org.ancode.alivelib.SHOW_NOTIFY_ALIVE_STATS" />
+            </intent-filter>
+        </receiver>
         <service android:name=".service.AliveHelperService" />
     </application>
 
