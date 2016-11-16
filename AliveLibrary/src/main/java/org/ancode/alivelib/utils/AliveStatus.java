@@ -117,7 +117,7 @@ public class AliveStatus {
     }
 
     /***
-     * 定时显示 在线成绩单(每天9点)
+     * 定时通知用户 查看在线成绩单(每天9点)
      *
      * @param nowTime
      */

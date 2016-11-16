@@ -257,7 +257,6 @@ public class AliveHelper extends BaseAliveHelper {
         new NotifyUtils().showAliveGuideNotify(afterTime);
     }
 
-
     /**
      * 显示保活统计的通知
      *
