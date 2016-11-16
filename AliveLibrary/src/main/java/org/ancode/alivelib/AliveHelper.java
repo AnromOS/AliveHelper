@@ -18,6 +18,7 @@ import org.ancode.alivelib.utils.AliveLog;
 import org.ancode.alivelib.utils.AliveSPUtils;
 import org.ancode.alivelib.utils.IntentUtils;
 import org.ancode.alivelib.utils.NotifyUtils;
+import org.ancode.alivelib.utils.PatchUtils;
 
 /**
  * Created by andyliu on 16-8-25.
@@ -38,11 +39,19 @@ public class AliveHelper extends BaseAliveHelper {
         if (helper == null) {
             HelperConfig.CONTEXT = context;
             helper = new AliveHelper();
+            doPatch();
         } else {
 
         }
 //        initCrash(context);
         return helper;
+    }
+
+    /***
+     * 打补丁
+     */
+    private static void doPatch() {
+        PatchUtils.deleteOldAsFile();
     }
 
 

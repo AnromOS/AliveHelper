@@ -163,7 +163,6 @@ public class AliveHelperService extends Service {
         closeWarningTimer();
 
 
-
 //        try {
 //            unregisterReceiver(dateChangeReceiver);
 //        } catch (Exception e) {

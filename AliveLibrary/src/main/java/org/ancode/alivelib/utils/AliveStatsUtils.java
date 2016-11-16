@@ -1,6 +1,7 @@
 package org.ancode.alivelib.utils;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import org.ancode.alivelib.config.Constants;
 import org.ancode.alivelib.config.HelperConfig;
@@ -18,7 +19,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by andyliu on 16-10-8.
@@ -70,6 +73,7 @@ public class AliveStatsUtils {
 
     /**
      * 获取时间差
+     *
      * @param startTime
      * @param endTime
      * @return
@@ -86,13 +90,17 @@ public class AliveStatsUtils {
      */
     public static List<String> getAliveStatsResult() {
         List<String> result = new ArrayList<String>();
-        File file = new File(HelperConfig.CONTEXT.getFilesDir(), HelperConfig.ALIVE_STATS_FILE_NAME);
+        File file = new File(HelperConfig.CONTEXT.getFilesDir(), HelperConfig.NEW_ALIVE_STATS_FILE_NAME);
 
         if (!file.exists()) {
             return result;
         }
         FileReader fileReader = null;
         BufferedReader bufferedReader = null;
+
+
+
+
         try {
             fileReader = new FileReader(file);
             bufferedReader = new BufferedReader(fileReader);
@@ -116,6 +124,68 @@ public class AliveStatsUtils {
         return result;
     }
 
+
+//    /***
+//     * 获取文件存储数据(拆天操作)
+//     *
+//     * @return
+//     */
+//    public static JSONObject getAliveStatsResult() {
+////        List<String> result = new ArrayList<String>();
+//        File file = new File(HelperConfig.CONTEXT.getFilesDir(), HelperConfig.NEW_ALIVE_STATS_FILE_NAME);
+//        Map<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>();
+//        JSONObject jsonObject = new JSONObject();
+//        if (!file.exists()) {
+//            return jsonObject;
+//        }
+//        FileReader fileReader = null;
+//        BufferedReader bufferedReader = null;
+//
+//
+//
+//
+//        try {
+//            fileReader = new FileReader(file);
+//            bufferedReader = new BufferedReader(fileReader);
+//            //当前遍历到的时间
+//            String nowLine = null;
+//            while ((nowLine = bufferedReader.readLine()) != null) {
+//                String[] str = nowLine.split(" ");
+//                if (str != null && str.length > 1) {
+//                    String date = str[0];
+//                    String mapKey = AliveDateUtils.timeFormat(Long.valueOf(date), AliveDateUtils.DEFAULT_DAY_FORMAT);
+//                    if (map.get(mapKey) == null) {
+//                        ArrayList<String> arrayList = new ArrayList<String>();
+//                        arrayList.add(nowLine);
+//                        map.put(mapKey, arrayList);
+//                    } else {
+//                        map.get(mapKey).add(nowLine);
+//                    }
+//                }
+////                result.add(nowLine);
+//            }
+//            for (Map.Entry<String, ArrayList<String>> entry : map.entrySet()) {
+//                try {
+//                    jsonObject.put(entry.getKey(), new JSONArray(entry.getValue()));
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                bufferedReader.close();
+//                fileReader.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return jsonObject;
+//    }
+
     /***
      * 获取应用存活的时间段
      *
@@ -123,7 +193,7 @@ public class AliveStatsUtils {
      */
     public static List<Long[]> getTimeToLive() {
         List<Long[]> result = new ArrayList<Long[]>();
-        File file = new File(HelperConfig.CONTEXT.getFilesDir(), HelperConfig.ALIVE_STATS_FILE_NAME);
+        File file = new File(HelperConfig.CONTEXT.getFilesDir(), HelperConfig.NEW_ALIVE_STATS_FILE_NAME);
 
         if (!file.exists()) {
             return result;
@@ -195,6 +265,7 @@ public class AliveStatsUtils {
 
     /**
      * 获取保活百分比
+     *
      * @return
      */
     public static float getAlivePercent() {
@@ -225,5 +296,4 @@ public class AliveStatsUtils {
 
         return percent;
     }
-
 }

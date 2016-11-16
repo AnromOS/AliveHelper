@@ -27,8 +27,8 @@ public class HttpHelper {
     //    public static Map<String, HttpURLConnection> urlgetConnections = null;
 //    public static Map<String, HttpURLConnection> urlpostConnections = null;
     public static final String CHARSET = "UTF-8";
-    public static final int CONNECT_TIMEOUT = 15 * 1000;
-    public static final int READ_TIMEOUT = 15 * 1000;
+    public static final int CONNECT_TIMEOUT = 20 * 1000;
+    public static final int READ_TIMEOUT = 20 * 1000;
 
 
 

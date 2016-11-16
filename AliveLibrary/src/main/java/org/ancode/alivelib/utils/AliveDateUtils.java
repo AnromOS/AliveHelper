@@ -11,8 +11,9 @@ import java.util.GregorianCalendar;
  */
 public class AliveDateUtils {
 
-    public static final String DEFAULT_FORMAT = "yyyy-MM-dd hh:mm:ss";
+    public static final String DEFAULT_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
+    public static final String DEFAULT_DAY_FORMAT = "yyyy-MM-dd";
     /**
      * 格式化指定日期
      *

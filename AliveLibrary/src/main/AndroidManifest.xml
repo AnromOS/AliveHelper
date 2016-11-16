@@ -9,10 +9,12 @@
         <activity
             android:name=".activity.AliveGuideActivity"
             android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".activity.AliveStatsActivity"
             android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <!--<receiver android:name=".receiver.AliveDialogReceiver">-->
         <!--<intent-filter>-->

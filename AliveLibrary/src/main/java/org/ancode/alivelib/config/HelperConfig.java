@@ -31,9 +31,13 @@ public class HelperConfig {
     public static final int CHECK_STATS_DIFFER = 35 * 1000;
 
     /***
-     * aliveStats存储文件名称
+     * aliveStats存储文件名称(旧文件)
      */
-    public static final String ALIVE_STATS_FILE_NAME = "alive_cout_file";
+    public static final String OLD_ALIVE_STATS_FILE_NAME = "alive_cout_file";
+    /***
+     * aliveStats存储文件名称(新文件)
+     */
+    public static final String NEW_ALIVE_STATS_FILE_NAME = "alive_stats_file_2";
     /***
      * 应用默认警告点
      * 0.0-1.0

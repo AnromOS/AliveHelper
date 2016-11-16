@@ -1,5 +1,11 @@
 apply plugin: 'com.android.library'
-
+// add plugin
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+version = '0.0.3'
+group = 'org.ancode.library'
+def siteUrl = 'https://github.com/AnromOS/AliveHelper'
+def gitUrl = 'https://github.com/AnromOS/AliveHelper.git'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
@@ -7,8 +13,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 20
-        versionCode 1
-        versionName "0.0.1"
+        versionCode 3
+        versionName '0.0.3'
     }
 
     buildTypes {
@@ -37,13 +43,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.2.1'
 }
 
-// add plugin
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
-version = '0.0.1'
-group = 'org.ancode.library'
-def siteUrl = 'https://github.com/AnromOS/AliveHelper'
-def gitUrl = 'https://github.com/AnromOS/AliveHelper.git'
+
 install {
     repositories.mavenInstaller {
         // This generates POM.xml with proper parameters
