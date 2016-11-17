@@ -132,7 +132,7 @@ public class AliveStats {
             long nextDate = AliveDateUtils.getNextDayThisTime(today9Point);
             AliveSPUtils.getInstance().setNextShowAsNotifyTime(nextDate);
             AliveLog.v(TAG, "第一次提示用户查看保活统计");
-            handler.sendEmptyMessage(SHOW_ALIVE_STATS_NOTIFY);
+//            handler.sendEmptyMessage(SHOW_ALIVE_STATS_NOTIFY);
         } else if (nowTime >= nextShowAsNotifyTime) {
             AliveLog.v(TAG, "到点了提示用户查看保活统计");
             //设置明天9点

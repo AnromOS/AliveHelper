@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -93,6 +94,7 @@ public class AliveStatsActivity extends BaseAliveActivity {
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setAllowFileAccess(true);
         webView.getSettings().setDomStorageEnabled(true);//允许DCOM
+        webView.addJavascriptInterface(this, "aliveStatsMethod");
         final ProgressBar finalProgressBar = progressBar;
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -112,6 +114,23 @@ public class AliveStatsActivity extends BaseAliveActivity {
                 return true;
             }
         });
+    }
+
+    /***
+     *
+     * @param activityName
+     */
+    @JavascriptInterface
+    public void toActivity(String activityName) {
+        try {
+            //此处应该定义常量对应，同时提供给web页面编写者
+            if (TextUtils.equals(activityName, "aliveguide")) {
+                startActivity(new Intent(this, AliveGuideActivity.class));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -150,19 +169,6 @@ public class AliveStatsActivity extends BaseAliveActivity {
                 AliveLog.v("WebViewDialog", "start Web url is = " + url);
                 try {
                     //   跳转防杀指南 <a href="ancode://toaliveguide/param?activity=aliveguide">gotoActivity</a>
-                    String scheme = Uri.parse(url).getScheme();
-                    if (TextUtils.equals("ancode", scheme)) {
-                        String param = Uri.parse(url).getQueryParameter("activity");
-                        if (TextUtils.isEmpty(param)) {
-                            return false;
-                        } else {
-                            if (!param.equals("aliveguide")) {
-                                return false;
-                            }
-
-                        }
-
-                    }
                     Intent intent = new Intent();
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setData(Uri.parse(url));
