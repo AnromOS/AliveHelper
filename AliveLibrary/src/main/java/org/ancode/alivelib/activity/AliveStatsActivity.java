@@ -138,9 +138,9 @@ public class AliveStatsActivity extends BaseAliveActivity {
 
     @Override
     protected void onRefresh(String data) {
-        String dataUrl = data + "&t=" + System.currentTimeMillis();
-        webView.loadUrl(dataUrl);
-        Log.v(TAG, "请求到的保活统计界面为\n" + dataUrl);
+        webView.clearCache(true);
+        webView.loadUrl(data);
+        Log.v(TAG, "请求到的保活统计界面为\n" + data);
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

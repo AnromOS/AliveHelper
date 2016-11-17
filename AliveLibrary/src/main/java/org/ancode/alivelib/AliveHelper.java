@@ -167,7 +167,7 @@ public class AliveHelper extends BaseAliveHelper {
     /***
      * 关闭保活统计服务
      */
-    protected void closeAliveStats() {
+    public void closeAliveStats() {
         Intent intent = new Intent(HelperConfig.CONTEXT, AliveHelperService.class);
         intent.putExtra(AliveHelperService.ACTION, AliveHelperService.CLOSE_ALIVE_STATS_SERVICE_ACTION);
         HelperConfig.CONTEXT.startService(intent);
