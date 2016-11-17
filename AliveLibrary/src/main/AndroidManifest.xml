@@ -9,8 +9,22 @@
         <activity
             android:name=".activity.AliveGuideActivity"
             android:launchMode="singleInstance"
+            android:parentActivityName=".activity.AliveStatsActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="toaliveguide"
+                    android:scheme="ancode" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activity.AliveStatsActivity"
             android:launchMode="singleInstance"

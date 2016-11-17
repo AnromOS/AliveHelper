@@ -31,7 +31,6 @@ public class AliveGuideActivity extends BaseAliveActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AliveLog.v(TAG, "AliveGuideActivity onCreate");
-
     }
 
     @Override

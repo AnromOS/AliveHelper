@@ -149,6 +149,20 @@ public class AliveStatsActivity extends BaseAliveActivity {
                 }
                 AliveLog.v("WebViewDialog", "start Web url is = " + url);
                 try {
+                    //   跳转防杀指南 <a href="ancode://toaliveguide/param?activity=aliveguide">gotoActivity</a>
+                    String scheme = Uri.parse(url).getScheme();
+                    if (TextUtils.equals("ancode", scheme)) {
+                        String param = Uri.parse(url).getQueryParameter("activity");
+                        if (TextUtils.isEmpty(param)) {
+                            return false;
+                        } else {
+                            if (!param.equals("aliveguide")) {
+                                return false;
+                            }
+
+                        }
+
+                    }
                     Intent intent = new Intent();
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setData(Uri.parse(url));
@@ -156,6 +170,7 @@ public class AliveStatsActivity extends BaseAliveActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
                 return true;
             }
 
