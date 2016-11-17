@@ -1,28 +1,17 @@
 package org.ancode.alivelib.service;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.util.Log;
 
 import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.config.HelperConfig;
-import org.ancode.alivelib.receiver.AlermTimerReceiver;
 import org.ancode.alivelib.utils.AliveLog;
-import org.ancode.alivelib.utils.AliveSPUtils;
 import org.ancode.alivelib.utils.AliveStatsUtils;
-import org.ancode.alivelib.utils.AliveStatus;
+import org.ancode.alivelib.utils.AliveStats;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -51,7 +40,7 @@ public class AliveHelperService extends Service {
     private Timer warningTimer = null;
 
     //保活统计
-    private AliveStatus aliveStatus = null;
+    private AliveStats aliveStats = null;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -61,8 +50,8 @@ public class AliveHelperService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (aliveStatus == null) {
-            aliveStatus = new AliveStatus(this);
+        if (aliveStats == null) {
+            aliveStats = new AliveStats(this);
 
         }
         String action = null;
@@ -74,13 +63,13 @@ public class AliveHelperService extends Service {
         if (action != null) {
             switch (action) {
                 case OPEN_ALIVE_STATS_SERVICE_ACTION:
-                    aliveStatus.openStatsLiveTimer();
+                    aliveStats.openStatsLiveTimer();
                     break;
                 case OPEN_ALIVE_WARNING_SERVICE_ACTION:
                     openWarningTimer();
                     break;
                 case CLOSE_ALIVE_STATS_SERVICE_ACTION:
-                    aliveStatus.closeStatsLiveTimer();
+                    aliveStats.closeStatsLiveTimer();
                     break;
                 case CLOSE_ALIVE_WARNING_SERVICE_ACTION:
                     closeWarningTimer();
@@ -156,7 +145,7 @@ public class AliveHelperService extends Service {
     public void onDestroy() {
         super.onDestroy();
         AliveLog.v(TAG, "AliveHelperService onDestroy");
-        aliveStatus.clearAliveStatus();
+        aliveStats.clearAliveStats();
         closeWarningTimer();
 
     }

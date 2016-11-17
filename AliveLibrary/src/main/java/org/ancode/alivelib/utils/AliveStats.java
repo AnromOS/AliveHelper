@@ -3,7 +3,6 @@ package org.ancode.alivelib.utils;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.config.HelperConfig;
@@ -11,58 +10,65 @@ import org.ancode.alivelib.http.HttpClient;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 保活统计
  * Created by andyliu on 16-11-7.
  */
-public class AliveStatus {
-    private static final String TAG = AliveStatus.class.getSimpleName();
-    public Timer aliveStatsTimer = null;
+public class AliveStats {
+    private static final String TAG = AliveStats.class.getSimpleName();
     private boolean uploadingAlive = false;
     //文件写入
     private File aliveStatsfile = null;
     private FileWriter fileWriter = null;
     private BufferedWriter writer = null;
     private Context context = null;
+
+    private ScheduledThreadPoolExecutor aliveStatsThreader = null;
     private AliveStatsTask aliveStatsTask = null;
 
-    public AliveStatus(Context context) {
+    public AliveStats(Context context) {
         this.context = context;
     }
 
     public void openStatsLiveTimer() {
-        if (aliveStatsTimer != null) {
-            closeStatsLiveTimer();
+
+        if (aliveStatsThreader == null) {
+            aliveStatsThreader = new ScheduledThreadPoolExecutor(1);
         }
-        if (aliveStatsTimer == null) {
-            AliveLog.v(TAG, "---start Stats alive---");
-            aliveStatsTimer = new Timer();
+        if (aliveStatsTask == null) {
             aliveStatsTask = new AliveStatsTask();
-            aliveStatsTimer.schedule(aliveStatsTask, 2000, HelperConfig.ALIVE_STATS_RATE);
         }
+        AliveLog.v(TAG, "---start Stats alive---");
+        aliveStatsThreader.scheduleAtFixedRate(
+                aliveStatsTask,
+                2000,
+                HelperConfig.ALIVE_STATS_RATE,
+                TimeUnit.MILLISECONDS);
     }
 
     public void closeStatsLiveTimer() {
-        if (aliveStatsTask != null) {
-            aliveStatsTask.cancel();
-        }
-        if (aliveStatsTimer != null) {
 
-            aliveStatsTimer.purge();
-            aliveStatsTimer.cancel();
-            aliveStatsTimer = null;
+        if (aliveStatsThreader != null) {
+            if (aliveStatsTask != null) {
+                aliveStatsThreader.remove(aliveStatsTask);
+                aliveStatsTask = null;
+            }
+            aliveStatsThreader.shutdown();
+            aliveStatsThreader = null;
             AliveLog.v(TAG, "---close Stats alive---");
         }
+
     }
 
-    public void clearAliveStatus() {
+    public void clearAliveStats() {
         closeStatsLiveTimer();
         clearFileWriter();
     }
@@ -190,7 +196,7 @@ public class AliveStatus {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == REOPEN_ALIVE_STATS) {
-                clearAliveStatus();
+                clearAliveStats();
                 openStatsLiveTimer();
             } else if (msg.what == RESET_ALIVE_STATS) {
                 AliveLog.v(TAG, "----上传数据成功----");
@@ -210,7 +216,7 @@ public class AliveStatus {
     };
 
 
-    class AliveStatsTask extends TimerTask {
+    private class AliveStatsTask implements Runnable {
 
         @Override
         public void run() {
@@ -222,4 +228,16 @@ public class AliveStatus {
             }
         }
     }
+//    class AliveStatsTask extends TimerTask {
+//
+//        @Override
+//        public void run() {
+//            try {
+//                aliveStats();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                handler.sendEmptyMessage(REOPEN_ALIVE_STATS);
+//            }
+//        }
+//    }
 }

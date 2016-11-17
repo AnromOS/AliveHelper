@@ -61,6 +61,18 @@
                 android:text="保活统计通知" />
 
             <Button
+                android:id="@+id/open_alive_stats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="开启AliveStats" />
+
+            <Button
+                android:id="@+id/close_alive_stats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="关闭AliveStats" />
+
+            <Button
                 android:id="@+id/close"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

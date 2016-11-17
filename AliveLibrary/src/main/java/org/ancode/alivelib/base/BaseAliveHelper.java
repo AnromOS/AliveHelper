@@ -36,7 +36,7 @@ public abstract class BaseAliveHelper {
     /***
      * 开启保活统计服务
      */
-    protected void openAliveStats() {
+    public void openAliveStats() {
         Intent intent = new Intent(HelperConfig.CONTEXT, AliveHelperService.class);
         intent.putExtra(AliveHelperService.ACTION, AliveHelperService.OPEN_ALIVE_STATS_SERVICE_ACTION);
         HelperConfig.CONTEXT.startService(intent);

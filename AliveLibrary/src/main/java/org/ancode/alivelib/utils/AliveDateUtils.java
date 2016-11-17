@@ -117,7 +117,7 @@ public class AliveDateUtils {
         endCalendar.setTime(new Date(endTime));
         int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
         int result = endDay - startDay;
-        AliveLog.v("AliveStatus", "startDay=" + startDay + ",endDay=" + endDay + ",比较开始时间与结束时间相差天数=" + result);
+        AliveLog.v("AliveStats", "startDay=" + startDay + ",endDay=" + endDay + ",比较开始时间与结束时间相差天数=" + result);
         return result;
     }
 

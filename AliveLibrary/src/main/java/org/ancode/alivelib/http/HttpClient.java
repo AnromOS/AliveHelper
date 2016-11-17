@@ -11,11 +11,10 @@ import org.ancode.alivelib.config.Constants;
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.config.HttpUrlConfig;
 import org.ancode.alivelib.callback.StringCallBack;
-import org.ancode.alivelib.service.AliveHelperService;
 import org.ancode.alivelib.utils.AliveLog;
 import org.ancode.alivelib.utils.AliveSPUtils;
+import org.ancode.alivelib.utils.AliveStats;
 import org.ancode.alivelib.utils.AliveStatsUtils;
-import org.ancode.alivelib.utils.AliveStatus;
 import org.ancode.alivelib.utils.NetUtils;
 import org.ancode.alivelib.utils.Utils;
 import org.json.JSONArray;
@@ -23,7 +22,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -205,9 +203,9 @@ public class HttpClient {
             protected void onPostExecute(Boolean b) {
                 super.onPostExecute(b);
                 if (b) {
-                    handler.sendEmptyMessage(AliveStatus.RESET_ALIVE_STATS);
+                    handler.sendEmptyMessage(AliveStats.RESET_ALIVE_STATS);
                 } else {
-                    handler.sendEmptyMessage(AliveStatus.UPLOAD_ALIVE_STATS_FAILED);
+                    handler.sendEmptyMessage(AliveStats.UPLOAD_ALIVE_STATS_FAILED);
                 }
             }
         }.execute();

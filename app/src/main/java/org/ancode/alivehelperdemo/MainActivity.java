@@ -10,11 +10,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.callback.StringCallBack;
 import org.ancode.alivelib.utils.AliveLog;
-import org.ancode.alivelib.utils.AliveStatus;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -25,6 +25,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button aliveStatsActivity;
     Button aliveStatsNotify;
     Button close;
+    Button close_alive_stats;
+    Button open_alive_stats;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         close = (Button) findViewById(R.id.close);
         close.setOnClickListener(this);
+
+        close_alive_stats = (Button) findViewById(R.id.close_alive_stats);
+        close_alive_stats.setOnClickListener(this);
+        open_alive_stats = (Button) findViewById(R.id.open_alive_stats);
+        open_alive_stats.setOnClickListener(this);
     }
 
     @Override
@@ -124,6 +131,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.alive_stats_notify:
                 AliveHelper.getHelper().notifyAliveStats(2000);
+                break;
+            case R.id.close_alive_stats:
+                AliveHelper.getHelper().closeAliveStats();
+                break;
+            case R.id.open_alive_stats:
+                Toast.makeText(this, "暂无此方法", Toast.LENGTH_SHORT).show();
+//                AliveHelper.getHelper().openAliveStats();
                 break;
             case R.id.close:
 
