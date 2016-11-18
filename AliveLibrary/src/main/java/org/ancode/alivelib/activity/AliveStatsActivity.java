@@ -1,7 +1,9 @@
 package org.ancode.alivelib.activity;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -10,6 +12,8 @@ import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -117,7 +121,6 @@ public class AliveStatsActivity extends BaseAliveActivity {
     }
 
     /***
-     *
      * @param activityName
      */
     @JavascriptInterface
@@ -163,6 +166,7 @@ public class AliveStatsActivity extends BaseAliveActivity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//                Log.v(TAG, "加载的url是=" + url);
                 if (URLUtil.isNetworkUrl(url)) {
                     return false;
                 }
@@ -179,6 +183,41 @@ public class AliveStatsActivity extends BaseAliveActivity {
 
                 return true;
             }
+
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+                if (!TextUtils.isEmpty(url)) {
+                    if (url.contains("xz.mixun.org")) {
+                        Log.v(TAG, "自己的url=" + url);
+                        return null;
+
+                    } else if (url.contains("aliveguide")) {
+                        Log.v(TAG, "自己的url=" + url);
+                        return null;
+                    } else {
+                        Log.v(TAG, "其它url=" + url);
+                        return new WebResourceResponse(null, null, null);
+                    }
+                }
+//                Log.v(TAG, "加载的url是自己的url=" + url);
+                return null;
+            }
+
+//            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+//            @Override
+//            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+//                String url = request.getUrl().toString();
+//                if (!TextUtils.isEmpty(url)) {
+//                    if (url.contains("xz.mixun.org")) {
+//                        return null;
+//                    } else if (url.contains("aliveguide")) {
+//                        return null;
+//                    } else {
+//                        return null;
+//                    }
+//                }
+//                return null;
+//            }
 
             @Override
             public void onPageFinished(WebView view, String url) {

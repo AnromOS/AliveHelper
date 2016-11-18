@@ -3,10 +3,13 @@ package org.ancode.alivelib.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -124,6 +127,25 @@ public class AliveGuideActivity extends BaseAliveActivity {
                     e.printStackTrace();
                 }
                 return true;
+            }
+
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+                if (!TextUtils.isEmpty(url)) {
+                    if (url.contains("xz.mixun.org")) {
+                        Log.v(TAG, "自己的url=" + url);
+                        return null;
+
+                    } else if (url.contains("aliveguide")) {
+                        Log.v(TAG, "自己的url=" + url);
+                        return null;
+                    } else {
+                        Log.v(TAG, "其它url=" + url);
+                        return new WebResourceResponse(null, null, null);
+                    }
+                }
+//                Log.v(TAG, "加载的url是自己的url=" + url);
+                return null;
             }
 
             @Override
