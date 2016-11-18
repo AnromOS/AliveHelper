@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 // add plugin
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
-version = '0.0.7'
+version = '0.0.8'
 group = 'org.ancode.library'
 def siteUrl = 'https://github.com/AnromOS/AliveHelper'
 def gitUrl = 'https://github.com/AnromOS/AliveHelper.git'
@@ -13,8 +13,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 20
-        versionCode 7
-        versionName '0.0.7'
+        versionCode 8
+        versionName '0.0.8'
     }
 
     buildTypes {
