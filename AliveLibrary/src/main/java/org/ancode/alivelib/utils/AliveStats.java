@@ -130,9 +130,12 @@ public class AliveStats {
             //设置明天9点
             long today9Point = AliveDateUtils.getTody9Point(nowTime);
             long nextDate = AliveDateUtils.getNextDayThisTime(today9Point);
-            AliveSPUtils.getInstance().setNextShowAsNotifyTime(nextDate);
-            AliveLog.v(TAG, "第一次提示用户查看保活统计");
-//            handler.sendEmptyMessage(SHOW_ALIVE_STATS_NOTIFY);
+            //测试版第一次显示统计提示
+            if (!AliveSPUtils.getInstance().getIsRelease()) {
+                AliveSPUtils.getInstance().setNextShowAsNotifyTime(nextDate);
+                AliveLog.v(TAG, "第一次提示用户查看保活统计");
+            }
+            handler.sendEmptyMessage(SHOW_ALIVE_STATS_NOTIFY);
         } else if (nowTime >= nextShowAsNotifyTime) {
             AliveLog.v(TAG, "到点了提示用户查看保活统计");
             //设置明天9点
