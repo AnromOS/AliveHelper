@@ -64,7 +64,7 @@ public class HelperConfig {
     /**
      * aliveStats上传数据频率 单位/小时
      */
-    public static final int UPLOAD_ALIVE_STATS_RATE = 0;
+    public static final int UPLOAD_ALIVE_STATS_RATE = 1;
 
 
 }
