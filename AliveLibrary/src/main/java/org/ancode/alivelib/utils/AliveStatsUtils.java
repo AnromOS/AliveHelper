@@ -99,15 +99,14 @@ public class AliveStatsUtils {
         BufferedReader bufferedReader = null;
 
 
-
-
         try {
             fileReader = new FileReader(file);
             bufferedReader = new BufferedReader(fileReader);
             //当前遍历到的时间
             String nowLine = null;
             while ((nowLine = bufferedReader.readLine()) != null) {
-                result.add(nowLine);
+                if (!result.contains(nowLine))
+                    result.add(nowLine);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
