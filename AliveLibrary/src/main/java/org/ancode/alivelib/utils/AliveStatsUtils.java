@@ -105,7 +105,7 @@ public class AliveStatsUtils {
             //当前遍历到的时间
             String nowLine = null;
             while ((nowLine = bufferedReader.readLine()) != null) {
-                if (!result.contains(nowLine))
+//                if (!result.contains(nowLine))
                     result.add(nowLine);
             }
         } catch (FileNotFoundException e) {
