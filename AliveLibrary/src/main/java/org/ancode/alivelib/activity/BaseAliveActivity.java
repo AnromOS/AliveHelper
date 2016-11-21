@@ -174,11 +174,7 @@ public abstract class BaseAliveActivity extends Activity {
 //        }
         if (themeColor != -1) {
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                color = getColor(themeColor);
-            } else {
-                color = getResources().getColor(themeColor);
-            }
+            color = getResources().getColor(themeColor);
         } else {
             color = UiHelper.getThemeColor();
         }

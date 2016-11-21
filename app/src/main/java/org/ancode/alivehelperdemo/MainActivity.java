@@ -36,30 +36,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //initPermission();
     }
-
-    private void initPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!Settings.canDrawOverlays(MainActivity.this)) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + getPackageName()));
-                startActivityForResult(intent, 10);
-            }
-        }
-    }
-
-
-    @TargetApi(Build.VERSION_CODES.M)
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 10) {
-            if (Settings.canDrawOverlays(this)) {
-                AliveLog.v(TAG, "SYSTEM_ALERT_WINDOW 授权成功...");
-                initPermission();
-            } else {
-                AliveLog.v(TAG, "SYSTEM_ALERT_WINDOW 授权失败...");
-            }
-        }
-    }
+//
+//    private void initPermission() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (!Settings.canDrawOverlays(MainActivity.this)) {
+//                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+//                        Uri.parse("package:" + getPackageName()));
+//                startActivityForResult(intent, 10);
+//            }
+//        }
+//    }
+//
+//
+//    @TargetApi(Build.VERSION_CODES.M)
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == 10) {
+//            if (Settings.canDrawOverlays(this)) {
+//                AliveLog.v(TAG, "SYSTEM_ALERT_WINDOW 授权成功...");
+//                initPermission();
+//            } else {
+//                AliveLog.v(TAG, "SYSTEM_ALERT_WINDOW 授权失败...");
+//            }
+//        }
+//    }
 
     @Override
     protected void onDestroy() {

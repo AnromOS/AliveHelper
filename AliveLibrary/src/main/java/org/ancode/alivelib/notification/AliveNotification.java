@@ -24,7 +24,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
-import android.support.v7.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat;
 
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.utils.AliveLog;

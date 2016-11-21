@@ -11,8 +11,10 @@ AliveHelper防杀助手,统计应用使用率.
 ## 使用
 
 ### 1.依赖权限
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        <uses-permission android:name="android.permission.INTERNET"/>
+        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 ### 2.Application中配置防杀助手(无耗时操作)
 
         //初始化(必须项)

@@ -19,14 +19,21 @@ public class HelperConfig {
     public static final String APPLY_STATUS_COLOR = "apply_status_color";
     public static int THEME_COLOR_ID = -1;
 
+    public static final String PARENT_PATH = "aliveLibrary";
+    /**
+     * SD卡存储路径
+     */
+    public static final String ROOT_DIR = Environment.getExternalStorageDirectory() + File.separator
+            + PARENT_PATH + File.separator;
 
+    public static final String BACK_UP_FILE_PATH = ROOT_DIR + "backup" + File.separator;
     //统计数据相关配置
     /***
-     * APP存活统计频率
+     * APP存活统计频率(单位:秒)
      */
-    public static final int ALIVE_STATS_RATE = 30 * 1000;
+    public static final int ALIVE_STATS_RATE = 30;
     /**
-     * 时间相差有效值
+     * 时间相差有效值(单位:毫秒)
      */
     public static final int CHECK_STATS_DIFFER = 35 * 1000;
 
@@ -38,6 +45,12 @@ public class HelperConfig {
      * aliveStats存储文件名称(新文件)
      */
     public static final String NEW_ALIVE_STATS_FILE_NAME = "alive_stats_file_2";
+
+
+    /***
+     * 上传后的数据
+     */
+    public static final String ALIVE_STATS_BACK_UP_FILE_NAME = "alive_stats_back_up.txt";
     /***
      * 应用默认警告点
      * 0.0-1.0
@@ -51,7 +64,7 @@ public class HelperConfig {
     /**
      * aliveStats上传数据频率 单位/小时
      */
-    public static final int UPLOAD_ALIVE_STATS_RATE = 1;
+    public static final int UPLOAD_ALIVE_STATS_RATE = 0;
 
 
 }

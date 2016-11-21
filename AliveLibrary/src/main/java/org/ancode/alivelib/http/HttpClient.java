@@ -15,6 +15,7 @@ import org.ancode.alivelib.utils.AliveLog;
 import org.ancode.alivelib.utils.AliveSPUtils;
 import org.ancode.alivelib.utils.AliveStats;
 import org.ancode.alivelib.utils.AliveStatsUtils;
+import org.ancode.alivelib.utils.AliveTestUtils;
 import org.ancode.alivelib.utils.NetUtils;
 import org.ancode.alivelib.utils.Utils;
 import org.json.JSONArray;
@@ -179,21 +180,21 @@ public class HttpClient {
             @Override
             protected Boolean doInBackground(Object... params) {
                 if (HelperConfig.USE_ANET) {
-                    if (NetUtils.ping6(HttpUrlConfig.HOST_V6)) {
-                        AliveLog.v(TAG, "网络可用开始上传服务器");
-                        return uploadAliveStats();
-                    } else {
-                        AliveLog.v(TAG, "网络不可用不能上传服务器");
-                        return false;
-                    }
+//                    if (NetUtils.ping6(HttpUrlConfig.HOST_V6)) {
+//                        AliveLog.v(TAG, "网络可用开始上传服务器");
+                    return uploadAliveStats();
+//                    } else {
+//                        AliveLog.v(TAG, "网络不可用不能上传服务器");
+//                        return false;
+//                    }
                 } else {
-                    if (NetUtils.ping(HttpUrlConfig.HOST_V4)) {
-                        AliveLog.v(TAG, "网络可用开始上传服务器");
-                        return uploadAliveStats();
-                    } else {
-                        AliveLog.v(TAG, "网络不可用不能上传服务器");
-                        return false;
-                    }
+//                    if (NetUtils.ping(HttpUrlConfig.HOST_V4)) {
+//                        AliveLog.v(TAG, "网络可用开始上传服务器");
+                    return uploadAliveStats();
+//                    } else {
+//                        AliveLog.v(TAG, "网络不可用不能上传服务器");
+//                        return false;
+//                    }
                 }
 
 
@@ -263,7 +264,7 @@ public class HttpClient {
             url = HttpUrlConfig.POST_ALIVE_STATS_V4_URL;
             AliveLog.v(TAG, "走IPV4");
         }
-        Log.v(TAG, "上传保活数据\n" + uploadJson.toString());
+        Log.v(TAG, "上传保活数据" + uploadJson.toString());
         String response = HttpHelper.postJson(url, uploadJson.toString(), "uploadStatsTime");
 
         AliveLog.v(TAG, "uploadStatsTime response= " + response);
@@ -284,6 +285,7 @@ public class HttpClient {
                 return false;
             } else {
                 if (result.equals("ok")) {
+                    AliveTestUtils.backUpUploadData(uploadJson);
                     return true;
                 } else {
                     return false;
