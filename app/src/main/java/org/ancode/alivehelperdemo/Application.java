@@ -40,7 +40,7 @@ public class Application extends android.app.Application {
 
 
         //使用当前应用的某个用户的唯一标示,例如 应用拼音简称:账号 (必填项)
-        String tag = "MH:13018211911";
+        String tag = "MH:13018211912";
         BaseStatsInfo statsInfo = new BaseStatsInfo(tag);
 //        statsInfo.setIdName("phone");//id名称 (非必填项)
 //        statsInfo.setId("13018211911");//id值(非必填项)

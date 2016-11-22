@@ -68,6 +68,11 @@ public class AliveSPUtils extends BaseSPUtils {
     private static final String NEXT_SHOW_AS_NOTIFY_TIME = "NEXT_SHOW_NOTIFY_TIME";
 
     /**
+     * 是否是外部版
+     */
+    private static final String ALIVE_STATS_FILE_NAME = "alive_stats_file_name";
+
+    /**
      * 获取统计开始时间
      *
      * @return
@@ -152,5 +157,24 @@ public class AliveSPUtils extends BaseSPUtils {
 
     public long getNextShowAsNotifyTime() {
         return getLong(NEXT_SHOW_AS_NOTIFY_TIME, 0);
+    }
+
+
+    /***
+     * 保活统计文件名
+     *
+     * @return
+     */
+    public String getAliveStatsFileName() {
+        return getString(ALIVE_STATS_FILE_NAME, "");
+    }
+
+    /**
+     * 保活统计文件名
+     *
+     * @param fileName
+     */
+    public void setAliveStatsFileName(String fileName) {
+        putString(ALIVE_STATS_FILE_NAME, fileName);
     }
 }

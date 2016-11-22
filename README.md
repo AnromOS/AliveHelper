@@ -3,11 +3,11 @@ AliveHelper防杀助手,统计应用使用率.
 
 ## Gradle Dependency
 #### appcompat-v7版本>23.2.1以下方式引入
-    compile ('org.ancode.library:AliveLibrary:0.0.8') {
+    compile ('org.ancode.library:AliveLibrary:0.1.1') {
             exclude group:'com.android.support', module:'appcompat-v7'
         }
 #### 如果项目中没有appcompat-v7或者版本<=23.2.1
-    compile 'org.ancode.library:AliveLibrary:0.0.8'
+    compile 'org.ancode.library:AliveLibrary:0.1.1'
 ## 使用
 
 ### 1.依赖权限

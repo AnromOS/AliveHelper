@@ -3,6 +3,7 @@ package org.ancode.alivelib.utils;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.ancode.alivelib.AliveHelper;
@@ -100,7 +101,7 @@ public class AliveStats {
                 AliveLog.v(TAG, "距离第一次统计时间" + differTime + "小时,是否正在上传->," + uploadingAlive + "准备上传服务器");
                 uploadingAlive = true;
                 try {
-                    HttpClient.uploadAliveStats("uploadAliveStats", handler);
+                    HttpClient.uploadAliveStats(aliveStasfn, handler);
                 } catch (Exception e) {
                     e.printStackTrace();
                     uploadingAlive = false;
@@ -147,10 +148,22 @@ public class AliveStats {
 
     }
 
+    private String getAliveStatsFileName() {
+        String fileName = "aliveStatsFile";
+        fileName = AliveDateUtils.timeFormat(new Date(), AliveDateUtils.ALIVE_STATS_FILE_NAME_FORMAT);
+        return fileName;
+    }
+
+    String aliveStasfn = null;
+
     private void checkFileWriter() throws Exception {
         if (aliveStatsfile == null) {
-
-            aliveStatsfile = new File(context.getFilesDir(), HelperConfig.NEW_ALIVE_STATS_FILE_NAME);
+            aliveStasfn = AliveSPUtils.getInstance().getAliveStatsFileName();
+            if (TextUtils.isEmpty(aliveStasfn)) {
+                aliveStasfn = getAliveStatsFileName();
+                AliveSPUtils.getInstance().setAliveStatsFileName(aliveStasfn);
+            }
+            aliveStatsfile = new File(context.getFilesDir(), aliveStasfn);
 
             if (!aliveStatsfile.exists()) {
                 try {
@@ -204,8 +217,9 @@ public class AliveStats {
                 AliveLog.v(TAG, "----上传数据成功----");
                 //交互成功修
                 uploadingAlive = false;
-                context.deleteFile(HelperConfig.NEW_ALIVE_STATS_FILE_NAME);
+                context.deleteFile(aliveStasfn);
                 AliveSPUtils.getInstance().setASBeginTime(0);
+                AliveSPUtils.getInstance().setAliveStatsFileName("");
                 clearFileWriter();
                 AliveLog.v(TAG, "----重置数据成功----");
             } else if (msg.what == UPLOAD_ALIVE_STATS_FAILED) {

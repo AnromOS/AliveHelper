@@ -88,9 +88,9 @@ public class AliveStatsUtils {
      *
      * @return
      */
-    public static List<String> getAliveStatsResult() {
+    public static List<String> getAliveStatsResult(String fileName) {
         List<String> result = new ArrayList<String>();
-        File file = new File(HelperConfig.CONTEXT.getFilesDir(), HelperConfig.NEW_ALIVE_STATS_FILE_NAME);
+        File file = new File(HelperConfig.CONTEXT.getFilesDir(), fileName);
 
         if (!file.exists()) {
             return result;
@@ -106,7 +106,7 @@ public class AliveStatsUtils {
             String nowLine = null;
             while ((nowLine = bufferedReader.readLine()) != null) {
 //                if (!result.contains(nowLine))
-                    result.add(nowLine);
+                result.add(nowLine);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -192,7 +192,7 @@ public class AliveStatsUtils {
      */
     public static List<Long[]> getTimeToLive() {
         List<Long[]> result = new ArrayList<Long[]>();
-        File file = new File(HelperConfig.CONTEXT.getFilesDir(), HelperConfig.NEW_ALIVE_STATS_FILE_NAME);
+        File file = new File(HelperConfig.CONTEXT.getFilesDir(), AliveSPUtils.getInstance().getAliveStatsFileName());
 
         if (!file.exists()) {
             return result;

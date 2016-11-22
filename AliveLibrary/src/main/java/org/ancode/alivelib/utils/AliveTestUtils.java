@@ -22,9 +22,10 @@ public class AliveTestUtils {
     /***
      * 统计数据备份
      *
+     * @param fileName
      * @param data
      */
-    public static void backUpUploadData(JSONObject data) {
+    public static void backUpUploadData(String fileName, JSONObject data) {
         String beginTime = AliveDateUtils.timeFormat(AliveSPUtils.getInstance().getASBeginTime(), AliveDateUtils.DEFAULT_FORMAT);
         String endTime = AliveDateUtils.timeFormat(new Date(), AliveDateUtils.DEFAULT_FORMAT);
         String title = null;
@@ -34,7 +35,7 @@ public class AliveTestUtils {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        title = "TAG=" + tag + ",开始时间=" + beginTime + "," + ",结束时间=" + endTime;
+        title = "文件名" + fileName + ",TAG=" + tag + ",开始时间=" + beginTime + "," + ",结束时间=" + endTime;
         String myData = "=============================================\n"
                 + title + "\n\n"
                 + data.toString() + "\n=============================================\n";
@@ -44,8 +45,8 @@ public class AliveTestUtils {
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        String fileName = dirStr + HelperConfig.ALIVE_STATS_BACK_UP_FILE_NAME;
-        File file = new File(fileName);
+        String backFileName = dirStr + HelperConfig.ALIVE_STATS_BACK_UP_FILE_NAME;
+        File file = new File(backFileName);
         if (!file.exists()) {
             try {
                 file.createNewFile();

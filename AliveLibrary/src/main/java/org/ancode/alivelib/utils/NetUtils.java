@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,22 +25,25 @@ public class NetUtils {
      * @return
      */
     public static String getNetStatus(Context context) {
+        long useTime = System.currentTimeMillis();
 
         ConnectivityManager cm = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
+        String result = "close";
         if (cm == null) {
-            return "close";
+            result = "close";
         }
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         if (networkInfo == null) {
-            return "close";
+            result = "close";
         } else {
             if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
-                return "wifi";
+                result = "wifi";
             } else {
-                return "3g";
+                result = "3g";
             }
         }
+        Log.v("NetUtils", "获取网络状态耗时=" + (System.currentTimeMillis() - useTime));
+        return result;
     }
 
 
@@ -76,7 +80,6 @@ public class NetUtils {
 
 
     }
-
 
 
     public static final boolean ping6(String domain) {

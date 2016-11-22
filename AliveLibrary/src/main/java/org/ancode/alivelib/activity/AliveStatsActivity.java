@@ -161,6 +161,7 @@ public class AliveStatsActivity extends BaseAliveActivity {
     @Override
     protected void onRefresh(String data) {
         webView.clearCache(true);
+        String loadUrl = data + "&t=" + System.currentTimeMillis();
         webView.loadUrl(data);
         Log.v(TAG, "请求到的保活统计界面为\n" + data);
         webView.setWebViewClient(new WebViewClient() {

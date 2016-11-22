@@ -165,10 +165,10 @@ public class HttpClient {
     /***
      * 提交aliveStats
      *
-     * @param flag
+     * @param fileName
      * @param handler
      */
-    public static void uploadAliveStats(final String flag, final Handler handler) {
+    public static void uploadAliveStats(final String fileName, final Handler handler) {
 
         new AsyncTask<Object, Object, Boolean>() {
 
@@ -182,7 +182,7 @@ public class HttpClient {
                 if (HelperConfig.USE_ANET) {
 //                    if (NetUtils.ping6(HttpUrlConfig.HOST_V6)) {
 //                        AliveLog.v(TAG, "网络可用开始上传服务器");
-                    return uploadAliveStats();
+                    return uploadAliveStats(fileName);
 //                    } else {
 //                        AliveLog.v(TAG, "网络不可用不能上传服务器");
 //                        return false;
@@ -190,7 +190,7 @@ public class HttpClient {
                 } else {
 //                    if (NetUtils.ping(HttpUrlConfig.HOST_V4)) {
 //                        AliveLog.v(TAG, "网络可用开始上传服务器");
-                    return uploadAliveStats();
+                    return uploadAliveStats(fileName);
 //                    } else {
 //                        AliveLog.v(TAG, "网络不可用不能上传服务器");
 //                        return false;
@@ -219,7 +219,7 @@ public class HttpClient {
      *
      * @return
      */
-    private static boolean uploadAliveStats() {
+    private static boolean uploadAliveStats(String fileName) {
         JSONObject info = null;
         String tag = AliveSPUtils.getInstance().getASTag();
         try {
@@ -236,7 +236,7 @@ public class HttpClient {
         JSONObject statObject = new JSONObject();
         //统计数据拆天操作后
 //        JSONObject data = AliveStatsUtils.getAliveStatsResult();
-        List<String> data = AliveStatsUtils.getAliveStatsResult();
+        List<String> data = AliveStatsUtils.getAliveStatsResult(fileName);
         JSONArray dataArray = new JSONArray(data);
         try {
             statObject.put("type", Constants.TYPE_ALIVE);
@@ -285,7 +285,7 @@ public class HttpClient {
                 return false;
             } else {
                 if (result.equals("ok")) {
-                    AliveTestUtils.backUpUploadData(uploadJson);
+                    AliveTestUtils.backUpUploadData(fileName, uploadJson);
                     return true;
                 } else {
                     return false;
