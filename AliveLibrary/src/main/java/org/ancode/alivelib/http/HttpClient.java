@@ -7,6 +7,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.config.Constants;
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.config.HttpUrlConfig;
@@ -165,12 +166,12 @@ public class HttpClient {
     /***
      * 提交aliveStats
      *
-     * @param fileName
+     * @param tag
      * @param handler
      */
-    public static void uploadAliveStats(final String fileName, final Handler handler) {
+    public static void uploadAliveStats(final String tag, final Handler handler) {
 
-        new AsyncTask<Object, Object, Boolean>() {
+        new AsyncTask<Object, Object, String>() {
 
             @Override
             protected void onPreExecute() {
@@ -178,36 +179,73 @@ public class HttpClient {
             }
 
             @Override
-            protected Boolean doInBackground(Object... params) {
-                if (HelperConfig.USE_ANET) {
-//                    if (NetUtils.ping6(HttpUrlConfig.HOST_V6)) {
-//                        AliveLog.v(TAG, "网络可用开始上传服务器");
-                    return uploadAliveStats(fileName);
-//                    } else {
-//                        AliveLog.v(TAG, "网络不可用不能上传服务器");
-//                        return false;
-//                    }
-                } else {
-//                    if (NetUtils.ping(HttpUrlConfig.HOST_V4)) {
-//                        AliveLog.v(TAG, "网络可用开始上传服务器");
-                    return uploadAliveStats(fileName);
-//                    } else {
-//                        AliveLog.v(TAG, "网络不可用不能上传服务器");
-//                        return false;
-//                    }
+            protected String doInBackground(Object... params) {
+                String fileNameStrs = AliveSPUtils.getInstance().getAliveStatsUploadFiles();
+                String[] fileNames = fileNameStrs.split(",");
+                String delFiles = "";
+                for (int i = 0; i < fileNames.length; i++) {
+                    boolean uploaded = false;
+                    String fileName = fileNames[i];
+                    if (!TextUtils.isEmpty(fileName)) {
+                        uploaded = uploadAliveStats(fileName);
+                    }
+                    if (uploaded) {
+                        AliveLog.v(TAG, "----上传数据成功----");
+                        if (!TextUtils.isEmpty(fileName)) {
+                            try {
+                                HelperConfig.CONTEXT.deleteFile(fileName);
+                                Log.v(TAG, "delete file " + fileName);
+                                AliveLog.v(TAG, "----删除数据成功----");
+                            } catch (Exception e) {
+                                Log.e(TAG, "删除文件" + fileName + "失败");
+                                e.printStackTrace();
+                            }
+                            if (TextUtils.isEmpty(delFiles)) {
+                                delFiles = fileName;
+                            } else {
+                                delFiles = delFiles + "," + fileName;
+                            }
+                        }
+
+                    } else {
+                        Log.v(TAG, "上传" + fileName + "文件失败");
+                    }
                 }
-
-
+                return delFiles;
             }
 
             @Override
-            protected void onPostExecute(Boolean b) {
-                super.onPostExecute(b);
-                if (b) {
-                    handler.sendEmptyMessage(AliveStats.RESET_ALIVE_STATS);
-                } else {
-                    handler.sendEmptyMessage(AliveStats.UPLOAD_ALIVE_STATS_FAILED);
+            protected void onPostExecute(String delFileStrs) {
+                super.onPostExecute(delFileStrs);
+                //****清除掉已经上传的文件名称****///
+
+                String[] delFiles = delFileStrs.split(",");
+                String spFileNames = AliveSPUtils.getInstance().getAliveStatsUploadFiles();
+                //清除文件列表中文件
+                Log.v(TAG, "处理文件列表" + spFileNames);
+                for (int i = 0; i < delFiles.length; i++) {
+                    String delFileName = delFiles[i];
+                    if (spFileNames.contains(delFileName)) {
+                        spFileNames = spFileNames.replace(delFileName, "");
+                    }
                 }
+                String[] afterFileNames = spFileNames.split(",");
+                String afterFileNameStr = "";
+                for (int i = 0; i < afterFileNames.length; i++) {
+                    String fileName = afterFileNames[i];
+
+                    if (!TextUtils.isEmpty(fileName)) {
+                        if (TextUtils.isEmpty(afterFileNameStr)) {
+                            afterFileNameStr = fileName;
+                        } else {
+                            afterFileNameStr = afterFileNameStr + "," + fileName;
+                        }
+                    }
+                }
+                AliveSPUtils.getInstance().setAliveStatsUploadFiles(afterFileNameStr);
+                Log.v(TAG, "处理文件完成，结果为（" + afterFileNameStr + "）");
+                //****清除掉已经上传的文件名称****///
+                handler.sendEmptyMessage(AliveStats.UPLOAD_FILE_SUCCESS);
             }
         }.execute();
 
@@ -285,7 +323,9 @@ public class HttpClient {
                 return false;
             } else {
                 if (result.equals("ok")) {
-                    AliveTestUtils.backUpUploadData(fileName, uploadJson);
+                    if (!AliveSPUtils.getInstance().getIsRelease()) {
+                        AliveTestUtils.backUpUploadData(fileName, uploadJson);
+                    }
                     return true;
                 } else {
                     return false;
@@ -421,6 +461,7 @@ public class HttpClient {
                 AliveLog.e(TAG, "获取数据失败");
             }
         }
+
     }
 
 

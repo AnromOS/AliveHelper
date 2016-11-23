@@ -42,7 +42,6 @@ public class NetUtils {
                 result = "3g";
             }
         }
-        Log.v("NetUtils", "获取网络状态耗时=" + (System.currentTimeMillis() - useTime));
         return result;
     }
 

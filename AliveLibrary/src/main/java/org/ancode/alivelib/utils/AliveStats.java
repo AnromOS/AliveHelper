@@ -1,6 +1,7 @@
 package org.ancode.alivelib.utils;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -30,6 +31,7 @@ public class AliveStats {
     private FileWriter fileWriter = null;
     private BufferedWriter writer = null;
     private Context context = null;
+    long lastPoint = 0;
 
     private ScheduledThreadPoolExecutor aliveStatsThreader = null;
     private AliveStatsTask aliveStatsTask = null;
@@ -49,7 +51,15 @@ public class AliveStats {
             aliveStatsTask = new AliveStatsTask();
         }
         AliveLog.v(TAG, "---start Stats alive---");
-        aliveStatsThreader.scheduleAtFixedRate(
+        //周期时间包括执行时间
+//        aliveStatsThreader.scheduleAtFixedRate(
+//                aliveStatsTask,
+//                2,
+//                HelperConfig.ALIVE_STATS_RATE,
+//                TimeUnit.SECONDS);
+
+        //周期时间不包括执行时间
+        aliveStatsThreader.scheduleWithFixedDelay(
                 aliveStatsTask,
                 2,
                 HelperConfig.ALIVE_STATS_RATE,
@@ -75,11 +85,11 @@ public class AliveStats {
     }
 
     private void aliveStats() {
+
         long nowTime = new Date().getTime();
         sendNotifyAliveStats(nowTime);
         try {
             checkFileWriter();
-
             //TODO[计算统计范围,超过一小时,将数据上传至服务器]
             //开始时间为0时重新赋值
             long startTime = AliveSPUtils.getInstance().getASBeginTime();
@@ -87,21 +97,59 @@ public class AliveStats {
                 AliveSPUtils.getInstance().setASBeginTime(nowTime);
                 startTime = nowTime;
             }
-
             float differTime = AliveDateUtils.getDifferHours(startTime, nowTime);
-
             //TODO[统计Wifi/3G状态]
             String netStatus = NetUtils.getNetStatus(HelperConfig.CONTEXT);
+            String pointStr = "";
+
+            //TODO[丢失数据补救]
+
+            if (lastPoint != 0) {
+                long loseDiffer = (nowTime - lastPoint - (30 * 1000)) / 1000;
+                //丢失个数
+                int loseNumber = (int) Math.ceil(loseDiffer / 30);
+                int bqNumber = 0;
+                if (loseNumber > 0) {
+                    for (int i = 1; i <= loseNumber; i++) {
+                        bqNumber = (30 * 1000 * i);
+                        long bqTime = lastPoint + bqNumber;
+                        pointStr = pointStr + bqTime + " " + netStatus + "\r\n";
+                        AliveLog.v(TAG, "丢失数据补救=" + AliveDateUtils.timeFormat(bqTime, AliveDateUtils.DEFAULT_FORMAT));
+                        AliveTestUtils.Log("丢失数据补救=" + bqTime + " " + netStatus);
+                    }
+                }
+            }
             //写入文件
-            writer.write(nowTime + " " + netStatus + "\r\n");
+            pointStr = pointStr + nowTime + " " + netStatus + "\r\n";
+
+            writer.write(pointStr);
             writer.flush();
             AliveLog.v(TAG, "打点 =" + AliveDateUtils.timeFormat(nowTime, null) + " " + netStatus);
 
-            if (differTime >= HelperConfig.UPLOAD_ALIVE_STATS_RATE && !uploadingAlive) {
+            lastPoint = nowTime;
+
+
+            //超过1小时或者文件队列不为空，且无上传
+            if ((differTime >= HelperConfig.UPLOAD_ALIVE_STATS_RATE ||
+                    !TextUtils.isEmpty(AliveSPUtils.getInstance().getAliveStatsUploadFiles())) && !uploadingAlive) {
+
+                if (differTime >= HelperConfig.UPLOAD_ALIVE_STATS_RATE) {
+                    //将打点好的文件名放入队列
+                    String aliveStasfn = AliveSPUtils.getInstance().getAliveStatsFileName();
+                    putUploadFileNames(aliveStasfn);
+                    //初始化开始时间
+                    AliveSPUtils.getInstance().setASBeginTime(0);
+                    //初始化当前统计文件名
+                    AliveSPUtils.getInstance().setAliveStatsFileName("");
+                    //清除当前流
+                    clearFileWriter();
+                }
+
+
                 AliveLog.v(TAG, "距离第一次统计时间" + differTime + "小时,是否正在上传->," + uploadingAlive + "准备上传服务器");
                 uploadingAlive = true;
                 try {
-                    HttpClient.uploadAliveStats(aliveStasfn, handler);
+                    HttpClient.uploadAliveStats("tag", handler);
                 } catch (Exception e) {
                     e.printStackTrace();
                     uploadingAlive = false;
@@ -124,6 +172,7 @@ public class AliveStats {
     private void sendNotifyAliveStats(long nowTime) {
         try {
             long nextShowAsNotifyTime = AliveSPUtils.getInstance().getNextShowAsNotifyTime();
+            AliveLog.v(TAG, "下次显示保活统计时间" + nextShowAsNotifyTime);
             if (nextShowAsNotifyTime == 0) {
                 //设置明天9点
                 long today9Point = AliveDateUtils.getTody9Point(nowTime);
@@ -132,6 +181,7 @@ public class AliveStats {
 
                 if (!AliveSPUtils.getInstance().getIsRelease()) {
                     AliveLog.v(TAG, "第一次提示用户查看保活统计");
+                    AliveTestUtils.Log("第一次提示用户查看保活统计");
                     handler.sendEmptyMessage(SHOW_ALIVE_STATS_NOTIFY);
                 }
             } else if (nowTime >= nextShowAsNotifyTime) {
@@ -139,26 +189,45 @@ public class AliveStats {
                 //设置明天9点
                 long nextDate = AliveDateUtils.getNextDayThisTime(nextShowAsNotifyTime);
                 AliveSPUtils.getInstance().setNextShowAsNotifyTime(nextDate);
+                AliveTestUtils.Log("到点了提示用户查看保活统计");
                 handler.sendEmptyMessage(SHOW_ALIVE_STATS_NOTIFY);
             }
         } catch (Exception e) {
-            Log.e(TAG, "提示用户查看在线成绩单失败");
+            AliveTestUtils.Log("提示用户查看在线成绩单失败");
+            AliveLog.e(TAG, "提示用户查看在线成绩单失败");
             e.printStackTrace();
         }
 
     }
 
+    /**
+     * 创建文件名
+     *
+     * @return
+     */
     private String getAliveStatsFileName() {
         String fileName = "aliveStatsFile";
-        fileName = AliveDateUtils.timeFormat(new Date(), AliveDateUtils.ALIVE_STATS_FILE_NAME_FORMAT);
+        fileName = "AiveStats_" + AliveDateUtils.timeFormat(new Date(), AliveDateUtils.ALIVE_STATS_FILE_NAME_FORMAT);
         return fileName;
     }
 
-    String aliveStasfn = null;
+    private void putUploadFileNames(String fileName) {
+        String aliveStasfn = AliveSPUtils.getInstance().getAliveStatsFileName();
+        String fileNames = AliveSPUtils.getInstance().getAliveStatsUploadFiles();
+        if (TextUtils.isEmpty(fileNames)) {
+            AliveSPUtils.getInstance().setAliveStatsUploadFiles(aliveStasfn);
+        } else {
+            if (!fileNames.contains(aliveStasfn)) {
+                fileNames = fileNames + "," + aliveStasfn;
+                AliveSPUtils.getInstance().setAliveStatsUploadFiles(fileNames);
+            }
+        }
+    }
+
 
     private void checkFileWriter() throws Exception {
         if (aliveStatsfile == null) {
-            aliveStasfn = AliveSPUtils.getInstance().getAliveStatsFileName();
+            String aliveStasfn = AliveSPUtils.getInstance().getAliveStatsFileName();
             if (TextUtils.isEmpty(aliveStasfn)) {
                 aliveStasfn = getAliveStatsFileName();
                 AliveSPUtils.getInstance().setAliveStatsFileName(aliveStasfn);
@@ -203,8 +272,7 @@ public class AliveStats {
 
 
     private static final int REOPEN_ALIVE_STATS = 0x102;
-    public static final int RESET_ALIVE_STATS = 0x103;
-    public static final int UPLOAD_ALIVE_STATS_FAILED = 0x104;
+    public static final int UPLOAD_FILE_SUCCESS = 0x103;
     public static final int SHOW_ALIVE_STATS_NOTIFY = 0x105;
     Handler handler = new Handler() {
         @Override
@@ -213,20 +281,11 @@ public class AliveStats {
             if (msg.what == REOPEN_ALIVE_STATS) {
                 clearAliveStats();
                 openStatsLiveTimer();
-            } else if (msg.what == RESET_ALIVE_STATS) {
-                AliveLog.v(TAG, "----上传数据成功----");
+            } else if (msg.what == UPLOAD_FILE_SUCCESS) {
                 //交互成功修
                 uploadingAlive = false;
-                context.deleteFile(aliveStasfn);
-                AliveSPUtils.getInstance().setASBeginTime(0);
-                AliveSPUtils.getInstance().setAliveStatsFileName("");
-                clearFileWriter();
-                AliveLog.v(TAG, "----重置数据成功----");
-            } else if (msg.what == UPLOAD_ALIVE_STATS_FAILED) {
-                AliveLog.v(TAG, "----上传数据失败----");
-                uploadingAlive = false;
             } else if (msg.what == SHOW_ALIVE_STATS_NOTIFY) {
-                AliveHelper.getHelper().notifyAliveStats(2000);
+                AliveHelper.getHelper().notifyAliveStats(20 * 1000);
             }
         }
     };
@@ -239,7 +298,7 @@ public class AliveStats {
             try {
                 aliveStats();
             } catch (Exception e) {
-                Log.e(TAG, "遇到错误重新开启保活统计");
+                AliveLog.e(TAG, "遇到错误重新开启保活统计");
                 e.printStackTrace();
                 handler.sendEmptyMessage(REOPEN_ALIVE_STATS);
             }

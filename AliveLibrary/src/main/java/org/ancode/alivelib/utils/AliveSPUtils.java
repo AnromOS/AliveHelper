@@ -68,9 +68,13 @@ public class AliveSPUtils extends BaseSPUtils {
     private static final String NEXT_SHOW_AS_NOTIFY_TIME = "NEXT_SHOW_NOTIFY_TIME";
 
     /**
-     * 是否是外部版
+     * 当前保活统计文件名
      */
     private static final String ALIVE_STATS_FILE_NAME = "alive_stats_file_name";
+    /**
+     * 当前保活统计文件名
+     */
+    private static final String ALIVE_STATS_UUPLOAD_FILES = "alive_stats_uupload_files";
 
     /**
      * 获取统计开始时间
@@ -176,5 +180,24 @@ public class AliveSPUtils extends BaseSPUtils {
      */
     public void setAliveStatsFileName(String fileName) {
         putString(ALIVE_STATS_FILE_NAME, fileName);
+    }
+
+
+    /***
+     * 保活已统计文件列表
+     *
+     * @return
+     */
+    public String getAliveStatsUploadFiles() {
+        return getString(ALIVE_STATS_UUPLOAD_FILES, "");
+    }
+
+    /**
+     * 保活已统计文件列表
+     *
+     * @param fileNames
+     */
+    public void setAliveStatsUploadFiles(String fileNames) {
+        putString(ALIVE_STATS_UUPLOAD_FILES, fileNames);
     }
 }

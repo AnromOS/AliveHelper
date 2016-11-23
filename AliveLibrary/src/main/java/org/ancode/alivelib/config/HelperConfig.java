@@ -46,6 +46,7 @@ public class HelperConfig {
      * 上传后的数据
      */
     public static final String ALIVE_STATS_BACK_UP_FILE_NAME = "alive_stats_back_up.txt";
+    public static final String ALIVE_STATS_LOG_FILE_NAME = "alive_stats_log.txt";
     /***
      * 应用默认警告点
      * 0.0-1.0
