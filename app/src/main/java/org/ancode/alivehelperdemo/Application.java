@@ -43,8 +43,11 @@ public class Application extends android.app.Application {
 //        String tag = "MH:13018211912";
 //        String tag = "MH:xf-huawei";
 //        String tag = "MH:gs-qiku";
+//        String tag = "MH:gs-qiku-n4a";
+//        String tag = "MH:xf-oneplus";
         String tag = "MH:zs-oneplus";
 //        String tag = "MH:hm-n5";
+//        String tag = "MH:zs-n5";
         BaseStatsInfo statsInfo = new BaseStatsInfo(tag);
 //        statsInfo.setIdName("phone");//id名称 (非必填项)
 //        statsInfo.setId("13018211911");//id值(非必填项)

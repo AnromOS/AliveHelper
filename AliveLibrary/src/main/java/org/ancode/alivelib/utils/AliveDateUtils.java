@@ -202,4 +202,23 @@ public class AliveDateUtils {
         Calendar gregorianCalendar = new GregorianCalendar(year, month, day_of_month, 0, 0, 0);
         return gregorianCalendar.getTime().getTime();
     }
+
+    /**
+     * 返回指定日期开始时间
+     *
+     * @param time
+     * @return
+     */
+    public static long getThisDayStartTime(long time) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date(time));
+        // 当前年
+        int year = cal.get(Calendar.YEAR);
+        // 当前月
+        int month = (cal.get(Calendar.MONTH))/* + 1*/;
+        // 当前月的第几天：即当前日
+        int day_of_month = cal.get(Calendar.DAY_OF_MONTH);
+        Calendar gregorianCalendar = new GregorianCalendar(year, month, day_of_month, 0, 0, 0);
+        return gregorianCalendar.getTime().getTime();
+    }
 }

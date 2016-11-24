@@ -33,9 +33,8 @@ public class AliveStats {
     private Context context = null;
     long lastPoint = 0;
 
-    private ScheduledThreadPoolExecutor aliveStatsThreader = null;
-    private AliveStatsTask aliveStatsTask = null;
-
+    public ScheduledThreadPoolExecutor aliveStatsThreader = null;
+    public AliveStatsTask aliveStatsTask = null;
     public AliveStats(Context context) {
         this.context = context;
     }
@@ -45,12 +44,13 @@ public class AliveStats {
             closeStatsLiveTimer();
 
         if (aliveStatsThreader == null) {
-            aliveStatsThreader = new ScheduledThreadPoolExecutor(1);
+            aliveStatsThreader = new ScheduledThreadPoolExecutor(2);
         }
         if (aliveStatsTask == null) {
             aliveStatsTask = new AliveStatsTask();
         }
         AliveLog.v(TAG, "---start Stats alive---");
+        AliveTestUtils.LogStats("打点线程被新建");
         //周期时间包括执行时间
 //        aliveStatsThreader.scheduleAtFixedRate(
 //                aliveStatsTask,
@@ -74,6 +74,7 @@ public class AliveStats {
             }
             aliveStatsThreader.shutdown();
             aliveStatsThreader = null;
+            AliveTestUtils.LogStats("打点线程被销毁");
             AliveLog.v(TAG, "---close Stats alive---");
         }
 
@@ -105,20 +106,31 @@ public class AliveStats {
             //TODO[丢失数据补救]
 
             if (lastPoint != 0) {
-                long loseDiffer = (nowTime - lastPoint - (30 * 1000)) / 1000;
+                long loseDiffer = (nowTime - lastPoint/* - (30 * 1000)*/) / 1000;
                 //丢失个数
                 int loseNumber = (int) Math.ceil(loseDiffer / 30);
                 int bqNumber = 0;
+                long bqTime = 0;
                 if (loseNumber > 0) {
+                    loseNumber = loseNumber + 1;
                     for (int i = 1; i <= loseNumber; i++) {
                         bqNumber = (30 * 1000 * i);
-                        long bqTime = lastPoint + bqNumber;
-                        pointStr = pointStr + bqTime + " " + netStatus + "\r\n";
-                        AliveLog.v(TAG, "丢失数据补救=" + AliveDateUtils.timeFormat(bqTime, AliveDateUtils.DEFAULT_FORMAT));
-                        AliveTestUtils.Log("丢失数据补救=" + bqTime + " " + netStatus);
+                        bqTime = lastPoint + bqNumber;
+                        long bqDiffer = (nowTime - bqTime) / 1000;
+                        if (bqDiffer >= 30) {
+                            pointStr = pointStr + bqTime + " " + netStatus + "\r\n";
+                            AliveLog.v(TAG, "丢失数据补救=" + AliveDateUtils.timeFormat(bqTime, AliveDateUtils.DEFAULT_FORMAT));
+                            AliveTestUtils.LogBpoint(nowTime, "丢失数据补救=" + bqTime + " " + netStatus);
+                        }
                     }
                 }
+
+            } else {
+                Log.v(TAG, "lastPoint被初始化为0");
+                AliveTestUtils.LogStats("lastPoint被初始化为0");
             }
+//            int a = (int) Math.ceil(40.481 / 30);
+//            Log.v(TAG, "测试数据滴滴答答大大大=Math.ceil(40.481 / 30)=" + a);
             //写入文件
             pointStr = pointStr + nowTime + " " + netStatus + "\r\n";
 
@@ -181,7 +193,6 @@ public class AliveStats {
 
                 if (!AliveSPUtils.getInstance().getIsRelease()) {
                     AliveLog.v(TAG, "第一次提示用户查看保活统计");
-                    AliveTestUtils.Log("第一次提示用户查看保活统计");
                     handler.sendEmptyMessage(SHOW_ALIVE_STATS_NOTIFY);
                 }
             } else if (nowTime >= nextShowAsNotifyTime) {
@@ -189,11 +200,9 @@ public class AliveStats {
                 //设置明天9点
                 long nextDate = AliveDateUtils.getNextDayThisTime(nextShowAsNotifyTime);
                 AliveSPUtils.getInstance().setNextShowAsNotifyTime(nextDate);
-                AliveTestUtils.Log("到点了提示用户查看保活统计");
                 handler.sendEmptyMessage(SHOW_ALIVE_STATS_NOTIFY);
             }
         } catch (Exception e) {
-            AliveTestUtils.Log("提示用户查看在线成绩单失败");
             AliveLog.e(TAG, "提示用户查看在线成绩单失败");
             e.printStackTrace();
         }
@@ -212,13 +221,12 @@ public class AliveStats {
     }
 
     private void putUploadFileNames(String fileName) {
-        String aliveStasfn = AliveSPUtils.getInstance().getAliveStatsFileName();
         String fileNames = AliveSPUtils.getInstance().getAliveStatsUploadFiles();
         if (TextUtils.isEmpty(fileNames)) {
-            AliveSPUtils.getInstance().setAliveStatsUploadFiles(aliveStasfn);
+            AliveSPUtils.getInstance().setAliveStatsUploadFiles(fileName);
         } else {
-            if (!fileNames.contains(aliveStasfn)) {
-                fileNames = fileNames + "," + aliveStasfn;
+            if (!fileNames.contains(fileName)) {
+                fileNames = fileNames + "," + fileName;
                 AliveSPUtils.getInstance().setAliveStatsUploadFiles(fileNames);
             }
         }
@@ -304,16 +312,5 @@ public class AliveStats {
             }
         }
     }
-//    class AliveStatsTask extends TimerTask {
-//
-//        @Override
-//        public void run() {
-//            try {
-//                aliveStats();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                handler.sendEmptyMessage(REOPEN_ALIVE_STATS);
-//            }
-//        }
-//    }
+
 }

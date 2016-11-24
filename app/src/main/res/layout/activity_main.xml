@@ -73,6 +73,13 @@
                 android:text="关闭AliveStats" />
 
             <Button
+                android:id="@+id/check_alivestats_alive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="检测统计是否开着"
+                android:visibility="gone" />
+
+            <Button
                 android:id="@+id/close"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -324,8 +324,18 @@ public class HttpClient {
             } else {
                 if (result.equals("ok")) {
                     if (!AliveSPUtils.getInstance().getIsRelease()) {
-                        AliveTestUtils.backUpUploadData(fileName, uploadJson);
+                        String[] s = new String[2];
+                        long startTime = 0;
+                        try {
+                            s = data.get(0).split(" ");
+                            startTime = Long.valueOf(s[0]);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        AliveTestUtils.backUpUploadData(fileName, startTime, uploadJson);
                     }
+
                     return true;
                 } else {
                     return false;

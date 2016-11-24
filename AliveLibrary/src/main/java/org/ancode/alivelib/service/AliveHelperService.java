@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.util.Log;
+import android.widget.Toast;
 
 import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.utils.AliveLog;
 import org.ancode.alivelib.utils.AliveStatsUtils;
 import org.ancode.alivelib.utils.AliveStats;
+import org.ancode.alivelib.utils.AliveTestUtils;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -44,15 +47,17 @@ public class AliveHelperService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+        AliveLog.v(TAG, "onBind");
         return null;
     }
 
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
+        AliveLog.v(TAG, "onStartCommand");
         if (aliveStats == null) {
             aliveStats = new AliveStats(this);
-
+            AliveTestUtils.LogStats("aliveStats类被新建");
         }
         String action = null;
         try {
@@ -83,9 +88,12 @@ public class AliveHelperService extends Service {
         return super.onStartCommand(intent, START_STICKY, startId);
     }
 
+
     @Override
     public void onCreate() {
         super.onCreate();
+        AliveLog.v(TAG, "onCreate");
+        AliveTestUtils.LogStats("AliveHelperService onCreate service被新建");
     }
 
     private void openWarningTimer() {
@@ -145,6 +153,7 @@ public class AliveHelperService extends Service {
     public void onDestroy() {
         super.onDestroy();
         AliveLog.v(TAG, "AliveHelperService onDestroy");
+        AliveTestUtils.LogStats("AliveHelperService onDestroy service被销毁");
         aliveStats.clearAliveStats();
         closeWarningTimer();
 

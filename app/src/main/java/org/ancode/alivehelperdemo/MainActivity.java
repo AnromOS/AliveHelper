@@ -1,10 +1,14 @@
 package org.ancode.alivehelperdemo;
 
+import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,7 +18,10 @@ import android.widget.Toast;
 
 import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.callback.StringCallBack;
+import org.ancode.alivelib.utils.AliveDateUtils;
 import org.ancode.alivelib.utils.AliveLog;
+import org.ancode.alivelib.utils.AliveSPUtils;
+import org.ancode.alivelib.utils.AliveTestUtils;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -27,13 +34,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button close;
     Button close_alive_stats;
     Button open_alive_stats;
+    Button checkAliveStatsAlive;
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-
+        verifyStoragePermissions(this);
         //initPermission();
     }
 //
@@ -95,6 +108,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         close_alive_stats.setOnClickListener(this);
         open_alive_stats = (Button) findViewById(R.id.open_alive_stats);
         open_alive_stats.setOnClickListener(this);
+        checkAliveStatsAlive = (Button) findViewById(R.id.check_alivestats_alive);
+        checkAliveStatsAlive.setOnClickListener(this);
     }
 
     @Override
@@ -139,6 +154,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "暂无此方法", Toast.LENGTH_SHORT).show();
 //                AliveHelper.getHelper().openAliveStats();
                 break;
+            case R.id.check_alivestats_alive:
+//                long time = AliveSPUtils.getInstance().getNextShowAsNotifyTime();
+//                long tim2 = AliveDateUtils.getThisDayStartTime(time);
+//                Toast.makeText(this, AliveDateUtils.timeFormat(tim2, AliveDateUtils.DEFAULT_FORMAT), Toast.LENGTH_SHORT).show();
+//                if (AliveHelper.getHelper().checkStatsIsAlive()) {
+//                    Toast.makeText(this, "还活着", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Toast.makeText(this, "已经死了", Toast.LENGTH_SHORT).show();
+//                }
+//                Toast.makeText(this, "暂无此方法", Toast.LENGTH_SHORT).show();
+//                AliveHelper.getHelper().openAliveStats();
+                break;
             case R.id.close:
 
                 finish();
@@ -146,5 +173,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
     }
+
+
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE);
+        }
+    }
+
 
 }

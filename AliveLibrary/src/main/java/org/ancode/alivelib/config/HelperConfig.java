@@ -47,6 +47,7 @@ public class HelperConfig {
      */
     public static final String ALIVE_STATS_BACK_UP_FILE_NAME = "alive_stats_back_up.txt";
     public static final String ALIVE_STATS_LOG_FILE_NAME = "alive_stats_log.txt";
+    public static final String ALIVE_BQPOINT_LOG_FILE_NAME = "alive_bqpoint_log.txt";
     /***
      * 应用默认警告点
      * 0.0-1.0
@@ -60,7 +61,7 @@ public class HelperConfig {
     /**
      * aliveStats上传数据频率 单位/小时
      */
-    public static final int UPLOAD_ALIVE_STATS_RATE = 1;
+    public static final float UPLOAD_ALIVE_STATS_RATE = 1;
 
 
 }

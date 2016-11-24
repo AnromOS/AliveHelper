@@ -7,6 +7,7 @@ import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.service.AliveHelperService;
 import org.ancode.alivelib.utils.AliveLog;
 import org.ancode.alivelib.utils.AliveSPUtils;
+import org.ancode.alivelib.utils.AliveTestUtils;
 
 /**
  * Created by andyliu on 16-8-25.
@@ -40,6 +41,7 @@ public abstract class BaseAliveHelper {
         Intent intent = new Intent(HelperConfig.CONTEXT, AliveHelperService.class);
         intent.putExtra(AliveHelperService.ACTION, AliveHelperService.OPEN_ALIVE_STATS_SERVICE_ACTION);
         HelperConfig.CONTEXT.startService(intent);
+        AliveTestUtils.LogStats("openAliveStats应用被启动,或者被重启");
     }
 
 
