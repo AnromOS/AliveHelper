@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import org.ancode.alivelib.AliveHelper;
+import org.ancode.alivelib.callback.StringCallBack;
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.http.HttpClient;
 
@@ -35,6 +36,7 @@ public class AliveStats {
 
     public ScheduledThreadPoolExecutor aliveStatsThreader = null;
     public AliveStatsTask aliveStatsTask = null;
+
     public AliveStats(Context context) {
         this.context = context;
     }
@@ -44,7 +46,7 @@ public class AliveStats {
             closeStatsLiveTimer();
 
         if (aliveStatsThreader == null) {
-            aliveStatsThreader = new ScheduledThreadPoolExecutor(2);
+            aliveStatsThreader = new ScheduledThreadPoolExecutor(1);
         }
         if (aliveStatsTask == null) {
             aliveStatsTask = new AliveStatsTask();
@@ -106,18 +108,17 @@ public class AliveStats {
             //TODO[丢失数据补救]
 
             if (lastPoint != 0) {
-                long loseDiffer = (nowTime - lastPoint/* - (30 * 1000)*/) / 1000;
+                float loseDiffer = ((float) nowTime - lastPoint/* - (30 * 1000)*/) / 1000;
                 //丢失个数
-                int loseNumber = (int) Math.ceil(loseDiffer / 30);
-                int bqNumber = 0;
-                long bqTime = 0;
+                int loseNumber = (int) Math.ceil(loseDiffer / HelperConfig.ALIVE_STATS_RATE);
+
                 if (loseNumber > 0) {
                     loseNumber = loseNumber + 1;
                     for (int i = 1; i <= loseNumber; i++) {
-                        bqNumber = (30 * 1000 * i);
-                        bqTime = lastPoint + bqNumber;
-                        long bqDiffer = (nowTime - bqTime) / 1000;
-                        if (bqDiffer >= 30) {
+                        long bqNumber = (HelperConfig.ALIVE_STATS_RATE * 1000 * i);
+                        long bqTime = lastPoint + bqNumber;
+                        float bqDiffer = ((float) (nowTime - bqTime)) / 1000;
+                        if (bqDiffer > 0) {
                             pointStr = pointStr + bqTime + " " + netStatus + "\r\n";
                             AliveLog.v(TAG, "丢失数据补救=" + AliveDateUtils.timeFormat(bqTime, AliveDateUtils.DEFAULT_FORMAT));
                             AliveTestUtils.LogBpoint(nowTime, "丢失数据补救=" + bqTime + " " + netStatus);
@@ -125,12 +126,11 @@ public class AliveStats {
                     }
                 }
 
+
             } else {
                 Log.v(TAG, "lastPoint被初始化为0");
                 AliveTestUtils.LogStats("lastPoint被初始化为0");
             }
-//            int a = (int) Math.ceil(40.481 / 30);
-//            Log.v(TAG, "测试数据滴滴答答大大大=Math.ceil(40.481 / 30)=" + a);
             //写入文件
             pointStr = pointStr + nowTime + " " + netStatus + "\r\n";
 
