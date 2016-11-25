@@ -42,10 +42,10 @@ public class Application extends android.app.Application {
         //使用当前应用的某个用户的唯一标示,例如 应用拼音简称:账号 (必填项)
 //        String tag = "MH:13018211912";
 //        String tag = "MH:xf-huawei";
-        String tag = "MH:gs-qiku";
+//        String tag = "MH:gs-qiku";
 //        String tag = "MH:gs-qiku-n4a";
 //        String tag = "MH:xf-oneplus";
-//        String tag = "MH:zs-oneplus";
+        String tag = "MH:zs-oneplus";
 //        String tag = "MH:hm-n5";
 //        String tag = "MH:zs-n5";
         BaseStatsInfo statsInfo = new BaseStatsInfo(tag);

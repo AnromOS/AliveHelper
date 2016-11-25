@@ -98,7 +98,7 @@ public class AliveStatsActivity extends BaseAliveActivity {
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setAllowFileAccess(true);
         webView.getSettings().setDomStorageEnabled(true);//允许DCOM
-        webView.addJavascriptInterface(this, "aliveStatsMethod");
+//        webView.addJavascriptInterface(this, "aliveStatsMethod");
         final ProgressBar finalProgressBar = progressBar;
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -123,7 +123,7 @@ public class AliveStatsActivity extends BaseAliveActivity {
     /***
      * @param activityName
      */
-    @JavascriptInterface
+//    @JavascriptInterface
     public void toActivity(String activityName) {
         try {
             //此处应该定义常量对应，同时提供给web页面编写者
@@ -169,6 +169,11 @@ public class AliveStatsActivity extends BaseAliveActivity {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
 //                Log.v(TAG, "加载的url是=" + url);
                 if (URLUtil.isNetworkUrl(url)) {
+                    if (url.equals("http://toaliveguide/param?activity=aliveguide")) {
+                        Log.v(TAG, "跳转activity,url=" + url);
+                        toActivity("aliveguide");
+                        return true;
+                    }
                     return false;
                 }
                 AliveLog.v("WebViewDialog", "start Web url is = " + url);
@@ -193,6 +198,7 @@ public class AliveStatsActivity extends BaseAliveActivity {
                         return null;
 
                     } else if (url.contains("aliveguide")) {
+
                         Log.v(TAG, "自己的url=" + url);
                         return null;
                     } else {
