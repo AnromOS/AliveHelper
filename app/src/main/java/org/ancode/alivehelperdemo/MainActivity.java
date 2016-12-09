@@ -1,13 +1,8 @@
 package org.ancode.alivehelperdemo;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,10 +13,8 @@ import android.widget.Toast;
 
 import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.callback.StringCallBack;
-import org.ancode.alivelib.utils.AliveDateUtils;
 import org.ancode.alivelib.utils.AliveLog;
-import org.ancode.alivelib.utils.AliveSPUtils;
-import org.ancode.alivelib.utils.AliveTestUtils;
+import org.ancode.alivelib.utils.AliveNotifyUtils;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -73,6 +66,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            }
 //        }
 //    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkShowAliveStats();
+    }
+
+    private void checkShowAliveStats() {
+
+        try {
+            if (AliveNotifyUtils.checkShowASNotify(false, System.currentTimeMillis())) {
+                AliveHelper.getHelper().notifyAliveStats(3 * 1000);
+            }
+        } catch (Exception e) {
+            AliveLog.e(TAG, "提示用户查看在线成绩单失败");
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onDestroy() {

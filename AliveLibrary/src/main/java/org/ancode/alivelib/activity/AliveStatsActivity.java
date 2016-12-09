@@ -3,6 +3,7 @@ package org.ancode.alivelib.activity;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
+import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -75,7 +77,7 @@ public class AliveStatsActivity extends BaseAliveActivity {
 
             @Override
             public void error(String error) {
-
+                showErrorView(true);
             }
         });
     }
@@ -160,9 +162,10 @@ public class AliveStatsActivity extends BaseAliveActivity {
 
     @Override
     protected void onRefresh(String data) {
+        showSSLError(false);
         webView.clearCache(true);
         String loadUrl = data + "&t=" + System.currentTimeMillis();
-        webView.loadUrl(data);
+        webView.loadUrl(loadUrl);
         Log.v(TAG, "请求到的保活统计界面为\n" + data);
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -229,6 +232,17 @@ public class AliveStatsActivity extends BaseAliveActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+            }
+
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+//                super.onReceivedSslError(view, handler, error);
+//                AliveLog.v(TAG, "验证证书失败!!" + error.toString());
+                AliveLog.v(TAG, "HTTPS 验证证书失败!!");
+                AliveLog.v(TAG, error.toString());
+                showSSLError(true);
+                handler.cancel();
+
             }
         });
     }

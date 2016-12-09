@@ -1,14 +1,12 @@
 package org.ancode.alivelib.utils;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
 import org.ancode.alivelib.AliveHelper;
-import org.ancode.alivelib.callback.StringCallBack;
 import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.http.HttpClient;
 
@@ -63,7 +61,7 @@ public class AliveStats {
         //周期时间不包括执行时间
         aliveStatsThreader.scheduleWithFixedDelay(
                 aliveStatsTask,
-                2,
+                5,
                 HelperConfig.ALIVE_STATS_RATE,
                 TimeUnit.SECONDS);
     }
@@ -90,7 +88,6 @@ public class AliveStats {
     private void aliveStats() {
 
         long nowTime = new Date().getTime();
-        sendNotifyAliveStats(nowTime);
         try {
             checkFileWriter();
             //TODO[计算统计范围,超过一小时,将数据上传至服务器]
@@ -108,25 +105,47 @@ public class AliveStats {
             //TODO[丢失数据补救]
 
             if (lastPoint != 0) {
-                float loseDiffer = ((float) nowTime - lastPoint/* - (30 * 1000)*/) / 1000;
-                //丢失个数
-                int loseNumber = (int) Math.ceil(loseDiffer / HelperConfig.ALIVE_STATS_RATE);
+                if (differTime <= (HelperConfig.UPLOAD_ALIVE_STATS_RATE + 0.01f)) {
 
-                if (loseNumber > 0) {
-                    loseNumber = loseNumber + 1;
-                    for (int i = 1; i <= loseNumber; i++) {
-                        long bqNumber = (HelperConfig.ALIVE_STATS_RATE * 1000 * i);
-                        long bqTime = lastPoint + bqNumber;
-                        float bqDiffer = ((float) (nowTime - bqTime)) / 1000;
-                        if (bqDiffer > 0) {
-                            pointStr = pointStr + bqTime + " " + netStatus + "\r\n";
-                            AliveLog.v(TAG, "丢失数据补救=" + AliveDateUtils.timeFormat(bqTime, AliveDateUtils.DEFAULT_FORMAT));
-                            AliveTestUtils.LogBpoint(nowTime, "丢失数据补救=" + bqTime + " " + netStatus);
+                    float loseDiffer = ((float) nowTime - lastPoint/* - (30 * 1000)*/) / 1000;
+                    //丢失个数
+                    int loseNumber = (int) Math.ceil(loseDiffer / HelperConfig.ALIVE_STATS_RATE);
+
+//                    if (loseNumber > 0) {
+//                        for (int i = 1; i <= loseNumber; i++) {
+//                            long bqNumber = (HelperConfig.ALIVE_STATS_RATE * 1000 * i);
+//                            long bqTime = lastPoint + bqNumber;
+//                            float bqDiffer = ((float) (nowTime - bqTime)) / 1000;
+//                            if (bqDiffer > 10) {
+//                                pointStr = pointStr + bqTime + " " + netStatus + "\r\n";
+//                                AliveLog.v(TAG, "丢失数据补救=" + AliveDateUtils.timeFormat(bqTime, AliveDateUtils.DEFAULT_FORMAT));
+//                                AliveTestUtils.LogBpoint(nowTime, "丢失数据补救=" + bqTime + " " + netStatus);
+//                            } else {
+//                                bqTime = bqTime - (HelperConfig.ALIVE_STATS_RATE / 2 * 1000);
+//                                float bqDiffer2 = ((float) (nowTime - bqTime)) / 1000;
+//                                if (bqDiffer2 > 10) {
+//                                    pointStr = pointStr + bqTime + " " + netStatus + "\r\n";
+//                                    AliveLog.v(TAG, "丢失数据补救=" + AliveDateUtils.timeFormat(bqTime, AliveDateUtils.DEFAULT_FORMAT));
+//                                    AliveTestUtils.LogBpoint(nowTime, "丢失数据补救=" + bqTime + " " + netStatus);
+//                                }
+//                            }
+//                        }
+//                    }
+                    if (loseNumber > 0) {
+                        loseNumber = loseNumber + 1;
+                        for (int i = 1; i <= loseNumber; i++) {
+                            long bqNumber = (HelperConfig.ALIVE_STATS_RATE * 1000 * i);
+                            long bqTime = lastPoint + bqNumber;
+                            float bqDiffer = ((float) (nowTime - bqTime)) / 1000;
+                            if (bqDiffer > 0) {
+                                pointStr = pointStr + bqTime + " " + netStatus + "\r\n";
+                                AliveLog.v(TAG, "丢失数据补救=" + AliveDateUtils.timeFormat(bqTime, AliveDateUtils.DEFAULT_FORMAT));
+                                AliveTestUtils.LogBpoint(nowTime, "丢失数据补救=" + bqTime + " " + netStatus);
+                            }
                         }
                     }
+
                 }
-
-
             } else {
                 Log.v(TAG, "lastPoint被初始化为0");
                 AliveTestUtils.LogStats("lastPoint被初始化为0");
@@ -170,44 +189,15 @@ public class AliveStats {
                 AliveLog.v(TAG, "距离第一次统计时间" + differTime + "小时 是否正在上传->," + uploadingAlive + "不上传服务器");
             }
 
+            if (AliveNotifyUtils.checkShowASNotify(true, nowTime)) {
+                handler.sendEmptyMessage(SHOW_ALIVE_STATS_NOTIFY);
+            }
         } catch (Exception e) {
             AliveLog.e(TAG, "write error:" + e.getLocalizedMessage());
             e.printStackTrace();
         }
     }
 
-    /***
-     * 定时通知用户 查看在线成绩单(每天9点)
-     *
-     * @param nowTime
-     */
-    private void sendNotifyAliveStats(long nowTime) {
-        try {
-            long nextShowAsNotifyTime = AliveSPUtils.getInstance().getNextShowAsNotifyTime();
-            AliveLog.v(TAG, "下次显示保活统计时间" + nextShowAsNotifyTime);
-            if (nextShowAsNotifyTime == 0) {
-                //设置明天9点
-                long today9Point = AliveDateUtils.getTody9Point(nowTime);
-                long nextDate = AliveDateUtils.getNextDayThisTime(today9Point);
-                AliveSPUtils.getInstance().setNextShowAsNotifyTime(nextDate);
-
-                if (!AliveSPUtils.getInstance().getIsRelease()) {
-                    AliveLog.v(TAG, "第一次提示用户查看保活统计");
-                    handler.sendEmptyMessage(SHOW_ALIVE_STATS_NOTIFY);
-                }
-            } else if (nowTime >= nextShowAsNotifyTime) {
-                AliveLog.v(TAG, "到点了提示用户查看保活统计");
-                //设置明天9点
-                long nextDate = AliveDateUtils.getNextDayThisTime(nextShowAsNotifyTime);
-                AliveSPUtils.getInstance().setNextShowAsNotifyTime(nextDate);
-                handler.sendEmptyMessage(SHOW_ALIVE_STATS_NOTIFY);
-            }
-        } catch (Exception e) {
-            AliveLog.e(TAG, "提示用户查看在线成绩单失败");
-            e.printStackTrace();
-        }
-
-    }
 
     /**
      * 创建文件名
@@ -293,7 +283,7 @@ public class AliveStats {
                 //交互成功修
                 uploadingAlive = false;
             } else if (msg.what == SHOW_ALIVE_STATS_NOTIFY) {
-                AliveHelper.getHelper().notifyAliveStats(20 * 1000);
+                AliveHelper.getHelper().notifyAliveStats(2 * 1000);
             }
         }
     };

@@ -37,7 +37,6 @@ public class HttpClient {
     static boolean cancel = false;
     public static final String HTTP_CALL_FLAG = "http_call_flag";
     public static final String DATA_IS_NULL = "data is null";
-
     public static boolean GETING_URL = false;
     public static final String GET_DATA_KEY = "get_data_key";
     public static final int GET_DATA_SUCCESS = 1;
@@ -127,6 +126,10 @@ public class HttpClient {
                     GETING_URL = false;
                     if (TextUtils.isEmpty(data)) {
                         sendHandler(handler, GET_DATA_ERROR, "response is null");
+                        return;
+                    }
+                    if (data.equals(HttpHelper.SSL_ERROR)) {
+                        sendHandler(handler, GET_DATA_ERROR, HttpHelper.SSL_ERROR);
                         return;
                     }
                     JSONObject jsonObj = new JSONObject(data);
@@ -413,6 +416,10 @@ public class HttpClient {
                     String data = HttpHelper.get(url, params, "isEnableShowNotify");
                     if (TextUtils.isEmpty(data)) {
                         sendHandler(handler, GET_DATA_ERROR, "response is null");
+                        return;
+                    }
+                    if (data.equals(HttpHelper.SSL_ERROR)) {
+                        sendHandler(handler, GET_DATA_ERROR, HttpHelper.SSL_ERROR);
                         return;
                     }
                     sendHandler(handler, GET_DATA_SUCCESS, data);

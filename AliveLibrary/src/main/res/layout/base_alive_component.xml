@@ -69,4 +69,14 @@
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
+    <include
+        android:id="@+id/https_ssl_error_view"
+        layout="@layout/base_alive_ssl_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/top"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+
 </RelativeLayout>

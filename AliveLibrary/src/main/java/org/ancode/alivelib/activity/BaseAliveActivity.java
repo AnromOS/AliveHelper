@@ -20,6 +20,7 @@ public abstract class BaseAliveActivity extends Activity {
     private View empty_view;
     private View error_view;
     private View loading_view;
+    private View ssl_error;
     private View closeBtn;
     private View reloadBtn;
     private View topView;
@@ -77,6 +78,7 @@ public abstract class BaseAliveActivity extends Activity {
         empty_view = findViewById(R.id.base_alive_empty_view);
         error_view = findViewById(R.id.base_alive_error_view);
         loading_view = findViewById(R.id.base_alive_loading_view);
+        ssl_error = findViewById(R.id.https_ssl_error_view);
         topView = findViewById(R.id.top);
         titleView = (TextView) findViewById(R.id.title);
         closeBtn = findViewById(R.id.close);
@@ -144,6 +146,25 @@ public abstract class BaseAliveActivity extends Activity {
                 @Override
                 public void run() {
                     error_view.setVisibility(View.GONE);
+                }
+            });
+        }
+    }
+
+
+    public void showSSLError(boolean show) {
+        if (show) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ssl_error.setVisibility(View.VISIBLE);
+                }
+            });
+        } else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ssl_error.setVisibility(View.GONE);
                 }
             });
         }

@@ -151,16 +151,28 @@ public class AliveDateUtils {
     public static long getNextDayThisTime(long time) {
         Calendar timeCalendar = Calendar.getInstance();
         timeCalendar.setTime(new Date(time));
-        // 当前年
-        int year = timeCalendar.get(Calendar.YEAR);
-        // 当前月
-        int month = (timeCalendar.get(Calendar.MONTH));
-        // 当前月的第几天：即当前日
-        int day_of_month = timeCalendar.get(Calendar.DAY_OF_MONTH);
+//        // 当前年
+//        int year = timeCalendar.get(Calendar.YEAR);
+//        // 当前月
+//        int month = (timeCalendar.get(Calendar.MONTH));
+//        // 当前月的第几天：即当前日
+//        int day_of_month = timeCalendar.get(Calendar.DAY_OF_MONTH);
         int hours = timeCalendar.get(Calendar.HOUR_OF_DAY);
         int minute = timeCalendar.get(Calendar.MINUTE);
         int second = timeCalendar.get(Calendar.SECOND);
-        Calendar compareCalendar = new GregorianCalendar(year, month, day_of_month + 1, hours, minute, second);
+
+        //获取今天的时间
+        Calendar todyCalendar = Calendar.getInstance();
+        todyCalendar.setTime(new Date());
+        timeCalendar.setTime(new Date(time));
+        // 当前年
+        int todyYear = timeCalendar.get(Calendar.YEAR);
+        // 当前月
+        int todyMonth = (timeCalendar.get(Calendar.MONTH));
+        // 当前月的第几天：即当前日
+        int todyDay_of_month = timeCalendar.get(Calendar.DAY_OF_MONTH);
+
+        Calendar compareCalendar = new GregorianCalendar(todyYear, todyMonth, todyDay_of_month + 1, hours, minute, second);
         return compareCalendar.getTimeInMillis();
     }
 

@@ -1,7 +1,6 @@
 package org.ancode.alivelib.http;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import org.ancode.alivelib.utils.AliveLog;
 
@@ -14,46 +13,30 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
 
 /**
  * Created by andyliu on 16-8-25.
  */
-public class HttpHelper {
-    private static final String TAG = HttpHelper.class.getSimpleName();
-    //    public static Map<String, HttpsURLConnection> urlgetConnections = null;
-//    public static Map<String, HttpsURLConnection> urlpostConnections = null;
+public class HttpHelper2 {
+    private static final String TAG = HttpHelper2.class.getSimpleName();
+    //    public static Map<String, HttpURLConnection> urlgetConnections = null;
+//    public static Map<String, HttpURLConnection> urlpostConnections = null;
     public static final String CHARSET = "UTF-8";
     public static final int CONNECT_TIMEOUT = 20 * 1000;
     public static final int READ_TIMEOUT = 20 * 1000;
-    public static final String SSL_ERROR = "ssl_error";
-    private static final String PROTOCOL = "";
-    private static final String PROVIDER = "";
-//    private SSLSocketFactory getSSLSocketFactory() throws Exception {
-//        // 创建SSLContext对象，并使用我们指定的信任管理器初始化
-//        TrustManager[] tm = {new MyX509TrustManager()};
-//        SSLContext sslContext = SSLContext.getInstance(PROTOCOL,PROVIDER);
-//        sslContext.init(null, tm, new java.security.SecureRandom());
-//        // 从上述SSLContext对象中得到SSLSocketFactory对象
-//        SSLSocketFactory socketFactory = sslContext.getSocketFactory();
-//    }
+
+
 
     /**
      * 向指定URL发送GET方法的请求
      */
     public static String get(String urlStr, Map<String, String> map, String flag) {
-        HttpsURLConnection connection = null;
+        HttpURLConnection connection = null;
         BufferedReader bufferedReader = null;
         String result = "";
         StringBuffer params = new StringBuffer();
@@ -73,7 +56,7 @@ public class HttpHelper {
             }
             URL url = new URL(urlStr + "?" + params.toString());
             AliveLog.v(TAG, "get url=" + url);
-            connection = (HttpsURLConnection) url.openConnection();
+            connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(CONNECT_TIMEOUT);
             connection.setReadTimeout(READ_TIMEOUT);
             // 设置请求方法，默认是GET
@@ -110,11 +93,6 @@ public class HttpHelper {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            if (e.toString().contains("was not verified")) {
-                result = SSL_ERROR;
-            } else if (e.toString().contains("SSLHandshakeException")) {
-                result = SSL_ERROR;
-            }
         } finally {
             if (bufferedReader != null) {
                 try {
@@ -130,7 +108,6 @@ public class HttpHelper {
         }
         return result;
     }
-
     /**
      * post
      *
@@ -143,7 +120,7 @@ public class HttpHelper {
         BufferedReader bufferedReader = null;
         StringBuffer responseResult = new StringBuffer();
         StringBuffer params = new StringBuffer();
-        HttpsURLConnection HttpsURLConnection = null;
+        HttpURLConnection httpURLConnection = null;
         // 组织请求参数
         Iterator it = requestParamsMap.entrySet().iterator();
         while (it.hasNext()) {
@@ -160,31 +137,31 @@ public class HttpHelper {
         try {
             URL realUrl = new URL(requestUrl);
             // 打开和URL之间的连接
-            HttpsURLConnection = (HttpsURLConnection) realUrl.openConnection();
+            httpURLConnection = (HttpURLConnection) realUrl.openConnection();
             // 设置通用的请求属性
-            HttpsURLConnection.setRequestProperty("accept", "*/*");
-            HttpsURLConnection.setRequestProperty("connection", "Keep-Alive");
-            HttpsURLConnection.setConnectTimeout(CONNECT_TIMEOUT);
-            HttpsURLConnection.setReadTimeout(READ_TIMEOUT);
-            HttpsURLConnection.setRequestProperty("Accept-Charset", CHARSET);
-            HttpsURLConnection.setRequestProperty("Content-Length", String
+            httpURLConnection.setRequestProperty("accept", "*/*");
+            httpURLConnection.setRequestProperty("connection", "Keep-Alive");
+            httpURLConnection.setConnectTimeout(CONNECT_TIMEOUT);
+            httpURLConnection.setReadTimeout(READ_TIMEOUT);
+            httpURLConnection.setRequestProperty("Accept-Charset", CHARSET);
+            httpURLConnection.setRequestProperty("Content-Length", String
                     .valueOf(params.length()));
             // 发送POST请求必须设置如下两行
-            HttpsURLConnection.setDoOutput(true);
-            HttpsURLConnection.setDoInput(true);
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
 //            if (urlpostConnections == null) {
-//                urlpostConnections = new HashMap<String, HttpsURLConnection>();
+//                urlpostConnections = new HashMap<String, HttpURLConnection>();
 //            }
-//            urlpostConnections.put(flag, HttpsURLConnection);
+//            urlpostConnections.put(flag, httpURLConnection);
 
             // 获取URLConnection对象对应的输出流
-            printWriter = new PrintWriter(HttpsURLConnection.getOutputStream());
+            printWriter = new PrintWriter(httpURLConnection.getOutputStream());
             // 发送请求参数
             printWriter.write(params.toString());
             // flush输出流的缓冲
             printWriter.flush();
             // 根据ResponseCode判断连接是否成功
-            int responseCode = HttpsURLConnection.getResponseCode();
+            int responseCode = httpURLConnection.getResponseCode();
             if (responseCode != 200) {
                 AliveLog.e(TAG, "错误 response=" + responseCode);
             } else {
@@ -192,7 +169,7 @@ public class HttpHelper {
             }
             // 定义BufferedReader输入流来读取URL的ResponseData
             bufferedReader = new BufferedReader(new InputStreamReader(
-                    HttpsURLConnection.getInputStream()));
+                    httpURLConnection.getInputStream()));
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 responseResult.append(line);
@@ -202,16 +179,12 @@ public class HttpHelper {
             String error = e.getLocalizedMessage();
             if (error.contains("Permission denied")) {
                 AliveLog.e(TAG, "发送post请求错误!\n请配置'android.permission.INTERNET'权限");
-            } else if (e.toString().contains("was not verified")) {
-                return SSL_ERROR;
-            } else if (e.toString().contains("SSLHandshakeException")) {
-                return SSL_ERROR;
             } else {
                 AliveLog.e(TAG, "发送post请求错误!\n" + error);
             }
 
         } finally {
-            HttpsURLConnection.disconnect();
+            httpURLConnection.disconnect();
             try {
                 if (printWriter != null) {
                     printWriter.close();
@@ -243,35 +216,35 @@ public class HttpHelper {
 
         DataOutputStream out = null;
         StringBuffer responseResult = new StringBuffer();
-        HttpsURLConnection HttpsURLConnection = null;
+        HttpURLConnection httpURLConnection = null;
         BufferedWriter writer = null;
         // 组织请求参数
         try {
             URL realUrl = new URL(requestUrl);
             // 打开和URL之间的连接
-            HttpsURLConnection = (HttpsURLConnection) realUrl.openConnection();
+            httpURLConnection = (HttpURLConnection) realUrl.openConnection();
             // 设置通用的请求属性
-            HttpsURLConnection.setDoOutput(true);
-            HttpsURLConnection.setDoInput(true);
-            HttpsURLConnection.setConnectTimeout(CONNECT_TIMEOUT);
-            HttpsURLConnection.setReadTimeout(READ_TIMEOUT);
-            HttpsURLConnection.setRequestMethod("POST");
-            HttpsURLConnection.setUseCaches(false);
-            HttpsURLConnection.setInstanceFollowRedirects(true);
-            HttpsURLConnection.setRequestProperty("Content-Type", "application/json");
-            HttpsURLConnection.setRequestProperty("Accept-Charset", CHARSET);
-            HttpsURLConnection.connect();
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+            httpURLConnection.setConnectTimeout(CONNECT_TIMEOUT);
+            httpURLConnection.setReadTimeout(READ_TIMEOUT);
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setUseCaches(false);
+            httpURLConnection.setInstanceFollowRedirects(true);
+            httpURLConnection.setRequestProperty("Content-Type", "application/json");
+            httpURLConnection.setRequestProperty("Accept-Charset", CHARSET);
+            httpURLConnection.connect();
             // 获取URLConnection对象对应的输出流
             out = new DataOutputStream(
-                    HttpsURLConnection.getOutputStream());
+                    httpURLConnection.getOutputStream());
 //            AliveLog.v(TAG, "上传的数据为\n" + params);
-            DataOutputStream wr = new DataOutputStream(HttpsURLConnection.getOutputStream());
+            DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
             writer = new BufferedWriter(new OutputStreamWriter(out, CHARSET));
             writer.write(params);
             writer.flush();
 
             // 根据ResponseCode判断连接是否成功
-            int responseCode = HttpsURLConnection.getResponseCode();
+            int responseCode = httpURLConnection.getResponseCode();
             if (responseCode != 200) {
                 AliveLog.e(TAG, "错误 response=" + responseCode);
             } else {
@@ -279,7 +252,7 @@ public class HttpHelper {
             }
             // 定义BufferedReader输入流来读取URL的ResponseData
             bufferedReader = new BufferedReader(new InputStreamReader(
-                    HttpsURLConnection.getInputStream()));
+                    httpURLConnection.getInputStream()));
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 responseResult.append(line);
@@ -290,10 +263,6 @@ public class HttpHelper {
             if (!TextUtils.isEmpty(error)) {
                 if (error.contains("Permission denied")) {
                     AliveLog.e(TAG, "发送postJson请求错误!\n请配置'android.permission.INTERNET'权限");
-                } else if (e.toString().contains("was not verified")) {
-                    return SSL_ERROR;
-                } else if (e.toString().contains("SSLHandshakeException")) {
-                    return SSL_ERROR;
                 } else {
                     AliveLog.e(TAG, "发送postJson请求错误!\n" + error);
                 }
@@ -301,7 +270,7 @@ public class HttpHelper {
 
 
         } finally {
-            HttpsURLConnection.disconnect();
+            httpURLConnection.disconnect();
             try {
                 if (writer != null) {
                     writer.close();
@@ -353,12 +322,12 @@ public class HttpHelper {
     public static void cancelAll() {
 //        try {
 //            if (urlgetConnections != null)
-//                for (Map.Entry<String, HttpsURLConnection> entry : urlgetConnections.entrySet()) {
+//                for (Map.Entry<String, HttpURLConnection> entry : urlgetConnections.entrySet()) {
 //                    entry.getValue().disconnect();
 //                }
 //
 //            if (urlpostConnections != null)
-//                for (Map.Entry<String, HttpsURLConnection> entry : urlpostConnections.entrySet()) {
+//                for (Map.Entry<String, HttpURLConnection> entry : urlpostConnections.entrySet()) {
 //                    entry.getValue().disconnect();
 //                }
 //        } catch (Exception e) {

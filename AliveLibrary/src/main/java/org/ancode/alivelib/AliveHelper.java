@@ -17,7 +17,7 @@ import org.ancode.alivelib.service.AliveHelperService;
 import org.ancode.alivelib.utils.AliveLog;
 import org.ancode.alivelib.utils.AliveSPUtils;
 import org.ancode.alivelib.utils.IntentUtils;
-import org.ancode.alivelib.utils.NotifyUtils;
+import org.ancode.alivelib.utils.AliveNotifyUtils;
 import org.ancode.alivelib.utils.PatchUtils;
 
 /**
@@ -28,6 +28,7 @@ public class AliveHelper extends BaseAliveHelper {
 
     private static AliveHelper helper = null;
     private static final String TAG = AliveHelper.class.getSimpleName();
+    public static boolean ALIVE_STATS_NOTIFY_SHOWING = false;
 
     /****
      * 初始化library
@@ -255,7 +256,7 @@ public class AliveHelper extends BaseAliveHelper {
      * @param afterTime 延迟时间显示时间
      */
     public void notifyAliveUseGuide(long afterTime) {
-        new NotifyUtils().showAliveGuideNotify(afterTime);
+        AliveNotifyUtils.showAliveGuideNotify(afterTime);
     }
 
     /**
@@ -271,7 +272,8 @@ public class AliveHelper extends BaseAliveHelper {
                 @Override
                 public void onResponse(String response) {
                     if ("0".equals(response)) {
-                        new NotifyUtils().showAliveStatsNotify(afterTime);
+                        ALIVE_STATS_NOTIFY_SHOWING = true;
+                        AliveNotifyUtils.showAliveStatsNotify(afterTime);
                         Log.v(TAG, "isEnableShowNotify 服务器返回" + response + "显示notification");
                     } else {
                         Log.v(TAG, "isEnableShowNotify 服务器返回" + response + "不显示notification");
@@ -284,7 +286,7 @@ public class AliveHelper extends BaseAliveHelper {
                 }
             });
         } else {
-            new NotifyUtils().showAliveStatsNotify(afterTime);
+            AliveNotifyUtils.showAliveStatsNotify(afterTime);
             Log.v(TAG, "发现当前设置为内部版,直接显示notification");
         }
 

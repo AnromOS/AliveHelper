@@ -12,8 +12,8 @@ import org.ancode.alivelib.notification.AliveNotification;
 /**
  * Created by andyliu on 16-10-31.
  */
-public class NotifyUtils {
-
+public class AliveNotifyUtils {
+    public static final String TAG = AliveNotifyUtils.class.getSimpleName();
 
     /***
      * 防杀指南通知
@@ -74,6 +74,68 @@ public class NotifyUtils {
                 baseNotification.show(IntentUtils.getNotifyActivity(AliveStatsActivity.class));
             }
         });
+    }
+
+
+    public static boolean isCheckShowASNotify = false;
+
+    /***
+     * 检测是否显示在线成绩单通知
+     * inTimer=true定时提示模式，inTimer=false是手动点开模式
+     *
+     * @param inTimer
+     * @param time
+     * @return
+     */
+    public static boolean checkShowASNotify(boolean inTimer, long time) {
+        if (isCheckShowASNotify) {
+            AliveLog.v(TAG, "有地方正在检测是否显示在线成绩单通知");
+            return false;
+        }
+        isCheckShowASNotify = true;
+        try {
+            if (inTimer) {
+                long nextShowAsNotifyTime = AliveSPUtils.getInstance().getNextShowAsNotifyTime();
+                if (nextShowAsNotifyTime == 0) {
+                    //设置明天9点
+                    long today9Point = AliveDateUtils.getTody9Point(time);
+                    long nextDate = AliveDateUtils.getNextDayThisTime(today9Point);
+                    AliveSPUtils.getInstance().setNextShowAsNotifyTime(nextDate);
+
+                    if (!AliveSPUtils.getInstance().getIsRelease()) {
+                        AliveLog.v(TAG, "第一次提示用户查看保活统计");
+                        return true;
+                    }
+                } else if (time >= nextShowAsNotifyTime) {
+                    AliveLog.v(TAG, "到点了提示用户查看保活统计");
+                    //设置明天9点
+                    long nextDate = AliveDateUtils.getNextDayThisTime(nextShowAsNotifyTime);
+                    AliveSPUtils.getInstance().setNextShowAsNotifyTime(nextDate);
+                    return true;
+                }
+            } else {
+                AliveLog.v(TAG, "Activity检测提示在线成绩单通知");
+                long nextShowAsNotifyTime = AliveSPUtils.getInstance().getNextShowAsNotifyTime();
+                if (nextShowAsNotifyTime > 0) {
+                    long nowStartTime = AliveDateUtils.getToDayStartTime();
+                    long nextStratTime = AliveDateUtils.getThisDayStartTime(nextShowAsNotifyTime);
+                    if (nowStartTime == nextStratTime) {
+                        long nextShowTime = AliveDateUtils.getNextDayThisTime(nextShowAsNotifyTime);
+                        AliveSPUtils.getInstance().setNextShowAsNotifyTime(nextShowTime);
+                        return true;
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            AliveLog.e(TAG, "检测是否提示在线成绩单通知出错");
+            e.printStackTrace();
+        } finally {
+            isCheckShowASNotify = false;
+        }
+        AliveLog.v(TAG, "在线成绩单检测，不需要弹提示");
+        return false;
+
     }
 
 
