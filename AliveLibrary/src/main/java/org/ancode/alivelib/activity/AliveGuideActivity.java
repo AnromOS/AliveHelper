@@ -55,8 +55,8 @@ public class AliveGuideActivity extends BaseAliveActivity {
             @Override
             public void error(String error) {
                 if (error.equals(HttpClient.DATA_IS_NULL)) {
-                    showLoading(false);
                     AliveLog.v(TAG, "show default html");
+                    showLoading(false);
                     if (HelperConfig.USE_ANET) {
                         onRefresh(HttpUrlConfig.DEFAULT_ALIVE_GUIDE_V6_URL);
                     } else {
@@ -192,14 +192,14 @@ public class AliveGuideActivity extends BaseAliveActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        webView.getSettings().setJavaScriptEnabled(true);
+//        webView.getSettings().setJavaScriptEnabled(true);
         webView.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        webView.getSettings().setJavaScriptEnabled(false);
+//        webView.getSettings().setJavaScriptEnabled(false);
         webView.onPause();
     }
 

@@ -141,7 +141,7 @@ public class AliveStatsActivity extends BaseAliveActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        webView.getSettings().setJavaScriptEnabled(true);
+//        webView.getSettings().setJavaScriptEnabled(true);
         webView.onResume();
         String beginTimeR = String.valueOf(AliveDateUtils.getLastDayStartTime(new Date()));
         String endTimeR = String.valueOf(AliveDateUtils.getToDayStartTime());
@@ -156,7 +156,7 @@ public class AliveStatsActivity extends BaseAliveActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        webView.getSettings().setJavaScriptEnabled(false);
+//        webView.getSettings().setJavaScriptEnabled(false);
         webView.onPause();
     }
 
