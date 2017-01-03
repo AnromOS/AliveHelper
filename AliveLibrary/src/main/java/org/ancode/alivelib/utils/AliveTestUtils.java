@@ -18,7 +18,7 @@ import java.util.Date;
  */
 public class AliveTestUtils {
     public static final String TAG = AliveTestUtils.class.getSimpleName();
-
+    private static final boolean  SHOW_LOG = false;
     /***
      * 统计数据备份
      *
@@ -26,7 +26,7 @@ public class AliveTestUtils {
      * @param data
      */
     public static void backUpUploadData(final String fileName, final long startTime, final JSONObject data) {
-        if (!AliveSPUtils.getInstance().getIsRelease()) {
+        if (!AliveSPUtils.getInstance().getIsRelease() && SHOW_LOG) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -83,7 +83,7 @@ public class AliveTestUtils {
     }
 
     public static void LogBpoint(final long datetime, final String s) {
-        if (!AliveSPUtils.getInstance().getIsRelease()) {
+        if (!AliveSPUtils.getInstance().getIsRelease() && SHOW_LOG) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -136,7 +136,7 @@ public class AliveTestUtils {
 
 
     public static void LogStats(final String s) {
-        if (!AliveSPUtils.getInstance().getIsRelease()) {
+        if (!AliveSPUtils.getInstance().getIsRelease() && SHOW_LOG) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
