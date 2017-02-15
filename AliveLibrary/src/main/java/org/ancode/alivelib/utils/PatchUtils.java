@@ -24,7 +24,7 @@ public class PatchUtils {
                 AliveSPUtils.getInstance().setASBeginTime(0);
                 HelperConfig.CONTEXT.deleteFile(HelperConfig.OLD_ALIVE_STATS_FILE_NAME);
                 aliveStatsfile = null;
-                Log.v(TAG, "保活统计有旧的文件,执行删除操作,并初始化数据");
+                AliveLog.v(TAG, "保活统计有旧的文件,执行删除操作,并初始化数据");
             }
         } catch (Exception e) {
             e.printStackTrace();

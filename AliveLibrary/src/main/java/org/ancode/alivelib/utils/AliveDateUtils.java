@@ -1,6 +1,7 @@
 package org.ancode.alivelib.utils;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -143,28 +144,16 @@ public class AliveDateUtils {
     }
 
     /**
-     * 获取下一天当前时间
+     * 获取明天9点
      *
-     * @param time
      * @return
      */
-    public static long getNextDayThisTime(long time) {
-        Calendar timeCalendar = Calendar.getInstance();
-        timeCalendar.setTime(new Date(time));
-//        // 当前年
-//        int year = timeCalendar.get(Calendar.YEAR);
-//        // 当前月
-//        int month = (timeCalendar.get(Calendar.MONTH));
-//        // 当前月的第几天：即当前日
-//        int day_of_month = timeCalendar.get(Calendar.DAY_OF_MONTH);
-        int hours = timeCalendar.get(Calendar.HOUR_OF_DAY);
-        int minute = timeCalendar.get(Calendar.MINUTE);
-        int second = timeCalendar.get(Calendar.SECOND);
+    public static long getNextDay9Point() {
+        Date date = new Date();
+        Calendar timeCalendar = new GregorianCalendar();
+        timeCalendar.setTime(date);
+        timeCalendar.add(Calendar.DATE, 1);
 
-        //获取今天的时间
-        Calendar todyCalendar = Calendar.getInstance();
-        todyCalendar.setTime(new Date());
-        timeCalendar.setTime(new Date(time));
         // 当前年
         int todyYear = timeCalendar.get(Calendar.YEAR);
         // 当前月
@@ -172,7 +161,8 @@ public class AliveDateUtils {
         // 当前月的第几天：即当前日
         int todyDay_of_month = timeCalendar.get(Calendar.DAY_OF_MONTH);
 
-        Calendar compareCalendar = new GregorianCalendar(todyYear, todyMonth, todyDay_of_month + 1, hours, minute, second);
+        Calendar compareCalendar = new GregorianCalendar(todyYear, todyMonth, todyDay_of_month, 9, 0, 0);
+        Log.v("LZS","next9point"+timeFormat(compareCalendar.getTime(),DEFAULT_FORMAT));
         return compareCalendar.getTimeInMillis();
     }
 

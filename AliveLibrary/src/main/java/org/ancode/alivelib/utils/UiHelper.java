@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -13,6 +15,7 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -213,4 +216,28 @@ public class UiHelper {
         }
         return drawableToBitmap(icon);
     }
+
+
+    /***
+     * 检测App是否安装了
+     *
+     * @return
+     */
+    public static boolean checkApkIsInstallByPk(Context context,String packageName) {
+        boolean installed = false;
+        PackageManager pm = context.getPackageManager();
+        if (TextUtils.isEmpty(packageName)) {
+            AliveLog.v("FileUtils", "get file packageName is null");
+        } else {
+            try {
+                pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+                installed = true;
+            } catch (PackageManager.NameNotFoundException e) {
+                installed = false;
+            }
+        }
+        return installed;
+
+    }
+
 }

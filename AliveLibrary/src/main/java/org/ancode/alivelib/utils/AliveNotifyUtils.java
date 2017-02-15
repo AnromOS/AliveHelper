@@ -99,7 +99,7 @@ public class AliveNotifyUtils {
                 if (nextShowAsNotifyTime == 0) {
                     //设置明天9点
                     long today9Point = AliveDateUtils.getTody9Point(time);
-                    long nextDate = AliveDateUtils.getNextDayThisTime(today9Point);
+                    long nextDate = AliveDateUtils.getNextDay9Point();
                     AliveSPUtils.getInstance().setNextShowAsNotifyTime(nextDate);
 
                     if (!AliveSPUtils.getInstance().getIsRelease()) {
@@ -109,7 +109,7 @@ public class AliveNotifyUtils {
                 } else if (time >= nextShowAsNotifyTime) {
                     AliveLog.v(TAG, "到点了提示用户查看保活统计");
                     //设置明天9点
-                    long nextDate = AliveDateUtils.getNextDayThisTime(nextShowAsNotifyTime);
+                    long nextDate = AliveDateUtils.getNextDay9Point();
                     AliveSPUtils.getInstance().setNextShowAsNotifyTime(nextDate);
                     return true;
                 }
@@ -120,7 +120,7 @@ public class AliveNotifyUtils {
                     long nowStartTime = AliveDateUtils.getToDayStartTime();
                     long nextStratTime = AliveDateUtils.getThisDayStartTime(nextShowAsNotifyTime);
                     if (nowStartTime == nextStratTime) {
-                        long nextShowTime = AliveDateUtils.getNextDayThisTime(nextShowAsNotifyTime);
+                        long nextShowTime = AliveDateUtils.getNextDay9Point();
                         AliveSPUtils.getInstance().setNextShowAsNotifyTime(nextShowTime);
                         return true;
                     }

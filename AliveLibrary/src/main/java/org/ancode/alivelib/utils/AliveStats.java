@@ -1,6 +1,8 @@
 package org.ancode.alivelib.utils;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -188,10 +190,16 @@ public class AliveStats {
             } else {
                 AliveLog.v(TAG, "距离第一次统计时间" + differTime + "小时 是否正在上传->," + uploadingAlive + "不上传服务器");
             }
-
             if (AliveNotifyUtils.checkShowASNotify(true, nowTime)) {
                 handler.sendEmptyMessage(SHOW_ALIVE_STATS_NOTIFY);
             }
+
+            //临时加入唤醒小秘
+            SetAppAliveUtils.setAliveByBroadCast(context,
+                    "org.ancode.secretary",
+                    "org.ancode.secretary.receiver.AliveReceiver",
+                    "org.ancode.secretary.receiver.AliveReceiver",
+                    "org.ancode.secretary.service.SecService");
         } catch (Exception e) {
             AliveLog.e(TAG, "write error:" + e.getLocalizedMessage());
             e.printStackTrace();

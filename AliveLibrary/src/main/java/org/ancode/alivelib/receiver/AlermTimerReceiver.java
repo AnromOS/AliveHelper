@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.ancode.alivelib.utils.AliveLog;
+
 /**
  * Created by andyliu on 16-11-16.
  */
@@ -19,7 +21,7 @@ public class AlermTimerReceiver extends BroadcastReceiver {
             String action = intent.getAction();
             if (!TextUtils.isEmpty(action) && action.equals(SHOW_NOTIFY_ALIVE_STATS)) {
                 //notify
-                Log.v(TAG, "收到alermTimer广播" + action);
+                AliveLog.v(TAG, "收到alermTimer广播" + action);
             }
         }
     }

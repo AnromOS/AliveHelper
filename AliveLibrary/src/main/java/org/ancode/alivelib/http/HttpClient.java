@@ -197,7 +197,7 @@ public class HttpClient {
                         if (!TextUtils.isEmpty(fileName)) {
                             try {
                                 HelperConfig.CONTEXT.deleteFile(fileName);
-                                Log.v(TAG, "delete file " + fileName);
+                                AliveLog.v(TAG, "delete file " + fileName);
                                 AliveLog.v(TAG, "----删除数据成功----");
                             } catch (Exception e) {
                                 Log.e(TAG, "删除文件" + fileName + "失败");
@@ -211,7 +211,7 @@ public class HttpClient {
                         }
 
                     } else {
-                        Log.v(TAG, "上传" + fileName + "文件失败");
+                        AliveLog.v(TAG, "上传" + fileName + "文件失败");
                     }
                 }
                 return delFiles;
@@ -225,7 +225,7 @@ public class HttpClient {
                 String[] delFiles = delFileStrs.split(",");
                 String spFileNames = AliveSPUtils.getInstance().getAliveStatsUploadFiles();
                 //清除文件列表中文件
-                Log.v(TAG, "处理文件列表" + spFileNames);
+                AliveLog.v(TAG, "处理文件列表" + spFileNames);
                 for (int i = 0; i < delFiles.length; i++) {
                     String delFileName = delFiles[i];
                     if (spFileNames.contains(delFileName)) {
@@ -246,7 +246,7 @@ public class HttpClient {
                     }
                 }
                 AliveSPUtils.getInstance().setAliveStatsUploadFiles(afterFileNameStr);
-                Log.v(TAG, "处理文件完成，结果为（" + afterFileNameStr + "）");
+                AliveLog.v(TAG, "处理文件完成，结果为（" + afterFileNameStr + "）");
                 //****清除掉已经上传的文件名称****///
                 handler.sendEmptyMessage(AliveStats.UPLOAD_FILE_SUCCESS);
             }
@@ -300,12 +300,10 @@ public class HttpClient {
         String url;
         if (HelperConfig.USE_ANET) {
             url = HttpUrlConfig.POST_ALIVE_STATS_V6_URL;
-            AliveLog.v(TAG, "走IPV6");
         } else {
             url = HttpUrlConfig.POST_ALIVE_STATS_V4_URL;
-            AliveLog.v(TAG, "走IPV4");
         }
-        Log.v(TAG, "上传保活数据" + uploadJson.toString());
+        AliveLog.v(TAG, "上传保活数据" + uploadJson.toString());
         String response = HttpHelper.postJson(url, uploadJson.toString(), "uploadStatsTime");
 
         AliveLog.v(TAG, "uploadStatsTime response= " + response);
@@ -357,10 +355,8 @@ public class HttpClient {
                     String url;
                     if (HelperConfig.USE_ANET) {
                         url = HttpUrlConfig.URL_POST_CRASH_V4_URL;
-                        AliveLog.v(TAG, "走IPV6");
                     } else {
                         url = HttpUrlConfig.URL_POST_CRASH_V4_URL;
-                        AliveLog.v(TAG, "走IPV4");
                     }
                     String data = HttpHelper.post(url, params, "http_call_flag");
                     if (TextUtils.isEmpty(data)) {
@@ -407,10 +403,8 @@ public class HttpClient {
                     String url;
                     if (HelperConfig.USE_ANET) {
                         url = HttpUrlConfig.IS_ENABLE_SHOW_NOTIFY_V4_URL;
-                        AliveLog.v(TAG, "走IPV6");
                     } else {
                         url = HttpUrlConfig.IS_ENABLE_SHOW_NOTIFY_V4_URL;
-                        AliveLog.v(TAG, "走IPV4");
                     }
                     Map<String, String> params = new HashMap<String, String>();
                     String data = HttpHelper.get(url, params, "isEnableShowNotify");

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.bean.BaseStatsInfo;
+import org.ancode.alivelib.utils.AliveLog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,7 +31,7 @@ public class Application extends android.app.Application {
         //初始化操作(无耗时操作)
 
         AliveHelper.init(getApplicationContext());//初始化**(必须项)**
-        Log.v("application", "init aliveHelper");
+        AliveLog.v("application", "init aliveHelper");
         AliveHelper.setNotifySmallIcon(R.drawable.alive_helper_small_icon);//如果要弹出通知,需开发者提供应用小图标
         AliveHelper.setDebug(true);//是否打印防杀助手log
 //        AliveHelper.setThemeColor(R.color.alive_dialog_btn_border_color);//手动设置展示界面的主色调

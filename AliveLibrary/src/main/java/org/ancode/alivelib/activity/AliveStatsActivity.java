@@ -61,7 +61,7 @@ public class AliveStatsActivity extends BaseAliveActivity {
         params.put("end", endTime);
         String beginTimeStr = AliveDateUtils.timeFormat(new Date(AliveDateUtils.getLastDayStartTime(date)), AliveDateUtils.DEFAULT_FORMAT);
         String endTimeStr = AliveDateUtils.timeFormat(new Date(AliveDateUtils.getToDayStartTime()), AliveDateUtils.DEFAULT_FORMAT);
-        Log.v(TAG, "aliveStats begin=" + beginTimeStr + " ,end=" + endTimeStr + ",params=" + params.toString());
+        AliveLog.v(TAG, "aliveStats begin=" + beginTimeStr + " ,end=" + endTimeStr + ",params=" + params.toString());
         HttpClient.getAliveStats(params, HttpClient.HTTP_CALL_FLAG, new StringCallBack() {
             @Override
             public void onResponse(String response) {
@@ -166,14 +166,14 @@ public class AliveStatsActivity extends BaseAliveActivity {
         webView.clearCache(true);
         String loadUrl = data + "&t=" + System.currentTimeMillis();
         webView.loadUrl(loadUrl);
-        Log.v(TAG, "请求到的保活统计界面为\n" + data);
+        AliveLog.i(TAG, "请求到的保活统计界面为\n" + data);
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
 //                Log.v(TAG, "加载的url是=" + url);
                 if (URLUtil.isNetworkUrl(url)) {
                     if (url.equals("http://toaliveguide/param?activity=aliveguide")) {
-                        Log.v(TAG, "跳转activity,url=" + url);
+                        AliveLog.i(TAG, "跳转activity,url=" + url);
                         toActivity("aliveguide");
                         return true;
                     }
@@ -197,15 +197,15 @@ public class AliveStatsActivity extends BaseAliveActivity {
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
                 if (!TextUtils.isEmpty(url)) {
                     if (url.contains("xz.mixun.org")) {
-                        Log.v(TAG, "自己的url=" + url);
+                        AliveLog.i(TAG, "自己的url=" + url);
                         return null;
 
                     } else if (url.contains("aliveguide")) {
 
-                        Log.v(TAG, "自己的url=" + url);
+                        AliveLog.i(TAG, "自己的url=" + url);
                         return null;
                     } else {
-                        Log.v(TAG, "其它url=" + url);
+                        AliveLog.i(TAG, "其它url=" + url);
                         return new WebResourceResponse(null, null, null);
                     }
                 }
@@ -238,8 +238,8 @@ public class AliveStatsActivity extends BaseAliveActivity {
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
 //                super.onReceivedSslError(view, handler, error);
 //                AliveLog.v(TAG, "验证证书失败!!" + error.toString());
-                AliveLog.v(TAG, "HTTPS 验证证书失败!!");
-                AliveLog.v(TAG, error.toString());
+                AliveLog.i(TAG, "HTTPS 验证证书失败!!");
+                AliveLog.i(TAG, error.toString());
                 showSSLError(true);
                 handler.cancel();
 

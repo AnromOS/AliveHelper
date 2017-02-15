@@ -267,7 +267,7 @@ public class AliveHelper extends BaseAliveHelper {
     public void notifyAliveStats(final long afterTime) {
         if (AliveSPUtils.getInstance().getIsRelease()) {
 
-            Log.v(TAG, "发现当前设置为外部版,请求服务器是否显示notification");
+            AliveLog.v(TAG, "发现当前设置为外部版,请求服务器是否显示notification");
             isEnableShowNotify(new StringCallBack() {
                 @Override
                 public void onResponse(String response) {
