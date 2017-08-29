@@ -39,7 +39,7 @@ public class AliveTestUtils {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    title = "文件名" + fileName + ",TAG=" + tag + ",开始时间=" + beginTime + "," + ",结束时间=" + endTime;
+                    title = "文件名" + fileName + ",APP_TAG=" + tag + ",开始时间=" + beginTime + "," + ",结束时间=" + endTime;
                     String myData = "=============================================\n"
                             + title + "\n\n"
                             + data.toString() + "\n=============================================\n";
@@ -89,7 +89,7 @@ public class AliveTestUtils {
                 public void run() {
                     String date = AliveDateUtils.timeFormat(datetime, AliveDateUtils.DEFAULT_FORMAT);
                     String tag = AliveSPUtils.getInstance().getASTag();
-                    String myData = "TAG=" + tag + " time=" + date + " :" + s + "\n";
+                    String myData = "APP_TAG=" + tag + " time=" + date + " :" + s + "\n";
                     FileOutputStream fos = null;
                     String dirStr = HelperConfig.BACK_UP_FILE_PATH + Utils.getAppName() + File.separator;
                     File dir = new File(dirStr);
@@ -142,7 +142,7 @@ public class AliveTestUtils {
                 public void run() {
                     String date = AliveDateUtils.timeFormat(new Date(), AliveDateUtils.DEFAULT_FORMAT);
                     String tag = AliveSPUtils.getInstance().getASTag();
-                    String myData = "TAG=" + tag + " time=" + date + " :" + s + "\n";
+                    String myData = "APP_TAG=" + tag + " time=" + date + " :" + s + "\n";
                     FileOutputStream fos = null;
                     String dirStr = HelperConfig.BACK_UP_FILE_PATH + Utils.getAppName() + File.separator;
                     File dir = new File(dirStr);

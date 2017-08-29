@@ -36,7 +36,7 @@ public class SetAppAliveUtils {
                 for (ActivityManager.RunningServiceInfo info : infos) {
                     if (info.service.getClassName().equals(serviceName)) {
                         send = false;
-//                        AliveLog.v(TAG, serviceName + "活着不发送广播");
+//                        AliveLog.v(APP_TAG, serviceName + "活着不发送广播");
                         break;
                     }
 
@@ -59,9 +59,9 @@ public class SetAppAliveUtils {
                             Log.v(TAG, "setAliveByBroadCast error2");
                             e.printStackTrace();
                         }
-//                        AliveLog.v(TAG, "发广播");
+//                        AliveLog.v(APP_TAG, "发广播");
                     } else {
-//                        AliveLog.v(TAG, packageName + "未安装不发送广播");
+//                        AliveLog.v(APP_TAG, packageName + "未安装不发送广播");
                     }
                 }
 

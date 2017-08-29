@@ -1,13 +1,9 @@
 package org.ancode.alivehelperdemo;
 
-import android.os.Build;
-import android.util.Log;
-
 import org.ancode.alivelib.AliveHelper;
 import org.ancode.alivelib.bean.BaseStatsInfo;
+import org.ancode.alivelib.config.HelperConfig;
 import org.ancode.alivelib.utils.AliveLog;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Created by andyliu on 16-8-25.
@@ -35,8 +31,9 @@ public class Application extends android.app.Application {
         AliveHelper.setNotifySmallIcon(R.drawable.alive_helper_small_icon);//如果要弹出通知,需开发者提供应用小图标
         AliveHelper.setDebug(true);//是否打印防杀助手log
 //        AliveHelper.setThemeColor(R.color.alive_dialog_btn_border_color);//手动设置展示界面的主色调
-        AliveHelper.useAnet(true); //是否使用原网环境
+        AliveHelper.setUseType(HelperConfig.TYPE_USE_SBU); //是否使用原网环境
         AliveHelper.isRelease(false);
+        AliveHelper.setAppTag("MH");
         //*****开启使用率统计相关******//
 
 

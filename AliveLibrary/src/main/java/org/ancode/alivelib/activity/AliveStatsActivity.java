@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 
 import org.ancode.alivelib.R;
 import org.ancode.alivelib.config.Constants;
+import org.ancode.alivelib.config.HttpUrlConfig;
 import org.ancode.alivelib.http.HttpClient;
 import org.ancode.alivelib.callback.StringCallBack;
 import org.ancode.alivelib.utils.AliveSPUtils;
@@ -176,7 +177,7 @@ public class AliveStatsActivity extends BaseAliveActivity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//                Log.v(TAG, "加载的url是=" + url);
+//                Log.v(APP_TAG, "加载的url是=" + url);
                 if (URLUtil.isNetworkUrl(url)) {
                     if (url.equals("http://toaliveguide/param?activity=aliveguide")) {
                         AliveLog.i(TAG, "跳转activity,url=" + url);
@@ -202,7 +203,10 @@ public class AliveStatsActivity extends BaseAliveActivity {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
                 if (!TextUtils.isEmpty(url)) {
-                    if (url.contains("xz.mixun.org")) {
+                    if (url.contains(HttpUrlConfig.HOST_V4)
+                            || url.contains(HttpUrlConfig.HOST_V6)
+                            || url.contains(HttpUrlConfig.HOST_SBU_V6)
+                            || url.contains(HttpUrlConfig.HOST_SBU_V6_DOMAIN)) {
                         AliveLog.i(TAG, "自己的url=" + url);
                         return null;
 
@@ -215,7 +219,7 @@ public class AliveStatsActivity extends BaseAliveActivity {
                         return new WebResourceResponse(null, null, null);
                     }
                 }
-//                Log.v(TAG, "加载的url是自己的url=" + url);
+//                Log.v(APP_TAG, "加载的url是自己的url=" + url);
                 return null;
             }
 
@@ -243,7 +247,7 @@ public class AliveStatsActivity extends BaseAliveActivity {
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
 //                super.onReceivedSslError(view, handler, error);
-//                AliveLog.v(TAG, "验证证书失败!!" + error.toString());
+//                AliveLog.v(APP_TAG, "验证证书失败!!" + error.toString());
                 AliveLog.i(TAG, "HTTPS 验证证书失败!!");
                 AliveLog.i(TAG, error.toString());
                 showSSLError(true);
@@ -279,7 +283,7 @@ public class AliveStatsActivity extends BaseAliveActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
             webView.goBack();
             return true;
-        }else{
+        } else {
             finish();
         }
 

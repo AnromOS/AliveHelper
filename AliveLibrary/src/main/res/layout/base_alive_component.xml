@@ -78,5 +78,18 @@
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/tv_is_developer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/top"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:paddingTop="4dip"
+        android:text="正在开发中..."
+        android:textColor="#888888"
+        android:textSize="14dp"
+        android:visibility="gone" />
 
 </RelativeLayout>

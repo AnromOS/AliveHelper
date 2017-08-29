@@ -28,6 +28,7 @@ public class Utils {
      */
     public static Map<String, String> getProp() {
         Map<String, String> map = new HashMap<String, String>();
+        map.put("tag",HelperConfig.APP_TAG);
         map.put("model", Build.MODEL);
         //ANDROID版本号
         // map.put("buildVersion", String.valueOf(Build.VERSION.RELEASE));

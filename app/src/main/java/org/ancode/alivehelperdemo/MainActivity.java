@@ -59,10 +59,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        if (requestCode == 10) {
 //            if (Settings.canDrawOverlays(this)) {
-//                AliveLog.v(TAG, "SYSTEM_ALERT_WINDOW 授权成功...");
+//                AliveLog.v(APP_TAG, "SYSTEM_ALERT_WINDOW 授权成功...");
 //                initPermission();
 //            } else {
-//                AliveLog.v(TAG, "SYSTEM_ALERT_WINDOW 授权失败...");
+//                AliveLog.v(APP_TAG, "SYSTEM_ALERT_WINDOW 授权失败...");
 //            }
 //        }
 //    }
@@ -150,11 +150,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.alive_helper_notify:
                 AliveHelper.getHelper()
                         .notifyAliveUseGuide(2000);
-
+                AliveHelper.getHelper().showAliveUseGuide(false);
                 break;
 
             case R.id.alive_stats_activity:
-                AliveHelper.getHelper().showAliveStats();
+//                AliveHelper.getHelper().showAliveStats();
+                AliveHelper.getHelper().showAliveStats(false);
                 break;
             case R.id.alive_stats_notify:
                 AliveHelper.getHelper().notifyAliveStats(2000);
@@ -167,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                AliveHelper.getHelper().openAliveStats();
                 break;
             case R.id.check_alivestats_alive:
+
 //                long time = AliveSPUtils.getInstance().getNextShowAsNotifyTime();
 //                long tim2 = AliveDateUtils.getThisDayStartTime(time);
 //                Toast.makeText(this, AliveDateUtils.timeFormat(tim2, AliveDateUtils.DEFAULT_FORMAT), Toast.LENGTH_SHORT).show();

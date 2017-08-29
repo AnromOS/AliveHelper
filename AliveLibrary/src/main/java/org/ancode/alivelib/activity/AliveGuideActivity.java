@@ -37,6 +37,7 @@ public class AliveGuideActivity extends BaseAliveActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AliveLog.v(TAG, "AliveGuideActivity onCreate");
+
     }
 
 
@@ -57,10 +58,16 @@ public class AliveGuideActivity extends BaseAliveActivity {
                 if (error.equals(HttpClient.DATA_IS_NULL)) {
                     AliveLog.v(TAG, "show default html");
                     showLoading(false);
-                    if (HelperConfig.USE_ANET) {
+
+                    if (HelperConfig.USE_ANET == HelperConfig.TYPE_USE_ANET) {
                         onRefresh(HttpUrlConfig.DEFAULT_ALIVE_GUIDE_V6_URL);
+                        AliveLog.v(TAG, "走IPV6");
+                    } else if (HelperConfig.USE_ANET == HelperConfig.TYPE_USE_SBU) {
+                        onRefresh(HttpUrlConfig.DEFAULT_ALIVE_GUIDE_SBU_URL);
+                        AliveLog.v(TAG, "走SBU");
                     } else {
                         onRefresh(HttpUrlConfig.DEFAULT_ALIVE_GUIDE_V4_URL);
+                        AliveLog.v(TAG, "走IPV4");
                     }
 
                 } else if (error.contains(HttpHelper.SSL_ERROR)) {
@@ -149,7 +156,10 @@ public class AliveGuideActivity extends BaseAliveActivity {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
                 if (!TextUtils.isEmpty(url)) {
-                    if (url.contains("xz.mixun.org")) {
+                    if (url.contains(HttpUrlConfig.HOST_V4)
+                            || url.contains(HttpUrlConfig.HOST_V6)
+                            || url.contains(HttpUrlConfig.HOST_SBU_V6)
+                            || url.contains(HttpUrlConfig.HOST_SBU_V6_DOMAIN)) {
                         AliveLog.v(TAG, "自己的url=" + url);
                         return null;
 
@@ -161,7 +171,7 @@ public class AliveGuideActivity extends BaseAliveActivity {
                         return new WebResourceResponse(null, null, null);
                     }
                 }
-//                AliveLog.v(TAG, "加载的url是自己的url=" + url);
+//                AliveLog.v(APP_TAG, "加载的url是自己的url=" + url);
                 return null;
             }
 
@@ -174,7 +184,7 @@ public class AliveGuideActivity extends BaseAliveActivity {
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
 //                super.onReceivedSslError(view, handler, error);
-//                AliveLog.v(TAG, "验证证书失败!!" + error.toString());
+//                AliveLog.v(APP_TAG, "验证证书失败!!" + error.toString());
                 AliveLog.v(TAG, "HTTPS 验证证书失败!!");
                 AliveLog.v(TAG, error.toString());
                 showSSLError(true);

@@ -1,7 +1,6 @@
 package org.ancode.alivelib.activity;
 
 import android.app.Activity;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -25,9 +24,11 @@ public abstract class BaseAliveActivity extends Activity {
     private View reloadBtn;
     private View topView;
     private TextView titleView;
+    private TextView tvIsDeveloper;
     protected String data = "";
     private int themeColor = -1;
     private boolean applyStatusColor;
+    private boolean InDevelopment = false;
     protected String appName;
 
     @Override
@@ -37,7 +38,8 @@ public abstract class BaseAliveActivity extends Activity {
         initBaseData();
         initBaseView();
         initView();
-        loadData();
+        if (!InDevelopment)
+            loadData();
         AliveLog.v(TAG, "BaseAliveActivity onCreate");
     }
 
@@ -45,6 +47,7 @@ public abstract class BaseAliveActivity extends Activity {
         themeColor = HelperConfig.THEME_COLOR_ID;
         appName = Utils.getAppName();
         applyStatusColor = getIntent().getBooleanExtra(HelperConfig.APPLY_STATUS_COLOR, true);
+        InDevelopment = getIntent().getBooleanExtra(HelperConfig.IN_DEVELOPMENT, false);
     }
 
     @Override
@@ -83,7 +86,7 @@ public abstract class BaseAliveActivity extends Activity {
         titleView = (TextView) findViewById(R.id.title);
         closeBtn = findViewById(R.id.close);
         reloadBtn = findViewById(R.id.reload);
-
+        tvIsDeveloper = (TextView) findViewById(R.id.tv_is_developer);
         setTimeColor();
 
         closeBtn.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +114,12 @@ public abstract class BaseAliveActivity extends Activity {
                 onReLoad();
             }
         });
-        showLoading(true);
+        if (!InDevelopment) {
+            showLoading(true);
+            tvIsDeveloper.setVisibility(View.GONE);
+        } else {
+            tvIsDeveloper.setVisibility(View.VISIBLE);
+        }
     }
 
 

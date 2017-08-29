@@ -71,11 +71,15 @@ public class AliveHelper extends BaseAliveHelper {
     /**
      * 是否使用原网地址访问数据
      *
-     * @param b
-     * @return
+     * @param useType <p>
+     *                HelperConfig.TYPE_USE_V4
+     *                <br>
+     *                HelperConfig.TYPE_USE_ANET
+     *                <br>
+     *                HelperConfig.TYPE_USE_SBU
      */
-    public static AliveHelper useAnet(boolean b) {
-        HelperConfig.USE_ANET = b;
+    public static AliveHelper setUseType(int useType) {
+        HelperConfig.USE_ANET = useType;
         return helper;
     }
 
@@ -152,6 +156,12 @@ public class AliveHelper extends BaseAliveHelper {
 //        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
+    public static AliveHelper setAppTag(String appTag) {
+        HelperConfig.APP_TAG = appTag;
+        AliveLog.v(TAG, "收到tag->" + appTag);
+        return helper;
+    }
+
     /***
      * 开启保活统计服务
      *
@@ -187,6 +197,7 @@ public class AliveHelper extends BaseAliveHelper {
     /****
      * 显示防杀指南
      */
+    @Deprecated
     public void showAliveUseGuide() {
         HelperConfig.CONTEXT.startActivity(IntentUtils.getNormalActivity(AliveGuideActivity.class, true));
     }
@@ -194,10 +205,33 @@ public class AliveHelper extends BaseAliveHelper {
     /***
      * 显示保活统计
      */
+    @Deprecated
     public void showAliveStats() {
         HelperConfig.CONTEXT.startActivity(IntentUtils.getNormalActivity(AliveStatsActivity.class, true));
     }
 
+    /****
+     * 显示防杀指南
+     *
+     * @param inDevelopment 是否显示正在开发中
+     */
+    public void showAliveUseGuide(boolean inDevelopment) {
+        Intent intent = IntentUtils.getNormalActivity(AliveGuideActivity.class, true);
+        intent.putExtra(HelperConfig.IN_DEVELOPMENT, inDevelopment);
+        HelperConfig.CONTEXT.startActivity(intent);
+    }
+
+
+    /***
+     * 显示保活统计
+     *
+     * @param inDevelopment 是否显示正在开发中
+     */
+    public void showAliveStats(boolean inDevelopment) {
+        Intent intent = IntentUtils.getNormalActivity(AliveStatsActivity.class, true);
+        intent.putExtra(HelperConfig.IN_DEVELOPMENT, inDevelopment);
+        HelperConfig.CONTEXT.startActivity(intent);
+    }
 
     /***
      * 开启保活警告

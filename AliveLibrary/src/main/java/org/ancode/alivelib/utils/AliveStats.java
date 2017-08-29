@@ -120,14 +120,14 @@ public class AliveStats {
 //                            float bqDiffer = ((float) (nowTime - bqTime)) / 1000;
 //                            if (bqDiffer > 10) {
 //                                pointStr = pointStr + bqTime + " " + netStatus + "\r\n";
-//                                AliveLog.v(TAG, "丢失数据补救=" + AliveDateUtils.timeFormat(bqTime, AliveDateUtils.DEFAULT_FORMAT));
+//                                AliveLog.v(APP_TAG, "丢失数据补救=" + AliveDateUtils.timeFormat(bqTime, AliveDateUtils.DEFAULT_FORMAT));
 //                                AliveTestUtils.LogBpoint(nowTime, "丢失数据补救=" + bqTime + " " + netStatus);
 //                            } else {
 //                                bqTime = bqTime - (HelperConfig.ALIVE_STATS_RATE / 2 * 1000);
 //                                float bqDiffer2 = ((float) (nowTime - bqTime)) / 1000;
 //                                if (bqDiffer2 > 10) {
 //                                    pointStr = pointStr + bqTime + " " + netStatus + "\r\n";
-//                                    AliveLog.v(TAG, "丢失数据补救=" + AliveDateUtils.timeFormat(bqTime, AliveDateUtils.DEFAULT_FORMAT));
+//                                    AliveLog.v(APP_TAG, "丢失数据补救=" + AliveDateUtils.timeFormat(bqTime, AliveDateUtils.DEFAULT_FORMAT));
 //                                    AliveTestUtils.LogBpoint(nowTime, "丢失数据补救=" + bqTime + " " + netStatus);
 //                                }
 //                            }

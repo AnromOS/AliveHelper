@@ -57,9 +57,12 @@ public class HttpClient {
             public void run() {
                 try {
                     String url;
-                    if (HelperConfig.USE_ANET) {
+                    if (HelperConfig.USE_ANET == HelperConfig.TYPE_USE_ANET) {
                         url = HttpUrlConfig.QUERY_ALIVE_STATS_V6_URL;
                         AliveLog.v(TAG, "走IPV6");
+                    } else if (HelperConfig.USE_ANET == HelperConfig.TYPE_USE_SBU) {
+                        url = HttpUrlConfig.QUERY_ALIVE_STATS_SBU_URL;
+                        AliveLog.v(TAG, "走SBU");
                     } else {
                         url = HttpUrlConfig.QUERY_ALIVE_STATS_V4_URL;
                         AliveLog.v(TAG, "走IPV4");
@@ -115,9 +118,12 @@ public class HttpClient {
                 String resultUrl = "";
                 try {
                     String url;
-                    if (HelperConfig.USE_ANET) {
+                    if (HelperConfig.USE_ANET == HelperConfig.TYPE_USE_ANET) {
                         url = HttpUrlConfig.GET_ALIVE_GUIDE_V6_URL;
                         AliveLog.v(TAG, "走IPV6");
+                    } else if (HelperConfig.USE_ANET == HelperConfig.TYPE_USE_SBU) {
+                        url = HttpUrlConfig.GET_ALIVE_GUIDE_SBU_URL;
+                        AliveLog.v(TAG, "走SBU");
                     } else {
                         url = HttpUrlConfig.GET_ALIVE_GUIDE_V4_URL;
                         AliveLog.v(TAG, "走IPV4");
@@ -125,7 +131,7 @@ public class HttpClient {
                     String data = HttpHelper.get(url, params, "http_call_flag");
                     GETING_URL = false;
                     if (TextUtils.isEmpty(data)) {
-                        sendHandler(handler, GET_DATA_ERROR, "response is null");
+                        sendHandler(handler, GET_DATA_ERROR, DATA_IS_NULL);
                         return;
                     }
                     if (data.equals(HttpHelper.SSL_ERROR)) {
@@ -157,6 +163,9 @@ public class HttpClient {
                     GETING_URL = false;
                     sendHandler(handler, GET_DATA_ERROR, e.getLocalizedMessage());
                     return;
+                }
+                if (resultUrl.contains(HttpUrlConfig.HOST_SBU_V6_DOMAIN)) {
+                    resultUrl = resultUrl.replace(HttpUrlConfig.HOST_SBU_V6_DOMAIN, HttpUrlConfig.HOST_SBU_V6);
                 }
                 sendHandler(handler, GET_DATA_SUCCESS, resultUrl);
                 GETING_URL = false;
@@ -298,10 +307,16 @@ public class HttpClient {
             return false;
         }
         String url;
-        if (HelperConfig.USE_ANET) {
+
+        if (HelperConfig.USE_ANET == HelperConfig.TYPE_USE_ANET) {
             url = HttpUrlConfig.POST_ALIVE_STATS_V6_URL;
+            AliveLog.v(TAG, "走IPV6");
+        } else if (HelperConfig.USE_ANET == HelperConfig.TYPE_USE_SBU) {
+            url = HttpUrlConfig.POST_ALIVE_STATS_SBU_URL;
+            AliveLog.v(TAG, "走SBU");
         } else {
             url = HttpUrlConfig.POST_ALIVE_STATS_V4_URL;
+            AliveLog.v(TAG, "走IPV4");
         }
         AliveLog.v(TAG, "上传保活数据" + uploadJson.toString());
         String response = HttpHelper.postJson(url, uploadJson.toString(), "uploadStatsTime");
@@ -353,10 +368,15 @@ public class HttpClient {
             public void run() {
                 try {
                     String url;
-                    if (HelperConfig.USE_ANET) {
+                    if (HelperConfig.USE_ANET == HelperConfig.TYPE_USE_ANET) {
                         url = HttpUrlConfig.URL_POST_CRASH_V4_URL;
+                        AliveLog.v(TAG, "走IPV6");
+                    } else if (HelperConfig.USE_ANET == HelperConfig.TYPE_USE_SBU) {
+                        url = HttpUrlConfig.URL_POST_CRASH_V4_URL;
+                        AliveLog.v(TAG, "走SBU");
                     } else {
                         url = HttpUrlConfig.URL_POST_CRASH_V4_URL;
+                        AliveLog.v(TAG, "走IPV4");
                     }
                     String data = HttpHelper.post(url, params, "http_call_flag");
                     if (TextUtils.isEmpty(data)) {
@@ -401,10 +421,16 @@ public class HttpClient {
             public void run() {
                 try {
                     String url;
-                    if (HelperConfig.USE_ANET) {
+
+                    if (HelperConfig.USE_ANET == HelperConfig.TYPE_USE_ANET) {
                         url = HttpUrlConfig.IS_ENABLE_SHOW_NOTIFY_V4_URL;
+                        AliveLog.v(TAG, "走IPV6");
+                    } else if (HelperConfig.USE_ANET == HelperConfig.TYPE_USE_SBU) {
+                        url = HttpUrlConfig.IS_ENABLE_SHOW_NOTIFY_V4_URL;
+                        AliveLog.v(TAG, "走SBU");
                     } else {
                         url = HttpUrlConfig.IS_ENABLE_SHOW_NOTIFY_V4_URL;
+                        AliveLog.v(TAG, "走IPV4");
                     }
                     Map<String, String> params = new HashMap<String, String>();
                     String data = HttpHelper.get(url, params, "isEnableShowNotify");

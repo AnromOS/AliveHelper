@@ -213,7 +213,7 @@ public class AliveStatsUtils {
             //时间段结束时间
             long endTime = -1;
             Long[] timeArray = null;
-//            AliveLog.v(TAG, "read start");
+//            AliveLog.v(APP_TAG, "read start");
             while ((nowLineStr = bufferedReader.readLine()) != null) {
                 nowLine = Long.valueOf(nowLineStr.split(" ")[0]);
                 if (beforeLine == -1) {
@@ -221,7 +221,7 @@ public class AliveStatsUtils {
                     startTime = nowLine;
                     endTime = nowLine;
                 }
-//                AliveLog.v(TAG,"read time="+nowLine);
+//                AliveLog.v(APP_TAG,"read time="+nowLine);
                 if (beforeLine == nowLine) {
                     continue;
                 } else {
@@ -245,7 +245,7 @@ public class AliveStatsUtils {
                 timeArray[1] = endTime;
                 result.add(timeArray);
             }
-//            AliveLog.v(TAG, "read end");
+//            AliveLog.v(APP_TAG, "read end");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
