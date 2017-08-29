@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#3F51B5</color>
-
+    <color name="colorAccent">#FF4081</color>
     <color name="base_alive_retry_button_background">#30000000</color>
     <color name="base_alive_retry_button_background_stroke">#50000000</color>
     <color name="base_alive_default_background">#f6f5f5</color>
     <color name="base_alive_suggestion_highlight">#177bbd</color>
-
+    <color name="default_background">#f6f5f5</color>
+    <color name="main_green">#3ac074</color>
     <!--dialog-->
     <color name="alive_dialog_line_color">#cccccc</color>
     <color name="alive_dialog_message_color">#242424</color>
@@ -18,5 +19,8 @@
 
     <color name="alive_alpha00">#00000000</color>
     <color name="alive_alpha05">#0D000000</color>
-
+    <!--progress bg-->
+    <color name="webview_background">@color/default_background</color>
+    <color name="webview_progress">@color/main_green</color>
+    <color name="webview_secound">@color/colorAccent</color>
 </resources>

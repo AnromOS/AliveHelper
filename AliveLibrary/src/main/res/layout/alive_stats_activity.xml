@@ -9,15 +9,14 @@
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/include_top"></WebView>
+        android:layout_below="@+id/progress"></WebView>
 
     <ProgressBar
         android:id="@+id/progress"
-        style="@android:style/Widget.Holo.ProgressBar.Horizontal"
+        style="@style/MyProgressBarStyle"
         android:layout_width="match_parent"
-        android:layout_height="10dp"
+        android:layout_height="4dp"
         android:layout_below="@+id/include_top"
-        android:layout_marginTop="-5dp"
         android:max="100"
         android:progress="20"
         android:visibility="invisible" />

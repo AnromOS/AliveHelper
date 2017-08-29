@@ -104,7 +104,12 @@ public class AliveGuideActivity extends BaseAliveActivity {
                 super.onProgressChanged(view, newProgress);
                 finalProgressBar.setProgress(newProgress);
                 if (newProgress == 100) {
-                    finalProgressBar.setVisibility(View.INVISIBLE);
+                    finalProgressBar.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            finalProgressBar.setVisibility(View.INVISIBLE);
+                        }
+                    }, 300);
                 } else {
                     finalProgressBar.setVisibility(View.VISIBLE);
                 }
@@ -218,6 +223,8 @@ public class AliveGuideActivity extends BaseAliveActivity {
         if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
             webView.goBack();
             return true;
+        } else {
+            finish();
         }
 
         return super.onKeyDown(keyCode, event);
