@@ -23,10 +23,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     lintOptions {
+        //忽略错误
         abortOnError false
     }
-
 //    task makeJar(type: Copy) {
 //        delete 'build/libs/myLibrary.jar'
 //        from('build/intermediates/bundles/release/')
@@ -113,6 +114,22 @@ bintray {
         vcsUrl = gitUrl
         licenses = ["Apache-2.0"]
         publish = true  // 是否是公开项目
+        version{
+            vcsTag = version
+            released  = new Date()
+            desc = "is a simple alivelibrary"
+            attributes = ['gradle-plugin': 'com.use.less:com.use.less.gradle:gradle-useless-plugin']
+        }
     }
 
 }
+//publishing {
+//    publications {
+//        MyPublication(MavenPublication) {
+//            from components.java
+//            groupId group
+//            artifactId "AliveLibrary"
+//            version version
+//        }
+//    }
+//}
