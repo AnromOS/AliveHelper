@@ -133,6 +133,7 @@ public class AliveGuideActivity extends BaseAliveActivity {
 
     @Override
     protected void onRefresh(String data) {
+        if (isFinishing()) return;
         String loadUrl = data + "?t=" + System.currentTimeMillis();
         webView.loadUrl(loadUrl);
         webView.setWebViewClient(new WebViewClient() {

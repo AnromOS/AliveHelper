@@ -169,6 +169,7 @@ public class AliveStatsActivity extends BaseAliveActivity {
 
     @Override
     protected void onRefresh(String data) {
+        if(isFinishing())return;
         showSSLError(false);
         webView.clearCache(true);
         String loadUrl = data + "&t=" + System.currentTimeMillis();
