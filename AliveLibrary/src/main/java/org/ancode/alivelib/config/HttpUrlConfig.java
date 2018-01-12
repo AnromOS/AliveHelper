@@ -19,6 +19,7 @@ public class HttpUrlConfig {
      */
 //    public static final String HOST_SBU_V6 = "starport.sbu";
     public static final String HOST_SBU_V6 = "[fb5e:ecff:d561:5c7d:8cfd:771:d6f:4919]";
+    public static final String HOST_SBU_V6_STATIC_PAGE ="[fb73:5b9:6c24:10b7:74be:2dc0:3565:8904]";
     public static final String HOST_SBU_V6_DOMAIN="starport.sbu";
 
     public static final String HTTPS = "https://";
@@ -73,7 +74,7 @@ public class HttpUrlConfig {
     /***
      * 默认防杀指南IPV6
      */
-    public static final String DEFAULT_ALIVE_GUIDE_SBU_URL = HTTP + HOST_SBU_V6 + "/alivehelper/index.html";
+    public static final String DEFAULT_ALIVE_GUIDE_SBU_URL = HTTP + HOST_SBU_V6_STATIC_PAGE + "/alive/index.html";
     /**
      * 上传保活统计IPV6
      */

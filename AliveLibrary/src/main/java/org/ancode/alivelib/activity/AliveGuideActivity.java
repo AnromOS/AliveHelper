@@ -160,7 +160,8 @@ public class AliveGuideActivity extends BaseAliveActivity {
                     if (url.contains(HttpUrlConfig.HOST_V4)
                             || url.contains(HttpUrlConfig.HOST_V6)
                             || url.contains(HttpUrlConfig.HOST_SBU_V6)
-                            || url.contains(HttpUrlConfig.HOST_SBU_V6_DOMAIN)) {
+                            || url.contains(HttpUrlConfig.HOST_SBU_V6_DOMAIN)
+                            || url.contains(HttpUrlConfig.HOST_SBU_V6_STATIC_PAGE)) {
                         AliveLog.v(TAG, "自己的url=" + url);
                         return null;
 
