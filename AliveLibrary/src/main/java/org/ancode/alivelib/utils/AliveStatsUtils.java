@@ -98,7 +98,6 @@ public class AliveStatsUtils {
         FileReader fileReader = null;
         BufferedReader bufferedReader = null;
 
-
         try {
             fileReader = new FileReader(file);
             bufferedReader = new BufferedReader(fileReader);
@@ -106,7 +105,9 @@ public class AliveStatsUtils {
             String nowLine = null;
             while ((nowLine = bufferedReader.readLine()) != null) {
 //                if (!result.contains(nowLine))
+
                 result.add(nowLine);
+
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -119,6 +120,19 @@ public class AliveStatsUtils {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        if (result.size() > 130) {
+            try{
+                int subStart = result.size() - 130 - 1;
+                if (subStart >= 0 && ((result.size() - 1) > subStart)) {
+                    List<String> subList = new ArrayList<>();
+                    subList.addAll( result.subList(subStart, result.size() - 1));
+                    return subList;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
         }
         return result;
     }

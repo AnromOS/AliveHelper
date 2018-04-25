@@ -38,8 +38,8 @@ public class HttpHelper {
     //    public static Map<String, HttpsURLConnection> urlgetConnections = null;
 //    public static Map<String, HttpsURLConnection> urlpostConnections = null;
     public static final String CHARSET = "UTF-8";
-    public static final int CONNECT_TIMEOUT = 20 * 1000;
-    public static final int READ_TIMEOUT = 20 * 1000;
+    public static final int CONNECT_TIMEOUT = 25 * 1000;
+    public static final int READ_TIMEOUT = 25 * 1000;
     public static final String SSL_ERROR = "ssl_error";
     private static final String PROTOCOL = "";
     private static final String PROVIDER = "";

@@ -68,6 +68,7 @@ public class AliveHelperService extends Service {
         if (action != null) {
             switch (action) {
                 case OPEN_ALIVE_STATS_SERVICE_ACTION:
+                    aliveStats.closeStatsLiveTimer();
                     aliveStats.openStatsLiveTimer();
                     break;
                 case OPEN_ALIVE_WARNING_SERVICE_ACTION:
