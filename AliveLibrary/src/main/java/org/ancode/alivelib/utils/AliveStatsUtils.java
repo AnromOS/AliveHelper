@@ -121,15 +121,15 @@ public class AliveStatsUtils {
                 e.printStackTrace();
             }
         }
-        if (result.size() > 130) {
-            try{
+        if (result.size() > 150) {
+            try {
                 int subStart = result.size() - 130 - 1;
                 if (subStart >= 0 && ((result.size() - 1) > subStart)) {
                     List<String> subList = new ArrayList<>();
-                    subList.addAll( result.subList(subStart, result.size() - 1));
+                    subList.addAll(result.subList(subStart, result.size() - 1));
                     return subList;
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

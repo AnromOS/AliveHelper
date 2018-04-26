@@ -219,11 +219,15 @@ public class AliveStats {
     }
 
     private void putUploadFileNames(String fileName) {
+        if (TextUtils.isEmpty(fileName)) {
+            return;
+        }
         String fileNames = AliveSPUtils.getInstance().getAliveStatsUploadFiles();
         if (TextUtils.isEmpty(fileNames)) {
             AliveSPUtils.getInstance().setAliveStatsUploadFiles(fileName);
         } else {
             if (!fileNames.contains(fileName)) {
+
                 fileNames = fileNames + "," + fileName;
                 AliveSPUtils.getInstance().setAliveStatsUploadFiles(fileNames);
             }
